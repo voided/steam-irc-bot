@@ -1,0 +1,11 @@
+syntax: glob
+
+# user files
+*.suo
+
+# nuget
+packages/
+
+# bins
+bin/
+obj/
