@@ -27,6 +27,8 @@ namespace SteamIrcBot
         public SteamUserStats UserStats { get; private set; }
         public SteamLevels Levels { get; private set; }
         public SteamGames Games { get; private set; }
+        public SteamAppInfo AppInfo { get; private set; }
+
 
         bool loggedOn;
         public bool Connected { get { return Client.ConnectedUniverse != EUniverse.Invalid && loggedOn; } }
@@ -47,9 +49,11 @@ namespace SteamIrcBot
             UserStats = Client.GetHandler<SteamUserStats>();
             Levels = new SteamLevels();
             Games = new SteamGames();
+            AppInfo = new SteamAppInfo();
 
             Client.AddHandler( Levels );
             Client.AddHandler( Games );
+            Client.AddHandler( AppInfo );
 
             new Callback<SteamClient.ConnectedCallback>( OnConnected, CallbackManager );
             new Callback<SteamClient.DisconnectedCallback>( OnDisconnected, CallbackManager );

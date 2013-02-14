@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="Steam\GC Manager\GC Handlers\TF2GCHandlers.cs" />
     <Compile Include="Steam\Job Manager\Jobs\PICSJob.cs" />
+    <Compile Include="Steam\Utils\SteamAppInfoHandler.cs" />
     <Compile Include="Utils\Log.cs" />
     <Compile Include="Steam\Job Manager\JobManager.cs" />
     <Compile Include="Steam\Job Manager\Jobs\AppInfoJob.cs" />

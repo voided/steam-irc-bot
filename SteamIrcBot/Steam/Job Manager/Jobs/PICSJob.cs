@@ -43,22 +43,32 @@ namespace SteamIrcBot
                 IRC.Instance.SendAnnounce( "PICS Apps: {0}", string.Join( ", ", callback.AppChanges.Values.Select( a =>
                 {
                     if ( a.NeedsToken )
-                        return string.Format( "{0} (needs token)", a.ID );
+                        return string.Format( "{0} (needs token)", GetAppName( a.ID ) );
 
-                    return a.ID.ToString();
+                    return GetAppName( a.ID );
                 } ) ) );
             }
 
             if ( callback.PackageChanges.Count > 0 )
             {
-                IRC.Instance.SendAnnounce( "PICS Packages: {0}", string.Join( ", ", callback.PackageChanges.Values.Select( a =>
+                IRC.Instance.SendAnnounce( "PICS Packages: {0}", string.Join( ", ", callback.PackageChanges.Values.Select( p =>
                 {
-                    if ( a.NeedsToken )
-                        return string.Format( "{0} (needs token)", a.ID );
+                    if ( p.NeedsToken )
+                        return string.Format( "{0} (needs token)", p.ID );
 
-                    return a.ID.ToString();
+                    return p.ID.ToString();
                 } ) ) );
             }
+        }
+
+        string GetAppName( uint appId )
+        {
+            string appName;
+
+            if ( !Steam.Instance.AppInfo.GetAppName( appId, out appName ) )
+                return appId.ToString();
+
+            return string.Format( "{0} ({1})", appName, appId );
         }
     }
 
