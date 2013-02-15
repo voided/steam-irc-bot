@@ -20,6 +20,7 @@ namespace SteamIrcBot
             new Callback<SteamFriends.PersonaStateCallback>( OnPersonaState, Steam.Instance.CallbackManager );
 
             Trigger = "!sid";
+            HelpText = "!sid <steamid> - Displays info about the given SteamID, and requests persona/clan name for relevant types";
         }
 
 

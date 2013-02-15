@@ -10,6 +10,9 @@ namespace SteamIrcBot
     {
         public string Trigger { get; set; }
 
+        public string HelpText { get; set; }
+
+
         internal void DoRun( CommandDetails details )
         {
             OnRun( details );

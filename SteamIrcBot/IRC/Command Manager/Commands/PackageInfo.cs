@@ -18,6 +18,7 @@ namespace SteamIrcBot
         public PIDCommand()
         {
             Trigger = "!pid";
+            HelpText = "!pid <packageid> - Requests package name for a given PackageID";
 
             new JobCallback<SteamApps.PackageInfoCallback>( OnPackageInfo, Steam.Instance.CallbackManager );
         }

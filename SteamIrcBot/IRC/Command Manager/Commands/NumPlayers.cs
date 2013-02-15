@@ -22,6 +22,7 @@ namespace SteamIrcBot
             new JobCallback<SteamUserStats.NumberOfPlayersCallback>( OnNumPlayers, Steam.Instance.CallbackManager );
 
             Trigger = "!numplayers";
+            HelpText = "!numplayers <gameid> - Requests the current number of players playing the given GameID, according to Steam";
         }
 
 

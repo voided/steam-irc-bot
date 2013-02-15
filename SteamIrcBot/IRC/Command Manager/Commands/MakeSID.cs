@@ -12,6 +12,7 @@ namespace SteamIrcBot
         public MakeSIDCommand()
         {
             Trigger = "!makesid";
+            HelpText = "!makesid <universe> <type> <instance> <id> - Crafts a SteamID with the given parameters, <id> can be a resolvable SteamID";
         }
 
         protected override void OnRun( CommandDetails details )

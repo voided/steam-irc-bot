@@ -19,6 +19,7 @@ namespace SteamIrcBot
         public GIDCommand()
         {
             Trigger = "!gid";
+            HelpText = "!gid <appid> - Requests app name for given AppID";
 
             new JobCallback<SteamApps.AppInfoCallback>( OnAppInfo, Steam.Instance.CallbackManager );
         }

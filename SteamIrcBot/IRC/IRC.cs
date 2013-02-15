@@ -14,10 +14,11 @@ namespace SteamIrcBot
 
 
         IrcClient client;
-        CommandManager commandMgr;
 
         bool shuttingDown = false;
 
+
+        public CommandManager CommandManager { get; private set; }
 
         public AutoResetEvent JoinEvent { get; private set; } 
 
@@ -28,7 +29,7 @@ namespace SteamIrcBot
 
             client = new IrcClient( Settings.Current.IRCNick );
 
-            commandMgr = new CommandManager( client );
+            CommandManager = new CommandManager( client );
 
             client.AlternateNickname = Settings.Current.IRCNick + "_";
             client.RealName = Settings.Current.IRCNick;

@@ -9,11 +9,13 @@ namespace SteamIrcBot
 {
     class CommandManager
     {
-        List<Command> registeredCommands = new List<Command>();
+        public List<Command> RegisteredCommands { get; private set; }
 
 
         public CommandManager( IrcClient client )
         {
+            RegisteredCommands = new List<Command>();
+
             client.MessageParser.ChannelMessage += MessageParser_ChannelMessage;
 
             var commandTypes = Assembly.GetExecutingAssembly()
@@ -24,7 +26,7 @@ namespace SteamIrcBot
             foreach ( var command in commandTypes )
             {
                 var cmd = Activator.CreateInstance( command ) as Command;
-                registeredCommands.Add( cmd );
+                RegisteredCommands.Add( cmd );
             }
         }
 
@@ -42,7 +44,7 @@ namespace SteamIrcBot
             string command = splits[ 0 ];
             string[] args = splits.Skip( 1 ).ToArray();
 
-            var triggeredCommand = registeredCommands
+            var triggeredCommand = RegisteredCommands
                 .FirstOrDefault( c => string.Equals( command, c.Trigger, StringComparison.OrdinalIgnoreCase ) );
 
             if ( triggeredCommand == null )
