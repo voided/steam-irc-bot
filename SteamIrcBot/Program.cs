@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Reflection;
+using System.IO;
 
 namespace SteamIrcBot
 {
@@ -13,6 +15,10 @@ namespace SteamIrcBot
         /// </summary>
         static void Main( string[] args )
         {
+            string path = Assembly.GetExecutingAssembly().Location;
+            path = Path.GetDirectoryName( path );
+            Directory.SetCurrentDirectory( path );
+
             AppDomain.CurrentDomain.UnhandledException += ( sender, e ) =>
             {
                 Log.WriteError( "Program", "Unhandled exception (IsTerm: {0}): {1}", e.IsTerminating, e.ExceptionObject );
