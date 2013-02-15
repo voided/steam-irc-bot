@@ -54,9 +54,9 @@ namespace SteamIrcBot
                 IRC.Instance.SendAnnounce( "PICS Packages: {0}", string.Join( ", ", callback.PackageChanges.Values.Select( p =>
                 {
                     if ( p.NeedsToken )
-                        return string.Format( "{0} (needs token)", p.ID );
+                        return string.Format( "{0} (needs token)", GetPackageName( p.ID ) );
 
-                    return p.ID.ToString();
+                    return GetPackageName( p.ID );
                 } ) ) );
             }
         }
@@ -69,6 +69,16 @@ namespace SteamIrcBot
                 return appId.ToString();
 
             return string.Format( "{0} ({1})", appName, appId );
+        }
+
+        string GetPackageName( uint packageId )
+        {
+            string packageName;
+
+            if ( !Steam.Instance.AppInfo.GetPackageName( packageId, out packageName ) )
+                return packageId.ToString();
+
+            return string.Format( "{0} ({1})", packageName, packageId );
         }
     }
 

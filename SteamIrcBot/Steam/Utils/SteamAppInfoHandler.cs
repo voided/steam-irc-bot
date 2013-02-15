@@ -30,16 +30,49 @@ namespace SteamIrcBot
 
         public bool GetAppInfo( uint appId, out KeyValue appInfo )
         {
-            appInfo = null;
+            appInfo = KeyValue.LoadAsText( GetAppCachePath( appId ) );
 
-            return false; // todo: implement me
+            return appInfo != null;
         }
 
         public bool GetAppName( uint appId, out string name )
         {
             name = null;
 
-            return false; // todo: implement me
+            KeyValue appInfo;
+            if ( !GetAppInfo( appId, out appInfo ) )
+                return false;
+
+            name = appInfo[ "common" ][ "name" ].AsString();
+
+            return name != null;
+        }
+
+
+        public bool GetPackageInfo( uint packageId, out KeyValue packageInfo )
+        {
+            packageInfo = KeyValue.LoadAsBinary( GetPackageCachePath( packageId ) );
+
+            if ( packageInfo == null )
+                return false;
+
+            packageInfo = packageInfo.Children
+                .FirstOrDefault();
+
+            return packageInfo != null;
+        }
+
+        public bool GetPackageName( uint packageId, out string name )
+        {
+            name = null;
+
+            KeyValue packageInfo;
+            if ( !GetPackageInfo( packageId, out packageInfo ) )
+                return false;
+
+            name = packageInfo[ "name" ].AsString();
+
+            return name != null;
         }
 
 
@@ -88,9 +121,14 @@ namespace SteamIrcBot
             {
                 string cacheFile = GetAppCachePath( app.appid );
 
+                // appinfo contains a trailing null which we want to ignore
+                var realBuffer = app.buffer
+                    .Take( app.buffer.Length - 1 )
+                    .ToArray();
+
                 try
                 {
-                    File.WriteAllBytes( cacheFile, app.buffer );
+                    File.WriteAllBytes( cacheFile, realBuffer );
                 }
                 catch ( IOException ex )
                 {
@@ -102,9 +140,14 @@ namespace SteamIrcBot
             {
                 string cacheFile = GetPackageCachePath( package.packageid );
 
+                // packageinfo contains an integer before the actual contents
+                var realBuffer = package.buffer
+                    .Skip( 4 )
+                    .ToArray();
+
                 try
                 {
-                    File.WriteAllBytes( cacheFile, package.buffer );
+                    File.WriteAllBytes( cacheFile, realBuffer );
                 }
                 catch ( IOException ex )
                 {
@@ -121,7 +164,7 @@ namespace SteamIrcBot
 
         static string GetPackageCachePath( uint packageId )
         {
-            return Path.Combine( Application.StartupPath, "cache", "packageinfo", string.Format( "{0}.txt", packageId ) );
+            return Path.Combine( Application.StartupPath, "cache", "packageinfo", string.Format( "{0}.bin", packageId ) );
         }
     }
 }
