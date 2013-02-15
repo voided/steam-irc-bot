@@ -41,11 +41,16 @@ namespace SteamIrcBot
                 return;
             }
 
+            GameID realGameID = gameId;
+
             if ( !Steam.Instance.Connected )
             {
-                IRC.Instance.Send( details.Channel, details.Sender.Nickname + ": Unable to request player counts: not connected to Steam!" );
+                IRC.Instance.Send( details.Channel, "{0}: Unable to request player counts for {1}: not connected to Steam!", details.Sender.Nickname, Steam.Instance.GetAppName( realGameID.AppID ) );
                 return;
             }
+
+            // send off a product request as well so we get something to cache for later
+            Steam.Instance.Apps.PICSGetProductInfo( realGameID.AppID, null, false, false );
 
             var jobId = Steam.Instance.UserStats.GetNumberOfCurrentPlayers( gameId );
             AddRequest( details, new Request { JobID = jobId, GameID = gameId } );
@@ -61,11 +66,11 @@ namespace SteamIrcBot
 
             if ( callback.Result != EResult.OK )
             {
-                IRC.Instance.Send( req.Channel, "{0}: Unable to request players: {1}", req.Requester.Nickname, callback.Result );
+                IRC.Instance.Send( req.Channel, "{0}: Unable to request player counts for {1}: {2}", req.Requester.Nickname, Steam.Instance.GetAppName( req.GameID.AppID ), callback.Result );
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: {1} players: {2}", req.Requester.Nickname, req.GameID, callback.NumPlayers );
+            IRC.Instance.Send( req.Channel, "{0}: {1} players: {2}", req.Requester.Nickname, Steam.Instance.GetAppName( req.GameID.AppID ), callback.NumPlayers );
         }
     }
 }

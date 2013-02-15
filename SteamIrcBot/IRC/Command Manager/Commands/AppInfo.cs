@@ -46,6 +46,9 @@ namespace SteamIrcBot
                 return;
             }
 
+            // send off a product request as well so we get something to cache for later
+            Steam.Instance.Apps.PICSGetProductInfo( appId, null, false, false );
+
             var jobId = Steam.Instance.Apps.GetAppInfo( appId );
             AddRequest( details, new Request { JobID = jobId, AppID = appId } );
         }

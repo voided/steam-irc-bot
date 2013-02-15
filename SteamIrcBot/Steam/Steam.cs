@@ -84,6 +84,27 @@ namespace SteamIrcBot
         }
 
 
+        public string GetAppName( uint appId )
+        {
+            string appName;
+
+            if ( !AppInfo.GetAppName( appId, out appName ) )
+                return appId.ToString();
+
+            return string.Format( "{0} ({1})", appName, appId );
+        }
+
+        public string GetPackageName( uint packageId )
+        {
+            string packageName;
+
+            if ( !AppInfo.GetPackageName( packageId, out packageName ) )
+                return packageId.ToString();
+
+            return string.Format( "{0} ({1})", packageName, packageId );
+        }
+
+
         void OnConnected( SteamClient.ConnectedCallback callback )
         {
             loggedOn = false;
