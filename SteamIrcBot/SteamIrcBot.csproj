@@ -62,6 +62,7 @@
     <Compile Include="IRC\Command Manager\Command.cs" />
     <Compile Include="IRC\Command Manager\CommandManager.cs" />
     <Compile Include="IRC\Command Manager\Commands\AppInfo.cs" />
+    <Compile Include="IRC\Command Manager\Commands\Help.cs" />
     <Compile Include="IRC\Command Manager\Commands\MakeSID.cs" />
     <Compile Include="IRC\Command Manager\Commands\NumPlayers.cs" />
     <Compile Include="IRC\Command Manager\Commands\PackageInfo.cs" />
