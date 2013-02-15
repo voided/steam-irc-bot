@@ -45,7 +45,7 @@ namespace SteamIrcBot
 
             if ( !Steam.Instance.Connected )
             {
-                IRC.Instance.Send( details.Channel, "{0}: Unable to request player counts for {1}: not connected to Steam!", details.Sender.Nickname, Steam.Instance.GetAppName( realGameID.AppID ) );
+                IRC.Instance.Send( details.Channel, "{0}: Unable to request player counts for {1}: not connected to Steam!", details.Sender.Nickname, GetAppName( realGameID.AppID ) );
                 return;
             }
 
@@ -66,11 +66,23 @@ namespace SteamIrcBot
 
             if ( callback.Result != EResult.OK )
             {
-                IRC.Instance.Send( req.Channel, "{0}: Unable to request player counts for {1}: {2}", req.Requester.Nickname, Steam.Instance.GetAppName( req.GameID.AppID ), callback.Result );
+                IRC.Instance.Send( req.Channel, "{0}: Unable to request player counts for {1}: {2}", req.Requester.Nickname, GetAppName( req.GameID.AppID ), callback.Result );
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: {1} players: {2}", req.Requester.Nickname, Steam.Instance.GetAppName( req.GameID.AppID ), callback.NumPlayers );
+            IRC.Instance.Send( req.Channel, "{0}: {1} players: {2}", req.Requester.Nickname, GetAppName( req.GameID.AppID ), callback.NumPlayers );
+        }
+
+
+        string GetAppName( uint appId )
+        {
+            if ( appId == 0 )
+            {
+                // steam tracks player counts for appid 0 as "Steam", so we want the package name instead
+                return Steam.Instance.GetPackageName( appId );
+            }
+
+            return Steam.Instance.GetAppName( appId );
         }
     }
 }
