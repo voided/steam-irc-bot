@@ -25,6 +25,17 @@ namespace SteamIrcBot
             return type.GetInterfaces()
                 .Any( i => i == interfaceType );
         }
+
+        public static string Truncate( this string value, int length )
+        {
+            if ( string.IsNullOrEmpty( value ) )
+                return value;
+
+            if ( value.Length <= length )
+                return value;
+
+            return value.Substring( 0, length ) + "...";
+        }
     }
 
     static class SteamUtils
