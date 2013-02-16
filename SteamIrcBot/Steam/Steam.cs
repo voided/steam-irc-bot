@@ -155,7 +155,7 @@ namespace SteamIrcBot
 
             Log.WriteInfo( "Steam", "Logged onto Steam3!" );
 
-            IRC.Instance.SendAll( "Logged on to Steam! Creating GC session..." );
+            IRC.Instance.SendAll( "Logged on to Steam! Server time: {0}", callback.ServerTime );
 
             Games.PlayGame( 440 );
         }
