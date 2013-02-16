@@ -136,7 +136,10 @@ namespace SteamIrcBot
 
             Log.WriteInfo( "Steam", "Disconnected from Steam" );
 
-            IRC.Instance.SendAnnounce( "Disconnected from Steam! Reconnecting..." );
+            IRC.Instance.SendAnnounce( "Disconnected from Steam! Reconnecting in 5..." );
+
+            // todo: solve this dumb hack too
+            Thread.Sleep( TimeSpan.FromSeconds( 5 ) );
 
             Client.Connect();
         }
