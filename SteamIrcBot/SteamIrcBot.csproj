@@ -68,6 +68,7 @@
     <Compile Include="IRC\Command Manager\Commands\NumPlayers.cs" />
     <Compile Include="IRC\Command Manager\Commands\PackageInfo.cs" />
     <Compile Include="IRC\Command Manager\Commands\Persona.cs" />
+    <Compile Include="IRC\Command Manager\Commands\Pony.cs" />
     <Compile Include="IRC\Command Manager\Commands\SteamLevel.cs" />
     <Compile Include="IRC\IRC.cs" />
     <Compile Include="Service\ProjectInstaller.cs">
