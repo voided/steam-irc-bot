@@ -49,8 +49,16 @@ namespace SteamIrcBot
                 return;
             }
 
-            // send off a product request as well so we get something to cache for later
-            Steam.Instance.Apps.PICSGetProductInfo( realGameID.AppID, null, false, false );
+            if ( realGameID.AppID == 0 )
+            {
+                // send this request as a package info request
+                Steam.Instance.Apps.PICSGetProductInfo( null, realGameID.AppID, false, false );
+            }
+            else
+            {
+                // send off a product request as well so we get something to cache for later
+                Steam.Instance.Apps.PICSGetProductInfo( realGameID.AppID, null, false, false );
+            }
 
             var jobId = Steam.Instance.UserStats.GetNumberOfCurrentPlayers( gameId );
             AddRequest( details, new Request { JobID = jobId, GameID = gameId } );
