@@ -26,6 +26,9 @@ namespace SteamIrcBot
             foreach ( var command in commandTypes )
             {
                 var cmd = Activator.CreateInstance( command ) as Command;
+
+                Log.WriteDebug( "CommandManager", "Registering command {0}: {1}", command.Name, cmd.Trigger );
+
                 RegisteredCommands.Add( cmd );
             }
         }
@@ -49,6 +52,8 @@ namespace SteamIrcBot
 
             if ( triggeredCommand == null )
                 return;
+
+            Log.WriteInfo( "CommandManager", "Handling command {0} from {1} in {2}", triggeredCommand.Trigger, e.Sender, e.SourceChannel );
 
             triggeredCommand.DoRun( new CommandDetails
             {
