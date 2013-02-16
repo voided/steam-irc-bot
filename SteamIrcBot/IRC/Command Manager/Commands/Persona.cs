@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using SteamKit2;
-using HeronIRC;
 
 namespace SteamIrcBot
 {
@@ -52,7 +52,7 @@ namespace SteamIrcBot
             if ( steamId.IsIndividualAccount || steamId.IsClanAccount )
             {
                 AddRequest( details, new Request { SteamID = steamId } );
-                Steam.Instance.Friends.RequestFriendInfo( steamId );
+                Steam.Instance.Friends.RequestFriendInfo( steamId, ( EClientPersonaStateFlag )short.MaxValue );
             }
         }
 
@@ -80,7 +80,8 @@ namespace SteamIrcBot
 
             if ( url != null )
             {
-                IRC.Instance.Send( req.Channel, "{0}: {1} ({2})", req.Requester.Nickname, callback.Name, string.Format( url, req.SteamID.ConvertToUInt64() ) );
+                IRC.Instance.Send( req.Channel, "{0}: {1} ({2}) (Last Online = {3}, Last Offline = {4})",
+                    req.Requester.Nickname, callback.Name, string.Format( url, req.SteamID.ConvertToUInt64() ), callback.LastLogOn, callback.LastLogOff );
             }
             else
             {
