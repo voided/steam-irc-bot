@@ -28,6 +28,7 @@ namespace SteamIrcBot
         public SteamLevels Levels { get; private set; }
         public SteamGames Games { get; private set; }
         public SteamAppInfo AppInfo { get; private set; }
+        public SteamAccount Account { get; private set; }
 
 
         bool loggedOn;
@@ -50,10 +51,12 @@ namespace SteamIrcBot
             Levels = new SteamLevels();
             Games = new SteamGames();
             AppInfo = new SteamAppInfo();
+            Account = new SteamAccount();
 
             Client.AddHandler( Levels );
             Client.AddHandler( Games );
             Client.AddHandler( AppInfo );
+            Client.AddHandler( Account );
 
             new Callback<SteamClient.ConnectedCallback>( OnConnected, CallbackManager );
             new Callback<SteamClient.DisconnectedCallback>( OnDisconnected, CallbackManager );
