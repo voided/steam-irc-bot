@@ -31,14 +31,20 @@ namespace SteamIrcBot
             EUniverse eUniv;
             if ( !Enum.TryParse( univ, true, out eUniv ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: Invalid universe! (public, beta, etc)", details.Sender.Nickname );
+                IRC.Instance.Send( details.Channel, "{0}: Invalid universe, should be one of: {1}",
+                    details.Sender.Nickname, string.Join( ", ", Enum.GetNames( typeof( EUniverse ) ) )
+                );
+
                 return;
             }
 
             EAccountType eType;
             if ( !Enum.TryParse( type, true, out eType ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: Invalid account type! (individual, gameserver, etc)", details.Sender.Nickname );
+                IRC.Instance.Send( details.Channel, "{0}: Invalid account type, should be one of: {1}",
+                    details.Sender.Nickname, string.Join( ", ", Enum.GetNames( typeof( EAccountType ) ) )
+                );
+
                 return;
             }
 
