@@ -34,7 +34,7 @@ namespace SteamIrcBot
             client.AlternateNickname = Settings.Current.IRCNick + "_";
             client.RealName = Settings.Current.IRCNick;
             client.Ident = "steamircbot";
-            client.OutputRateLimit = 400;
+            client.OutputRateLimit = 800;
 
 
             client.ConnectionParser.Connected += OnConnected;
