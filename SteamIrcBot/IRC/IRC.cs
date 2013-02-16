@@ -87,11 +87,17 @@ namespace SteamIrcBot
         void OnDisconnected( object sender, EventArgs e )
         {
             if ( shuttingDown )
+            {
+                Log.WriteInfo( "IRC", "Disconnected due to service shutdown" );
                 return;
+            }
+
+            Log.WriteInfo( "IRC", "Disconnected, reconnecting in 5..." );
 
             // todo: this is a seriously dumb hack
             Thread.Sleep( TimeSpan.FromSeconds( 5 ) );
 
+            Log.WriteInfo( "IRC", "Connecting..." );
             client.Connect();
         }
 
