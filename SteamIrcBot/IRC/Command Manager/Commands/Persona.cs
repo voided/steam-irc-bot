@@ -56,10 +56,6 @@ namespace SteamIrcBot
             }
         }
 
-
-        const string CLAN_URL = "http://steamcommunity.com/gid/{0}/";
-        const string INDIVIDUAL_URL = "http://steamcommunity.com/profiles/{0}/";
-
         void OnPersonaState( SteamFriends.PersonaStateCallback callback )
         {
             var req = GetRequest( r => r.SteamID == callback.FriendID );
@@ -67,27 +63,22 @@ namespace SteamIrcBot
             if ( req == null )
                 return; // not a sid we requested
 
-            string url = null;
-
             if ( req.SteamID.IsClanAccount )
             {
-                url = CLAN_URL;
+                IRC.Instance.Send( req.Channel, "{0}: {1} (http://steamcommunity.com/gid/{2}/)",
+                    req.Requester.Nickname, callback.Name, req.SteamID.ConvertToUInt64()
+                );
             }
             else if ( req.SteamID.IsIndividualAccount )
             {
-                url = INDIVIDUAL_URL;
-            }
-
-            if ( url != null )
-            {
-                IRC.Instance.Send( req.Channel, "{0}: {1} ({2}) (Last Online = {3}, Last Offline = {4})",
-                    req.Requester.Nickname, callback.Name, string.Format( url, req.SteamID.ConvertToUInt64() ), callback.LastLogOn, callback.LastLogOff );
+                IRC.Instance.Send( req.Channel, "{0}: {1} (http://steamcommunity.com/profiles/{2}/) (Last Online = {3}, Last Offline = {4})",
+                    req.Requester.Nickname, callback.Name, req.SteamID.ConvertToUInt64(), callback.LastLogOn, callback.LastLogOff
+                );
             }
             else
             {
                 IRC.Instance.Send( req.Channel, "{0}: {1}", req.Requester.Nickname, callback.Name );
             }
-
         }
     }
 
