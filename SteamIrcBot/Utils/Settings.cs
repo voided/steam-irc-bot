@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Xml.Serialization;
 using SteamKit2;
 
 namespace SteamIrcBot
@@ -52,6 +53,7 @@ namespace SteamIrcBot
         public string IRCAnnounceChannel;
         public string IRCMainChannel;
 
+        [XmlArrayItem( "AppID" )]
         public List<uint> ImportantApps;
 
 
