@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<SettingsXml xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<!-- steam credentials for login -->
+	<SteamUsername></SteamUsername>
+	<SteamPassword></SteamPassword>
+
+	<!-- steam webapi key, for customurl lookups -->
+	<WebAPIKey></WebAPIKey>
+	
+	<!-- irc details -->
+	<IRCServer></IRCServer>
+	<IRCPort>6667</IRCPort>
+	<IRCNick></IRCNick>
+	
+	<!-- irc channels -->
+	<IRCAnnounceChannel></IRCAnnounceChannel>
+	<IRCMainChannel></IRCMainChannel>
+	
+	<!-- apps which are tracked for updates -->
+	<ImportantApps>
+		<AppID>440</AppID>		<!-- Team Fortress 2 -->
+		<AppID>520</AppID>		<!-- Team Fortress 2 Beta -->
+		<AppID>240</AppID>		<!-- Counter-Strike: Source -->
+		<AppID>730</AppID>		<!-- Counter-Strike: Global Offensive -->
+		<AppID>320</AppID>		<!-- Half-Life 2: Deathmatch -->
+		<AppID>300</AppID>		<!-- Day of Defeat: Source -->
+		<AppID>570</AppID>		<!-- Dota 2 -->
+		<AppID>205790</AppID>	<!-- Dota 2 Test -->
+		<AppID>4000</AppID> 	<!-- Garry's Mod -->
+	</ImportantApps>
+	
+</SettingsXml>
