@@ -49,7 +49,7 @@ namespace SteamIrcBot
                 } ) ) );
 
                 var importantApps = callback.AppChanges.Keys
-                    .Union( Settings.Current.ImportantApps );
+                    .Intersect( Settings.Current.ImportantApps );
 
                 foreach ( var app in importantApps )
                 {
