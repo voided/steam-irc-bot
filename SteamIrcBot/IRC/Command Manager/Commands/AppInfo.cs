@@ -85,7 +85,7 @@ namespace SteamIrcBot
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: {1}: {2} (http://store.steampowered.com/app/{1})", req.Requester.Nickname, req.AppID, name );
+            IRC.Instance.Send( req.Channel, "{0}: {1}: {2} (http://store.steampowered.com/app/{1} / http://steamcommunity.com/app/{1})", req.Requester.Nickname, req.AppID, name );
         }
     }
 }
