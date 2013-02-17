@@ -50,6 +50,21 @@ namespace SteamIrcBot
         }
     }
 
+    static class Utils
+    {
+        public static string GetByteSizeString( uint size )
+        {
+            string[] suf = { "B", "KB", "MB", "GB" };
+
+            if ( size == 0 )
+                return "0B";
+
+            int place = Convert.ToInt32( Math.Floor( Math.Log( size, 1024 ) ) );
+            double num = Math.Round( size / Math.Pow( 1024, place ), 1 );
+            return ( Math.Sign( size ) * num ).ToString() + suf[ place ];
+        }
+    }
+
     static class SteamUtils
     {
         public static bool TryDeduceSteamID( string input, out SteamID steamId )
