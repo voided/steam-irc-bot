@@ -32,6 +32,14 @@ namespace SteamIrcBot
             catch ( Exception ex )
             {
                 Log.WriteError( "BotService", "Unable to load settings: {0}", ex );
+
+                Stop();
+                return;
+            }
+
+            if ( !Settings.Validate() )
+            {
+                Stop();
                 return;
             }
 

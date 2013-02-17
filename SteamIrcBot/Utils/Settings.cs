@@ -35,6 +35,34 @@ namespace SteamIrcBot
 
             Current.Save( settingsPath );
         }
+
+        public static bool Validate()
+        {
+            if ( string.IsNullOrEmpty( Current.SteamUsername ) || string.IsNullOrEmpty( Current.SteamPassword ) )
+            {
+                Log.WriteError( "Settings", "Missing Steam credentials in settings file" );
+                return false;
+            }
+
+            if ( string.IsNullOrEmpty( Current.WebAPIKey ) )
+            {
+                Log.WriteWarn( "Settings", "Missing Steam WebAPI key, customurl lookup will be unavailable" );
+            }
+
+            if ( string.IsNullOrEmpty( Current.IRCServer ) )
+            {
+                Log.WriteError( "Settings", "Missing IRC server in settings file" );
+                return false;
+            }
+
+            if ( string.IsNullOrEmpty( Current.IRCNick ) )
+            {
+                Log.WriteError( "Settings", "Missing IRC nick in settings file" );
+                return false;
+            }
+
+            return true;
+        }
     }
 
     // the backing store of settings
