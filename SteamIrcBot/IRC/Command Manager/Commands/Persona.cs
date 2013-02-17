@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using SteamKit2;
 
 namespace SteamIrcBot
@@ -180,7 +179,7 @@ namespace SteamIrcBot
             if ( string.IsNullOrWhiteSpace( value ) )
                 return;
 
-            value = Regex.Replace( value, @"\s+", " " );
+            value = value.Clean();
 
             dict[ key ] = value.Truncate( 200 );
         }

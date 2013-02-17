@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
 using SteamKit2;
 using SteamKit2.GC;
 using SteamKit2.GC.Internal;
@@ -108,7 +107,7 @@ namespace SteamIrcBot
             if ( string.IsNullOrEmpty( token ) )
                 return tokenName;
 
-            token = Regex.Replace( token, @"\s+|\p{C}+", " " );
+            token = token.Clean();
 
             return token;
         }

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SteamKit2;
 using System.Net;
+using System.Text.RegularExpressions;
+using SteamKit2;
 
 namespace SteamIrcBot
 {
@@ -35,6 +36,17 @@ namespace SteamIrcBot
                 return value;
 
             return value.Substring( 0, length ) + "...";
+        }
+
+        public static string Clean( this string value )
+        {
+            if ( string.IsNullOrEmpty( value ) )
+                    return value;
+
+            value = Regex.Replace( value, @"\s+", " " ); // remove excess whitespace
+            value = Regex.Replace( value, @"\p{C}+", "" ); // remove control codes
+
+            return value;
         }
     }
 
