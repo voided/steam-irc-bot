@@ -47,6 +47,15 @@ namespace SteamIrcBot
 
                     return Steam.Instance.GetAppName( a.ID );
                 } ) ) );
+
+                var importantApps = callback.AppChanges.Keys
+                    .Union( Settings.Current.ImportantApps );
+
+                foreach ( var app in importantApps )
+                {
+                    IRC.Instance.SendAll( "Important App Update: {0}", Steam.Instance.GetAppName( app ) );
+                }
+
             }
 
             if ( callback.PackageChanges.Count > 0 )

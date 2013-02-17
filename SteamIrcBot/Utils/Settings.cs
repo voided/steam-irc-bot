@@ -52,9 +52,13 @@ namespace SteamIrcBot
         public string IRCAnnounceChannel;
         public string IRCMainChannel;
 
+        public List<uint> ImportantApps;
+
 
         public SettingsXml()
         {
+            ImportantApps = new List<uint>();
+
             IRCPort = 6667;
         }
     }
