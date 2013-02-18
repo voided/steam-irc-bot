@@ -39,7 +39,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeronIRC, Version=0.2.4789.37505, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="HeronIRC, Version=0.2.4796.32428, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\HeronIRC.dll</HintPath>
     </Reference>
