@@ -26,6 +26,7 @@ namespace SteamIrcBot
         public SteamApps Apps { get; private set; }
         public SteamUserStats UserStats { get; private set; }
         public SteamCloud Cloud { get; private set; }
+        public SteamWorkshop Workshop { get; private set; }
         public SteamLevels Levels { get; private set; }
         public SteamGames Games { get; private set; }
         public SteamAppInfo AppInfo { get; private set; }
@@ -50,6 +51,7 @@ namespace SteamIrcBot
             Apps = Client.GetHandler<SteamApps>();
             UserStats = Client.GetHandler<SteamUserStats>();
             Cloud = Client.GetHandler<SteamCloud>();
+            Workshop = Client.GetHandler<SteamWorkshop>();
             Levels = new SteamLevels();
             Games = new SteamGames();
             AppInfo = new SteamAppInfo();
