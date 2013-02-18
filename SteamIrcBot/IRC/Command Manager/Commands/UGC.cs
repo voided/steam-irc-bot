@@ -64,8 +64,15 @@ namespace SteamIrcBot
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: {1}: {2} (Creator = {3}, App = {4}, Name = \"{5}\", Size = {6})",
-                req.Requester.Nickname, req.UGC, callback.URL, callback.Creator, Steam.Instance.GetAppName( callback.AppID ), callback.FileName, Utils.GetByteSizeString( callback.FileSize ) );
+            var displayDict = new DisplayDictionary();
+
+            displayDict.Add( "URL", callback.URL );
+            displayDict.Add( "Creator", callback.Creator );
+            displayDict.Add( "App", callback.AppID );
+            displayDict.Add( "File", string.Format( "\"{0}\"", callback.FileName ) );
+            displayDict.Add( "Size", Utils.GetByteSizeString( callback.FileSize ) );
+
+            IRC.Instance.Send( req.Channel, "{0}: {1}: {2}", req.Requester.Nickname, req.UGC, displayDict );
         }
     }
 }

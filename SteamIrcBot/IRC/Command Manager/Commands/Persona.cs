@@ -146,42 +146,22 @@ namespace SteamIrcBot
                 return;
             }
 
-            var displayValues = GetDisplayDict( callback ).Select( kvp =>
-            {
-                return string.Format( "{0}: {1}", kvp.Key, kvp.Value );
-            } );
+            var displayDict = new DisplayDictionary();
 
-            IRC.Instance.Send( req.Channel, "{0}: {1}", req.Requester.Nickname, string.Join( ", ", displayValues ) );
-            IRC.Instance.Send( req.Channel, "{0}: http://steamcommunity.com/profiles/{1}/", req.Requester.Nickname, req.SteamID.ConvertToUInt64() );
-        }
-
-        Dictionary<string, string> GetDisplayDict( SteamFriends.ProfileInfoCallback callback )
-        {
-            var displayDict = new Dictionary<string, string>();
-
-            AddToDict( displayDict, "Real Name", callback.RealName );
-            AddToDict( displayDict, "Headline", callback.Headline );
-            AddToDict( displayDict, "City", callback.CityName );
-            AddToDict( displayDict, "State", callback.StateName );
-            AddToDict( displayDict, "Country", callback.CountryName );
-            AddToDict( displayDict, "Time Created", callback.TimeCreated.ToString() );
+            displayDict.Add( "Real Name", callback.RealName );
+            displayDict.Add( "Headline", callback.Headline );
+            displayDict.Add( "City", callback.CityName );
+            displayDict.Add( "State", callback.StateName );
+            displayDict.Add( "Country", callback.CountryName );
+            displayDict.Add( "Time Created", callback.TimeCreated );
 
             var time = callback.RecentPlaytime;
-            AddToDict( displayDict, "Playtime", string.Format( "{0} days, {1} hours, {2} minutes", time.Days, time.Hours, time.Minutes ) );
+            displayDict.Add( "Playtime", string.Format( "{0} days, {1} hours, {2} minutes", time.Days, time.Hours, time.Minutes ) );
 
-            AddToDict( displayDict, "Summary", callback.Summary );
+            displayDict.Add( "Summary", callback.Summary );
 
-            return displayDict;
-        }
-
-        void AddToDict( Dictionary<string, string> dict, string key, string value )
-        {
-            if ( string.IsNullOrWhiteSpace( value ) )
-                return;
-
-            value = value.Clean();
-
-            dict[ key ] = value.Truncate( 200 );
+            IRC.Instance.Send( req.Channel, "{0}: {1}: {2}", req.Requester.Nickname, req.SteamID, displayDict );
+            IRC.Instance.Send( req.Channel, "{0}: http://steamcommunity.com/profiles/{1}/", req.Requester.Nickname, req.SteamID.ConvertToUInt64() );
         }
 
     }
