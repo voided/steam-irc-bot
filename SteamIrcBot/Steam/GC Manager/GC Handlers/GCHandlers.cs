@@ -62,7 +62,7 @@ namespace SteamIrcBot
             {
                 lastSchemaVersion = msg.Body.item_schema_version;
 
-                IRC.Instance.SendAll( "New GC item schema (version: " + lastSchemaVersion.ToString( "4X" ) + "): " + msg.Body.items_game_url );
+                IRC.Instance.SendAll( "New GC item schema (version: " + lastSchemaVersion.ToString( "X4" ) + "): " + msg.Body.items_game_url );
             }
         }
     }
