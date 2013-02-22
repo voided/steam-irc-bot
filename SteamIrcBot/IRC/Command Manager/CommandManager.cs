@@ -47,6 +47,26 @@ namespace SteamIrcBot
             string command = splits[ 0 ];
             string[] args = splits.Skip( 1 ).ToArray();
 
+            // dumb skype relay related hack
+            if ( e.Sender.Nickname == "osw" && e.Sender.Hostname == "me.the.steamgames.co" )
+            {
+                command = splits.Skip( 1 )
+                    .FirstOrDefault();
+
+                args = splits
+                    .Skip( 2 )
+                    .ToArray();
+
+                if ( string.IsNullOrEmpty( command ) )
+                    return;
+
+                var senderNick = splits[ 0 ];
+                senderNick = senderNick.Substring( 1, senderNick.Length - 2 );
+
+                // turbo dirty
+                e.Sender.Nickname = senderNick;
+            }
+
             var triggeredCommand = RegisteredCommands
                 .FirstOrDefault( c => string.Equals( command, c.Trigger, StringComparison.OrdinalIgnoreCase ) );
 
