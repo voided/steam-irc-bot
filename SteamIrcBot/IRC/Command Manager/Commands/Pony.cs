@@ -20,13 +20,18 @@ namespace SteamIrcBot
 
         protected override void OnRun( CommandDetails details )
         {
+            var pony = details.Args
+                .FirstOrDefault() ?? "";
+
             using ( var webClient = new WebClient() )
             {
                 var req = new Request();
                 AddRequest( details, req );
 
+                var uri = new Uri( string.Format( "http://areweponyyet.com/?chatty=1&pony={0}", pony ) );
+
                 webClient.DownloadStringCompleted += OnDownloadCompleted;
-                webClient.DownloadStringAsync( new Uri( "http://areweponyyet.com/?chatty=1" ), req );
+                webClient.DownloadStringAsync( uri, req );
             }
         }
 
