@@ -26,16 +26,22 @@ namespace SteamIrcBot
 
             var cmd = details.Args[ 0 ];
 
-            var foundCommand = commands
-                .FirstOrDefault( c => c.Trigger.IndexOf( cmd, StringComparison.OrdinalIgnoreCase ) != -1 );
+            var foundCommands = commands
+                .Where( c => c.Trigger.IndexOf( cmd, StringComparison.OrdinalIgnoreCase ) != -1 )
+                .ToList();
 
-            if ( foundCommand == null )
+            if ( foundCommands.Count == 0 )
             {
                 IRC.Instance.Send( details.Channel, "{0}: Unable to find command with text '{1}'", details.Sender.Nickname, cmd );
-                return;
             }
-
-            IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, foundCommand.HelpText );
+            else if ( foundCommands.Count == 1 )
+            {
+                IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, foundCommands[ 0 ].HelpText );
+            }
+            else
+            {
+                IRC.Instance.Send( details.Channel, "{0}: Found multiple commands: {1}", details.Sender.Nickname, string.Join( ", ", foundCommands.Select( c => c.Trigger ) ) );
+            }
         }
     }
 }
