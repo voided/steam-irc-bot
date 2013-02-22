@@ -61,7 +61,11 @@ namespace SteamIrcBot
                     return;
 
                 var senderNick = splits[ 0 ];
-                senderNick = senderNick.Substring( 1, senderNick.Length - 2 );
+
+                if ( senderNick.StartsWith( "<" ) && senderNick.EndsWith( ">" ) )
+                {
+                    senderNick = senderNick.Substring( 1, senderNick.Length - 2 );
+                }
 
                 // turbo dirty
                 e.Sender.Nickname = senderNick;
