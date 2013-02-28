@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using SteamKit2;
 
 namespace SteamIrcBot
@@ -86,6 +87,97 @@ namespace SteamIrcBot
             }
 
             IRC.Instance.Send( req.Channel, "{0}: {1}: {2} (http://store.steampowered.com/app/{1} / http://steamcommunity.com/app/{1})", req.Requester.Nickname, req.AppID, name );
+        }
+    }
+
+    class AppInfoCommand : Command<AppInfoCommand.Request>
+    {
+        public class Request : BaseRequest
+        {
+            public JobID JobID { get; set; }
+
+            public uint AppID { get; set; }
+        }
+
+
+        public AppInfoCommand()
+        {
+            Trigger = "!appinfo";
+            HelpText = "!appinfo <appid> - Requests app info for a given app, and provides it";
+
+            new JobCallback<SteamApps.PICSProductInfoCallback>( OnProductInfo, Steam.Instance.CallbackManager );
+        }
+
+        protected override void OnRun( CommandDetails details )
+        {
+            if ( !Settings.Current.IsWebEnabled )
+            {
+                IRC.Instance.Send( details.Channel, "{0}: Web support is disabled", details.Sender.Nickname );
+                return;
+            }
+
+            if ( details.Args.Length == 0 )
+            {
+                IRC.Instance.Send( details.Channel, "{0}: AppID argument required", details.Sender.Nickname );
+                return;
+            }
+
+            uint appId;
+            if ( !uint.TryParse( details.Args[ 0 ], out appId ) )
+            {
+                IRC.Instance.Send( details.Channel, "{0}: Invalid AppID", details.Sender.Nickname );
+                return;
+            }
+
+            if ( !Steam.Instance.Connected )
+            {
+                IRC.Instance.Send( details.Channel, details.Sender.Nickname + ": Unable to request app name: not connected to Steam!" );
+                return;
+            }
+
+            var jobId = Steam.Instance.Apps.PICSGetProductInfo( appId, null, false, false );
+            AddRequest( details, new Request { JobID = jobId, AppID = appId } );
+        }
+
+        void OnProductInfo( SteamApps.PICSProductInfoCallback callback, JobID jobId )
+        {
+            if ( callback.ResponsePending )
+                return;
+
+            var req = GetRequest( r => r.JobID == jobId );
+
+            if ( req == null )
+                return;
+
+            bool isUnknownApp = callback.UnknownApps.Contains( req.AppID ) || !callback.Apps.ContainsKey( req.AppID );
+
+            if ( isUnknownApp )
+            {
+                IRC.Instance.Send( req.Channel, "{0}: Unable to request appinfo for {1}: unknown AppID", req.Requester.Nickname, req.AppID );
+                return;
+            }
+
+            var appInfo = callback.Apps[ req.AppID ];
+
+            var path = Path.Combine( "appinfo", string.Format( "{0}.vdf", req.AppID ) );
+            var fsPath = Path.Combine( Settings.Current.WebPath, path );
+
+
+            var webUri = new Uri( new Uri( Settings.Current.WebURL ), path );
+
+            try
+            {
+                appInfo.KeyValues.SaveToFile( fsPath, false );
+            }
+            catch ( IOException ex )
+            {
+                IRC.Instance.Send( req.Channel, "{0}: Unable to save appinfo for {1} to web path!", req.Requester.Nickname, req.AppID );
+                Log.WriteError( "AppInfoCommand", "Unable to save appinfo for {0} to web path: {1}", req.AppID, ex );
+
+                return;
+            }
+
+            IRC.Instance.Send( req.Channel, "{0}: {1}", req.Requester.Nickname, webUri );
         }
     }
 }

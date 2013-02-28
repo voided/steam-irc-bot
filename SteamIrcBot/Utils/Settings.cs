@@ -61,6 +61,11 @@ namespace SteamIrcBot
                 return false;
             }
 
+            if ( !Current.IsWebEnabled )
+            {
+                Log.WriteWarn( "Settings", "Missing WebPath/WebURL, web share will be unavailable" );
+            }
+
             return true;
         }
     }
@@ -83,6 +88,13 @@ namespace SteamIrcBot
 
         [XmlArrayItem( "AppID" )]
         public List<uint> ImportantApps;
+
+        public string WebPath;
+        public string WebURL;
+
+
+        [XmlIgnore]
+        public bool IsWebEnabled { get { return !string.IsNullOrEmpty( WebPath ) && !string.IsNullOrEmpty( WebURL ); } }
 
 
         public SettingsXml()
