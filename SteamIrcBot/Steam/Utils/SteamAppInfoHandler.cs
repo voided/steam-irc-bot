@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SteamKit2;
-using SteamKit2.Internal;
 using System.IO;
 using System.Windows.Forms;
+using SteamKit2;
+using SteamKit2.Internal;
 
 namespace SteamIrcBot
 {
@@ -159,12 +159,12 @@ namespace SteamIrcBot
 
         static string GetAppCachePath( uint appId )
         {
-            return Path.Combine( Application.StartupPath, "cache", "appinfo", string.Format( "{0}.txt", appId ) );
+            return Path.Combine( "cache", "appinfo", string.Format( "{0}.txt", appId ) );
         }
 
         static string GetPackageCachePath( uint packageId )
         {
-            return Path.Combine( Application.StartupPath, "cache", "packageinfo", string.Format( "{0}.bin", packageId ) );
+            return Path.Combine( "cache", "packageinfo", string.Format( "{0}.bin", packageId ) );
         }
     }
 }
