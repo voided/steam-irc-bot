@@ -5,12 +5,12 @@
 	<SteamUsername></SteamUsername>
 	<SteamPassword></SteamPassword>
 
-	<!-- steam webapi key, for customurl lookups -->
+	<!-- optional steam webapi key, for customurl lookups -->
 	<WebAPIKey></WebAPIKey>
 	
 	<!-- irc details -->
 	<IRCServer></IRCServer>
-	<IRCPort>6667</IRCPort>
+	<IRCPort>6667</IRCPort> <!-- will use 6667 by default, if missing -->
 	<IRCNick></IRCNick>
 	
 	<!-- irc channels -->
@@ -29,5 +29,16 @@
 		<AppID>205790</AppID>	<!-- Dota 2 Test -->
 		<AppID>4000</AppID> 	<!-- Garry's Mod -->
 	</ImportantApps>
+
+  <!-- local filesystem path to where app/package info should be served from -->
+  <WebPath></WebPath>
+  <!-- the root url for the website hosting app/packageinfo -->
+  <WebURL></WebURL>
+  
+  <!--
+    ex:
+    <WebPath>C:\inetpub\MySite\</WebPath>
+    <WebURL>http://mysite.com</WebURL>
+  -->
 	
 </SettingsXml>
