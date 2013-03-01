@@ -170,7 +170,7 @@ namespace SteamIrcBot
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: {1}", req.Requester.Nickname, webUri );
+            IRC.Instance.Send( req.Channel, "{0}: {1} {2}", req.Requester.Nickname, webUri, packageInfo.MissingToken ? "(requires token)" : "" );
         }
     }
 }
