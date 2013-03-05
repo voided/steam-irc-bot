@@ -68,10 +68,18 @@ namespace SteamIrcBot
             set { gid[ 0, 0xFFFFF ] = ( ulong )value; }
         }
 
-        public uint StartTime
+        public DateTime StartTime
         {
-            get { return ( uint )gid[ 20, 0x3FFFFFFF ]; }
-            set { gid[ 20, 0x3FFFFFFF ] = ( ulong )value; }
+            get
+            {
+                uint startTime = ( uint )gid[ 20, 0x3FFFFFFF ];
+                return new DateTime( 2005, 1, 1 ).AddSeconds( startTime );
+            }
+            set
+            {
+                uint startTime = ( uint )value.Subtract( new DateTime( 2005, 1, 1 ) ).TotalSeconds;
+                gid[ 20, 0x3FFFFFFF ] = ( ulong )startTime;
+            }
         }
 
         public uint ProcessID
