@@ -63,6 +63,7 @@
     <Compile Include="IRC\Command Manager\CommandManager.cs" />
     <Compile Include="IRC\Command Manager\Commands\AppInfo.cs" />
     <Compile Include="IRC\Command Manager\Commands\FindAccounts.cs" />
+    <Compile Include="IRC\Command Manager\Commands\GID.cs" />
     <Compile Include="IRC\Command Manager\Commands\Help.cs" />
     <Compile Include="IRC\Command Manager\Commands\MakeSID.cs" />
     <Compile Include="IRC\Command Manager\Commands\NumPlayers.cs" />
@@ -80,6 +81,7 @@
     </Compile>
     <Compile Include="Steam\GC Manager\GC Handlers\TF2GCHandlers.cs" />
     <Compile Include="Steam\Job Manager\Jobs\PICSJob.cs" />
+    <Compile Include="Steam\Utils\GID.cs" />
     <Compile Include="Steam\Utils\SteamAccountHandler.cs" />
     <Compile Include="Steam\Utils\SteamAppInfoHandler.cs" />
     <Compile Include="Utils\DisplayDictionary.cs" />
