@@ -7,7 +7,7 @@ using SteamKit2;
 
 namespace SteamIrcBot
 {
-    class GIDCommand : Command<GIDCommand.Request>
+    class AppIDCommand : Command<AppIDCommand.Request>
     {
         public class Request : BaseRequest
         {
@@ -17,10 +17,10 @@ namespace SteamIrcBot
         }
 
 
-        public GIDCommand()
+        public AppIDCommand()
         {
-            Trigger = "!gid";
-            HelpText = "!gid <appid> - Requests app name for given AppID";
+            Trigger = "!appid";
+            HelpText = "!appid <appid> - Requests app name for given AppID";
 
             new JobCallback<SteamApps.AppInfoCallback>( OnAppInfo, Steam.Instance.CallbackManager );
         }
