@@ -140,10 +140,10 @@ namespace SteamIrcBot
 
             Log.WriteInfo( "Steam", "Disconnected from Steam" );
 
-            IRC.Instance.SendAnnounce( "Disconnected from Steam! Reconnecting in 5..." );
+            IRC.Instance.SendAnnounce( "Disconnected from Steam! Reconnecting in 10..." );
 
             // todo: solve this dumb hack too
-            Thread.Sleep( TimeSpan.FromSeconds( 5 ) );
+            Thread.Sleep( TimeSpan.FromSeconds( 10 ) );
 
             Client.Connect();
         }
@@ -172,8 +172,6 @@ namespace SteamIrcBot
             Log.WriteWarn( "Steam", "Logged off Steam3: {0}", callback.Result );
 
             IRC.Instance.SendAll( "Logged off of Steam: {0}", callback.Result );
-
-            Client.Disconnect();
         }
     }
 }
