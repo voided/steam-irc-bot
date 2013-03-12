@@ -26,6 +26,8 @@ namespace SteamIrcBot
     {
         public abstract class BaseRequest
         {
+            public string Name { get; set; }
+
             public Hostmask Requester { get; set; }
             public string Channel { get; set; }
 
@@ -40,14 +42,17 @@ namespace SteamIrcBot
             Requests = new List<TReq>();
         }
 
+
         protected void AddRequest( CommandDetails details, TReq req )
         {
             ExpireRequests();
 
+            req.Name = details.Trigger;
+
             req.Channel = details.Channel;
             req.Requester = details.Sender;
 
-            req.ExpireTime = DateTime.Now + TimeSpan.FromSeconds( 10 );
+            req.ExpireTime = DateTime.Now + TimeSpan.FromSeconds( 5 );
 
             Requests.Add( req );
         }
@@ -65,8 +70,23 @@ namespace SteamIrcBot
             return req;
         }
 
+
+        protected virtual void OnExpire( TReq request )
+        {
+            IRC.Instance.Send( request.Channel, "{0}: Your {1} request has timed out.", request.Requester.Nickname, request.Name );
+        }
+
+
         void ExpireRequests()
         {
+            var expiredReqs = Requests
+                .Where( req => DateTime.Now >= req.ExpireTime );
+
+            foreach ( var req in expiredReqs )
+            {
+                OnExpire( req );
+            }
+
             Requests
                 .RemoveAll( req => DateTime.Now >= req.ExpireTime );
         }
