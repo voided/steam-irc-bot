@@ -60,7 +60,7 @@ namespace SteamIrcBot
             string[] args = splits.Skip( 1 ).ToArray();
 
             // dumb skype relay related hack
-            if ( e.Sender.Nickname == "osw" && e.Sender.Hostname == "me.the.steamgames.co" )
+            if ( e.Sender.Ident == "~gib" && e.Sender.Hostname == "me.the.steamgames.co" )
             {
                 command = splits.Skip( 1 )
                     .FirstOrDefault();
