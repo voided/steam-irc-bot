@@ -18,7 +18,8 @@ namespace SteamIrcBot
 
             client.MessageParser.ChannelMessage += MessageParser_ChannelMessage;
 
-            var commandTypes = Assembly.GetExecutingAssembly()
+            var commandTypes =
+                Assembly.GetExecutingAssembly()
                 .GetTypes()
                 .Where( t => !t.IsAbstract )
                 .Where( t => t.IsSubclassOf( typeof( Command ) ) );
@@ -33,6 +34,17 @@ namespace SteamIrcBot
             }
         }
 
+        public void ExpireRequests()
+        {
+            var expirableCommands = RegisteredCommands
+                .Where( c => c.GetType().Implements( typeof( IRequestableCommand ) ) )
+                .Cast<IRequestableCommand>();
+
+            foreach ( var cmd in expirableCommands )
+            {
+                cmd.ExpireRequests();
+            }
+        }
 
         void MessageParser_ChannelMessage( object sender, MessageEventArgs e )
         {

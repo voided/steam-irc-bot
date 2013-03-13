@@ -54,9 +54,10 @@ namespace SteamIrcBot
         protected override void OnStop()
         {
             Steam.Instance.Disconnect();
-            IRC.Instance.Disconnect();
 
             CallbackDispatcher.Instance.Stop();
+
+            IRC.Instance.Disconnect();
         }
     }
 }

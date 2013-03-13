@@ -31,7 +31,9 @@ namespace SteamIrcBot
                 if ( cancelToken.IsCancellationRequested )
                     break;
 
-                Steam.Instance.CallbackManager.RunWaitCallbacks();
+                Steam.Instance.CallbackManager.RunWaitCallbacks( TimeSpan.FromSeconds( 1 ) );
+
+                IRC.Instance.CommandManager.ExpireRequests();
             }
         }
 

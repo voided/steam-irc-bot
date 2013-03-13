@@ -21,7 +21,12 @@ namespace SteamIrcBot
         protected abstract void OnRun( CommandDetails details );
     }
 
-    abstract class Command<TReq> : Command
+    interface IRequestableCommand
+    {
+        void ExpireRequests();
+    }
+
+    abstract class Command<TReq> : Command, IRequestableCommand
         where TReq : Command<TReq>.BaseRequest
     {
         public abstract class BaseRequest
@@ -76,8 +81,7 @@ namespace SteamIrcBot
             IRC.Instance.Send( request.Channel, "{0}: Your {1} request has timed out.", request.Requester.Nickname, request.Name );
         }
 
-
-        void ExpireRequests()
+        public void ExpireRequests()
         {
             var expiredReqs = Requests
                 .Where( req => DateTime.Now >= req.ExpireTime );
@@ -85,10 +89,9 @@ namespace SteamIrcBot
             foreach ( var req in expiredReqs )
             {
                 OnExpire( req );
-            }
 
-            Requests
-                .RemoveAll( req => DateTime.Now >= req.ExpireTime );
+                Requests.Remove( req );
+            }
         }
     }
 
