@@ -57,6 +57,9 @@ namespace SteamIrcBot
             shuttingDown = true;
 
             client.Disconnect( "fork it all" );
+
+            // more ugly synchronization hacks!!
+            Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
         }
 
 

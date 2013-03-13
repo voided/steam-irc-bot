@@ -20,7 +20,9 @@ namespace SteamIrcBot
 
         void OnWelcome( ClientGCMsgProtobuf<CMsgClientWelcome> msg )
         {
+#if SERVICE_BUILD // don't be so spammy in dev builds
             IRC.Instance.SendAll( "New GC session (version: " + msg.Body.version + ")" );
+#endif
         }
 
         void OnGoodbye( ClientGCMsgProtobuf<CMsgClientGoodbye> msg )
@@ -62,7 +64,9 @@ namespace SteamIrcBot
             {
                 lastSchemaVersion = msg.Body.item_schema_version;
 
+#if SERVICE_BUILD // don't be so spammy in dev builds
                 IRC.Instance.SendAll( "New GC item schema (version: " + lastSchemaVersion.ToString( "X4" ) + "): " + msg.Body.items_game_url );
+#endif
             }
         }
     }
