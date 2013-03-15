@@ -47,7 +47,8 @@ namespace SteamIrcBot
 
             IRC.Instance.JoinEvent.WaitOne( TimeSpan.FromMinutes( 1 ) );
 
-            CallbackDispatcher.Instance.Start();
+            ServiceDispatcher.Instance.Start();
+
             Steam.Instance.Connect();
         }
 
@@ -55,7 +56,7 @@ namespace SteamIrcBot
         {
             Steam.Instance.Disconnect();
 
-            CallbackDispatcher.Instance.Stop();
+            ServiceDispatcher.Instance.Stop();
 
             IRC.Instance.Disconnect();
         }

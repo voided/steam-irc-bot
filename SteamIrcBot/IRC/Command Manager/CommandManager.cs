@@ -34,7 +34,7 @@ namespace SteamIrcBot
             }
         }
 
-        public void ExpireRequests()
+        public void Tick()
         {
             var expirableCommands = RegisteredCommands
                 .Where( c => c.GetType().Implements( typeof( IRequestableCommand ) ) )

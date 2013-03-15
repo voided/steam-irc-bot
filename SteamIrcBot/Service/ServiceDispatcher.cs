@@ -7,24 +7,24 @@ using System.Threading;
 
 namespace SteamIrcBot
 {
-    class CallbackDispatcher
+    class ServiceDispatcher
     {
-        static CallbackDispatcher _instance = new CallbackDispatcher();
-        public static CallbackDispatcher Instance { get { return _instance; } }
+        static ServiceDispatcher _instance = new ServiceDispatcher();
+        public static ServiceDispatcher Instance { get { return _instance; } }
 
 
         Task dispatcher;
         CancellationTokenSource cancelToken;
 
 
-        CallbackDispatcher()
+        ServiceDispatcher()
         {
             cancelToken = new CancellationTokenSource();
-            dispatcher = new Task( DispatchCallbacks, cancelToken.Token, TaskCreationOptions.LongRunning );
+            dispatcher = new Task( ServiceTick, cancelToken.Token, TaskCreationOptions.LongRunning );
         }
 
 
-        void DispatchCallbacks()
+        void ServiceTick()
         {
             while ( true )
             {
@@ -33,7 +33,7 @@ namespace SteamIrcBot
 
                 Steam.Instance.CallbackManager.RunWaitCallbacks( TimeSpan.FromSeconds( 1 ) );
 
-                IRC.Instance.CommandManager.ExpireRequests();
+                IRC.Instance.CommandManager.Tick();
             }
         }
 

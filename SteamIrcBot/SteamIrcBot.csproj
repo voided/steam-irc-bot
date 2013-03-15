@@ -88,7 +88,7 @@
     <Compile Include="Utils\Log.cs" />
     <Compile Include="Steam\Job Manager\JobManager.cs" />
     <Compile Include="Steam\Job Manager\Jobs\AppInfoJob.cs" />
-    <Compile Include="Steam\Utils\CallbackDispatcher.cs" />
+    <Compile Include="Service\ServiceDispatcher.cs" />
     <Compile Include="Service\Service.cs">
       <SubType>Component</SubType>
     </Compile>
