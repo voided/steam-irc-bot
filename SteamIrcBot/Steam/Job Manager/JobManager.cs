@@ -15,9 +15,9 @@ namespace SteamIrcBot
         DateTime nextTick;
 
 
-        internal void Run()
+        internal void Run( bool force = false )
         {
-            if ( DateTime.Now < nextTick )
+            if ( DateTime.Now < nextTick && !force )
                 return;
 
             nextTick = DateTime.Now + Period;
@@ -67,6 +67,18 @@ namespace SteamIrcBot
             jobTimer.Dispose();
 
             Log.WriteInfo( "JobManager", "Stopped" );
+        }
+
+        public void ForceRun<T>()
+            where T : Job
+        {
+            var job = registeredJobs
+                .FirstOrDefault( j => j.GetType() == typeof( T ) );
+
+            if ( job == null )
+                throw new InvalidOperationException( string.Format( "Attempting to force run a nonregistered job {0}", typeof( T ) ) );
+
+            job.Run( true );
         }
 
 

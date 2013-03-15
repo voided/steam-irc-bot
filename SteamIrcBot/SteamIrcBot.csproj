@@ -80,6 +80,7 @@
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
     <Compile Include="Steam\GC Manager\GC Handlers\TF2GCHandlers.cs" />
+    <Compile Include="Steam\Job Manager\Jobs\GameSessionJob.cs" />
     <Compile Include="Steam\Job Manager\Jobs\PICSJob.cs" />
     <Compile Include="Steam\Utils\GID.cs" />
     <Compile Include="Steam\Utils\SteamAccountHandler.cs" />

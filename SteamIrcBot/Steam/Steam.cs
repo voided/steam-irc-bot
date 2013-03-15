@@ -182,7 +182,7 @@ namespace SteamIrcBot
 
             IRC.Instance.SendAll( "Logged on to Steam! Server time: {0}", callback.ServerTime );
 
-            Games.PlayGame( 440 );
+            JobManager.ForceRun<GameSessionJob>();
         }
 
         void OnLoggedOff( SteamUser.LoggedOffCallback callback )

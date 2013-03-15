@@ -6,7 +6,7 @@ using SteamKit2;
 
 namespace SteamIrcBot
 {
-    /*
+#if false
     class AppInfoJob : Job
     {
         uint lastChangeNumber = 0;
@@ -44,5 +44,6 @@ namespace SteamIrcBot
                 IRC.Instance.SendAnnounce( "AppInfo Apps: {0}", string.Join( ", ", callback.AppIDs ) );
             }
         }
-    }*/
+    }
+#endif
 }
