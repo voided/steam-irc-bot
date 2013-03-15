@@ -36,9 +36,12 @@ namespace SteamIrcBot
         bool loggedOn;
         public bool Connected { get { return Client.ConnectedUniverse != EUniverse.Invalid && loggedOn; } }
 
+        DateTime nextConnect;
 
         Steam()
         {
+            nextConnect = DateTime.MaxValue;
+
             Client = new SteamClient();
 
             CallbackManager = new CallbackManager( Client );
@@ -112,6 +115,24 @@ namespace SteamIrcBot
         }
 
 
+        public void Tick()
+        {
+            if ( DateTime.Now >= nextConnect )
+            {
+                nextConnect = DateTime.MaxValue;
+
+                Log.WriteInfo( "Steam", "Connecting to Steam..." );
+                Client.Connect();
+            }
+        }
+
+
+        void Reconnect( TimeSpan when )
+        {
+            nextConnect = DateTime.Now + when;
+        }
+
+
         void OnConnected( SteamClient.ConnectedCallback callback )
         {
             loggedOn = false;
@@ -142,10 +163,7 @@ namespace SteamIrcBot
 
             IRC.Instance.SendAnnounce( "Disconnected from Steam! Reconnecting in 10..." );
 
-            // todo: solve this dumb hack too
-            Thread.Sleep( TimeSpan.FromSeconds( 10 ) );
-
-            Client.Connect();
+            Reconnect( TimeSpan.FromSeconds( 10 ) );
         }
 
         void OnLoggedOn( SteamUser.LoggedOnCallback callback )

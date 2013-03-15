@@ -33,7 +33,8 @@ namespace SteamIrcBot
 
                 Steam.Instance.CallbackManager.RunWaitCallbacks( TimeSpan.FromSeconds( 1 ) );
 
-                IRC.Instance.CommandManager.Tick();
+                Steam.Instance.Tick();
+                IRC.Instance.Tick();
             }
         }
 

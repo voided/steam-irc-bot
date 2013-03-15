@@ -43,11 +43,11 @@ namespace SteamIrcBot
                 return;
             }
 
+            ServiceDispatcher.Instance.Start();
+
             IRC.Instance.Connect();
 
             IRC.Instance.JoinEvent.WaitOne( TimeSpan.FromMinutes( 1 ) );
-
-            ServiceDispatcher.Instance.Start();
 
             Steam.Instance.Connect();
         }
@@ -56,9 +56,9 @@ namespace SteamIrcBot
         {
             Steam.Instance.Disconnect();
 
-            ServiceDispatcher.Instance.Stop();
-
             IRC.Instance.Disconnect();
+
+            ServiceDispatcher.Instance.Stop();
         }
     }
 }

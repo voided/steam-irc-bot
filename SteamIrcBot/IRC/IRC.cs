@@ -13,18 +13,21 @@ namespace SteamIrcBot
         public static IRC Instance { get { return _instance; } }
 
 
-        IrcClient client;
-
-        bool shuttingDown = false;
-
-
         public CommandManager CommandManager { get; private set; }
 
-        public AutoResetEvent JoinEvent { get; private set; } 
+        public AutoResetEvent JoinEvent { get; private set; }
+
+
+        IrcClient client;
+        bool shuttingDown = false;
+
+        DateTime nextConnect;
 
 
         IRC()
         {
+            nextConnect = DateTime.MaxValue;
+
             JoinEvent = new AutoResetEvent( false );
 
             client = new IrcClient( Settings.Current.IRCNick );
@@ -47,9 +50,10 @@ namespace SteamIrcBot
 
         public void Connect()
         {
-            Log.WriteInfo( "IRC", "Connecting..." );
+            if ( client.IsConnected )
+                return;
 
-            client.Connect( Settings.Current.IRCServer, Settings.Current.IRCPort );
+            Reconnect( TimeSpan.Zero );
         }
 
         public void Disconnect()
@@ -57,9 +61,6 @@ namespace SteamIrcBot
             shuttingDown = true;
 
             client.Disconnect( "fork it all" );
-
-            // more ugly synchronization hacks!!
-            Thread.Sleep( TimeSpan.FromSeconds( 1 ) );
         }
 
 
@@ -80,6 +81,25 @@ namespace SteamIrcBot
         }
 
 
+        public void Tick()
+        {
+            if ( DateTime.Now >= nextConnect )
+            {
+                nextConnect = DateTime.MaxValue;
+
+                Log.WriteInfo( "IRC", "Connecting..." );
+                client.Connect( Settings.Current.IRCServer, Settings.Current.IRCPort );
+            }
+
+            CommandManager.Tick();
+        }
+
+        void Reconnect( TimeSpan when )
+        {
+            nextConnect = DateTime.Now + when;
+        }
+
+
         void OnConnected( object sender, InfoEventArgs e )
         {
             Log.WriteInfo( "IRC", "Connected!" );
@@ -97,11 +117,7 @@ namespace SteamIrcBot
 
             Log.WriteInfo( "IRC", "Disconnected, reconnecting in 5..." );
 
-            // todo: this is a seriously dumb hack
-            Thread.Sleep( TimeSpan.FromSeconds( 5 ) );
-
-            Log.WriteInfo( "IRC", "Connecting..." );
-            client.Connect();
+            Reconnect( TimeSpan.FromSeconds( 5 ) );
         }
 
         void OnJoin( object sender, ChannelEventArgs e )
