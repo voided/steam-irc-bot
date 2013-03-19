@@ -85,6 +85,9 @@ namespace SteamIrcBot
         {
             if ( DateTime.Now >= nextConnect )
             {
+                // try forcing a disconnect in case heronirc forgot it's state 
+                client.Disconnect();
+
                 nextConnect = DateTime.MaxValue;
 
                 Log.WriteInfo( "IRC", "Connecting..." );
