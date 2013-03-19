@@ -50,8 +50,6 @@ namespace SteamIrcBot
 
         protected void AddRequest( CommandDetails details, TReq req )
         {
-            ExpireRequests();
-
             req.Name = details.Trigger;
 
             req.Channel = details.Channel;
@@ -69,8 +67,6 @@ namespace SteamIrcBot
 
             if ( req != null )
                 Requests.Remove( req );
-
-            ExpireRequests();
 
             return req;
         }
