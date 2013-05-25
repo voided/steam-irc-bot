@@ -37,6 +37,12 @@ namespace SteamIrcBot
             public string Channel { get; set; }
 
             public DateTime ExpireTime { get; set; }
+
+
+            public override string ToString()
+            {
+                return string.Format( "{0} for {1} in {2}", Name, Requester, Channel );
+            }
         }
 
         protected List<TReq> Requests { get; private set; }
@@ -58,6 +64,8 @@ namespace SteamIrcBot
             req.ExpireTime = DateTime.Now + TimeSpan.FromSeconds( 5 );
 
             Requests.Add( req );
+
+            Log.WriteDebug( "Command", "Created request {0}: {1}", typeof( TReq ), req );
         }
 
         protected TReq GetRequest( Func<TReq, bool> predicate )
@@ -66,8 +74,10 @@ namespace SteamIrcBot
                 .FirstOrDefault( predicate );
 
             if ( req != null )
+            {
                 Requests.Remove( req );
-
+            }
+           
             return req;
         }
 
@@ -80,7 +90,8 @@ namespace SteamIrcBot
         public void ExpireRequests()
         {
             var expiredReqs = Requests
-                .Where( req => DateTime.Now >= req.ExpireTime );
+                .Where( req => DateTime.Now >= req.ExpireTime )
+                .ToList(); // copy list because expire actions could modify original request list
 
             foreach ( var req in expiredReqs )
             {

@@ -117,6 +117,8 @@ namespace SteamIrcBot
 
         public void Tick()
         {
+            CallbackManager.RunWaitCallbacks( TimeSpan.FromSeconds( 1 ) );
+
             if ( DateTime.Now >= nextConnect )
             {
                 nextConnect = DateTime.MaxValue;
