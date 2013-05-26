@@ -31,6 +31,7 @@ namespace SteamIrcBot
             ServiceBase.Run( service );
 #else 
             service.Start( args );
+            ServiceDispatcher.Instance.Wait();
 #endif
         }
     }

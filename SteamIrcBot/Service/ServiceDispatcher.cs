@@ -48,5 +48,11 @@ namespace SteamIrcBot
             cancelToken.Cancel();
         }
 
+
+        public void Wait()
+        {
+            dispatcher.Wait();
+        }
+
     }
 }
