@@ -39,9 +39,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeronIRC, Version=0.2.4796.32428, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\HeronIRC.dll</HintPath>
+    <Reference Include="Meebey.SmartIrc4net">
+      <HintPath>..\libs\Meebey.SmartIrc4net.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net, Version=2.0.0.621, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.2.0.0.621\lib\net40\protobuf-net.dll</HintPath>
