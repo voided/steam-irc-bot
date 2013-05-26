@@ -94,13 +94,28 @@ namespace SteamIrcBot
 
             client.SendMessage( SendType.Message, channel, string.Format( format, args ) );
         }
+        public void SendEmote( string channel, string format, params object[] args )
+        {
+            if ( !Connected )
+                return;
+
+            client.SendMessage( SendType.Action, channel, string.Format( format, args ) );
+        }
         public void SendAnnounce( string format, params object[] args )
         {
             Send( Settings.Current.IRCAnnounceChannel, format, args );
         }
+        public void SendEmoteAnnounce( string format, params object[] args )
+        {
+            SendEmote( Settings.Current.IRCAnnounceChannel, format, args );
+        }
         public void SendAll( string format, params object[] args )
         {
             Send( string.Format( "{0},{1}", Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel ), format, args );
+        }
+        public void SendEmoteAll( string format, params object[] args )
+        {
+            SendEmote( string.Format( "{0},{1}", Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel ), format, args );
         }
 
 
