@@ -2,11 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeronIRC;
 using System.Threading;
+
+using Meebey.SmartIrc4net;
 
 namespace SteamIrcBot
 {
+    class SenderDetails
+    {
+        public string Nickname { get; set; }
+        public string Ident { get; set; }
+        public string Hostname { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format( "{0}!{1}@{2}", Nickname, Ident, Hostname );
+        }
+    }
+
     class IRC
     {
         static IRC _instance = new IRC();
@@ -18,10 +31,24 @@ namespace SteamIrcBot
         public AutoResetEvent JoinEvent { get; private set; }
 
 
-        IrcClient client;
+        IrcClient client = new IrcClient();
         bool shuttingDown = false;
 
         DateTime nextConnect;
+        public bool Connected
+        {
+            get
+            {
+                if ( !client.IsConnected )
+                    return false;
+
+                if ( nextConnect != DateTime.MaxValue )
+                    return false; // if we have a connection scheduled, we're not connected
+
+                return true;
+            }
+        }
+
 
 
         IRC()
@@ -30,20 +57,16 @@ namespace SteamIrcBot
 
             JoinEvent = new AutoResetEvent( false );
 
-            client = new IrcClient( Settings.Current.IRCNick );
+            client.Encoding = Encoding.UTF8;
+            client.AutoRetry = true;
+            client.AutoRejoin = true;
+            client.AutoRejoinOnKick = true;
 
             CommandManager = new CommandManager( client );
 
-            client.AlternateNickname = Settings.Current.IRCNick + "_";
-            client.RealName = Settings.Current.IRCNick;
-            client.Ident = "steamircbot";
-            client.OutputRateLimit = 800;
-
-
-            client.ConnectionParser.Connected += OnConnected;
-            client.ConnectionParser.Disconnected += OnDisconnected;
-
-            client.ChannelParser.Join += OnJoin;
+            client.OnRegistered += OnConnected;
+            client.OnDisconnected += OnDisconnected;
+            client.OnJoin += OnJoin;
         }
 
 
@@ -60,16 +83,16 @@ namespace SteamIrcBot
         {
             shuttingDown = true;
 
-            client.Disconnect( "fork it all" );
+            client.WriteLine( "DISCONNECT :fork it all" );
         }
 
 
         public void Send( string channel, string format, params object[] args )
         {
-            if ( !client.IsConnected )
+            if ( !Connected )
                 return;
 
-            client.SendMessage( channel, string.Format( format, args ) );
+            client.SendMessage( SendType.Message, channel, string.Format( format, args ) );
         }
         public void SendAnnounce( string format, params object[] args )
         {
@@ -85,29 +108,32 @@ namespace SteamIrcBot
         {
             if ( DateTime.Now >= nextConnect )
             {
-                // try forcing a disconnect in case heronirc forgot it's state 
-                client.Disconnect();
-
                 nextConnect = DateTime.MaxValue;
 
                 Log.WriteInfo( "IRC", "Connecting..." );
                 client.Connect( Settings.Current.IRCServer, Settings.Current.IRCPort );
+
+                var nickList = new string[] { Settings.Current.IRCNick, Settings.Current.IRCNick + "_" };
+                client.Login( nickList, Settings.Current.IRCNick, 4, "steamircbot" );
+
             }
 
+            client.ListenOnce( false );
             CommandManager.Tick();
         }
 
         void Reconnect( TimeSpan when )
         {
+            Log.WriteInfo( "IRC", "Reconnecting in {0}", when );
             nextConnect = DateTime.Now + when;
         }
 
 
-        void OnConnected( object sender, InfoEventArgs e )
+        void OnConnected( object sender, EventArgs e )
         {
             Log.WriteInfo( "IRC", "Connected!" );
 
-            client.JoinChannel( string.Format( "{0},{1}", Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel ) );
+            client.RfcJoin( new string[] { Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel } );
         }
 
         void OnDisconnected( object sender, EventArgs e )
@@ -118,17 +144,17 @@ namespace SteamIrcBot
                 return;
             }
 
-            Log.WriteInfo( "IRC", "Disconnected, reconnecting in 5..." );
+            Log.WriteInfo( "IRC", "Disconnected!" );
 
             Reconnect( TimeSpan.FromSeconds( 5 ) );
         }
 
-        void OnJoin( object sender, ChannelEventArgs e )
+        void OnJoin( object sender, JoinEventArgs e )
         {
-            if ( e.Nickname.Nickname == client.Nickname )
+            if ( e.Data.Nick == client.Nickname && e.Channel == Settings.Current.IRCMainChannel )
             {
-                Log.WriteInfo( "IRC", "Joined channel" );
-                JoinEvent.Set();
+                if ( !Steam.Instance.Connected )
+                    Steam.Instance.Connect();
             }
         }
     }

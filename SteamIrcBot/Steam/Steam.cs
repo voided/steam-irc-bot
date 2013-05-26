@@ -81,7 +81,7 @@ namespace SteamIrcBot
 
             IRC.Instance.SendAnnounce( "Connecting to Steam..." );
 
-            Client.Connect();
+            nextConnect = DateTime.Now;
         }
 
         public void Disconnect()
@@ -117,7 +117,7 @@ namespace SteamIrcBot
 
         public void Tick()
         {
-            CallbackManager.RunWaitCallbacks( TimeSpan.FromSeconds( 1 ) );
+            CallbackManager.RunWaitCallbacks( TimeSpan.FromMilliseconds( 200 ) );
 
             if ( DateTime.Now >= nextConnect )
             {

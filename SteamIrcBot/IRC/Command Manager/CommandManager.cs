@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeronIRC;
 using System.Reflection;
+using Meebey.SmartIrc4net;
 
 namespace SteamIrcBot
 {
@@ -16,7 +16,7 @@ namespace SteamIrcBot
         {
             RegisteredCommands = new List<Command>();
 
-            client.MessageParser.ChannelMessage += MessageParser_ChannelMessage;
+            client.OnChannelMessage += MessageParser_ChannelMessage;
 
             var commandTypes =
                 Assembly.GetExecutingAssembly()
@@ -46,12 +46,14 @@ namespace SteamIrcBot
             }
         }
 
-        void MessageParser_ChannelMessage( object sender, MessageEventArgs e )
+        void MessageParser_ChannelMessage( object sender, IrcEventArgs e )
         {
-            if ( string.IsNullOrEmpty( e.Message ) )
+            string msg = e.Data.Message;
+
+            if ( string.IsNullOrEmpty( msg ) )
                 return;
 
-            string[] splits = e.Message.Split( new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries );
+            string[] splits = msg.Split( new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries );
 
             if ( splits.Length == 0 )
                 return;
@@ -59,8 +61,15 @@ namespace SteamIrcBot
             string command = splits[ 0 ];
             string[] args = splits.Skip( 1 ).ToArray();
 
+            var from = new SenderDetails
+            {
+                Nickname = e.Data.Nick,
+                Ident = e.Data.Ident,
+                Hostname = e.Data.Host,
+            };
+
             // dumb skype relay related hack
-            if ( e.Sender.Ident == "~gib" && e.Sender.Hostname == "me.the.steamgames.co" )
+            if ( from.Ident == "~gib" && ( from.Hostname == "me.the.steamgames.co" || from.Hostname == "2001:470:1f0f:4eb::4:1" ) )
             {
                 command = splits.Skip( 1 )
                     .FirstOrDefault();
@@ -80,7 +89,7 @@ namespace SteamIrcBot
                 }
 
                 // turbo dirty
-                e.Sender.Nickname = senderNick;
+                from.Nickname = senderNick;
             }
 
             var triggeredCommand = RegisteredCommands
@@ -89,15 +98,15 @@ namespace SteamIrcBot
             if ( triggeredCommand == null )
                 return;
 
-            Log.WriteInfo( "CommandManager", "Handling command {0} from {1} in {2}", triggeredCommand.Trigger, e.Sender, e.SourceChannel );
+            Log.WriteInfo( "CommandManager", "Handling command {0} from {1} in {2}", triggeredCommand.Trigger, from, e.Data.Channel );
 
             triggeredCommand.DoRun( new CommandDetails
             {
                 Trigger = command,
                 Args = args,
 
-                Sender = e.Sender,
-                Channel = e.SourceChannel
+                Sender = from,
+                Channel = e.Data.Channel,
             } );
         }
     }

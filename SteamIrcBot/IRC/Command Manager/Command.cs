@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeronIRC;
 
 namespace SteamIrcBot
 {
@@ -33,7 +32,7 @@ namespace SteamIrcBot
         {
             public string Name { get; set; }
 
-            public Hostmask Requester { get; set; }
+            public SenderDetails Requester { get; set; }
             public string Channel { get; set; }
 
             public DateTime ExpireTime { get; set; }
@@ -107,7 +106,7 @@ namespace SteamIrcBot
         public string Trigger { get; set; }
         public string[] Args { get; set; }
 
-        public Hostmask Sender { get; set; }
+        public SenderDetails Sender { get; set; }
         public string Channel { get; set; }
     }
 }

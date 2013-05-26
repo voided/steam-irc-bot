@@ -46,10 +46,6 @@ namespace SteamIrcBot
             ServiceDispatcher.Instance.Start();
 
             IRC.Instance.Connect();
-
-            IRC.Instance.JoinEvent.WaitOne( TimeSpan.FromMinutes( 1 ) );
-
-            Steam.Instance.Connect();
         }
 
         protected override void OnStop()
