@@ -79,8 +79,6 @@ namespace SteamIrcBot
 
             Log.WriteInfo( "Steam", "Connecting..." );
 
-            IRC.Instance.SendAnnounce( "Connecting to Steam..." );
-
             nextConnect = DateTime.Now;
         }
 
@@ -124,6 +122,8 @@ namespace SteamIrcBot
                 nextConnect = DateTime.MaxValue;
 
                 Log.WriteInfo( "Steam", "Connecting to Steam..." );
+
+                IRC.Instance.SendEmoteAnnounce( "Connecting to Steam..." );
                 Client.Connect();
             }
         }
