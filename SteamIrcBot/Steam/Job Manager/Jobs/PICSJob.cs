@@ -35,8 +35,8 @@ namespace SteamIrcBot
 
             lastChangeNumber = callback.CurrentChangeNumber;
 
-            IRC.Instance.SendAnnounce( "Got PICS changelist {0} with info for {1} apps and {2} packages! (fullupdate? {3})",
-                lastChangeNumber, callback.AppChanges.Count, callback.PackageChanges.Count, callback.RequiresFullUpdate );
+            IRC.Instance.SendAnnounce( "Got PICS changelist {0} with info for {1} apps and {2} packages! {3}",
+                lastChangeNumber, callback.AppChanges.Count, callback.PackageChanges.Count, callback.RequiresFullUpdate ? "(fullupdate)" : "" );
 
             if ( callback.AppChanges.Count > 0 )
             {

@@ -25,7 +25,7 @@ namespace SteamIrcBot
 
             foreach ( var clanEvent in callback.Events )
             {
-                string eventUrl = string.Format( "http://steamcommunity.com/gid/{0}/events/{1}", callback.ClanID.ConvertToUInt64(), clanEvent.ID );
+                string eventUrl = string.Format( "http://steamcommunity.com/gid/{0}/events/{1}", callback.ClanID.ConvertToUInt64(), clanEvent.ID.Value );
                 IRC.Instance.SendAll( "Group event: {0} - {1}", clanEvent.Headline, eventUrl );
             }
         }
