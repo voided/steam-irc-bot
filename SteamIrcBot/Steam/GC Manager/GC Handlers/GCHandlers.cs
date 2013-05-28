@@ -13,21 +13,19 @@ namespace SteamIrcBot
         public GCSessionHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<CMsgClientWelcome>( ( uint )EGCBaseMsg.k_EMsgGCClientWelcome, OnWelcome, manager );
-            new GCCallback<CMsgClientGoodbye>( ( uint )EGCBaseMsg.k_EMsgGCClientGoodbye, OnGoodbye, manager );
+            new GCCallback<CMsgClientWelcome>( ( uint )EGCBaseClientMsg.k_EMsgGCClientWelcome, OnWelcome, manager );
+            new GCCallback<CMsgConnectionStatus>( ( uint )EGCBaseClientMsg.k_EMsgGCClientConnectionStatus, OnConnectionStatus, manager );
         }
 
 
         void OnWelcome( ClientGCMsgProtobuf<CMsgClientWelcome> msg )
         {
-#if SERVICE_BUILD // don't be so spammy in dev builds
             IRC.Instance.SendAll( "New GC session (version: " + msg.Body.version + ")" );
-#endif
         }
 
-        void OnGoodbye( ClientGCMsgProtobuf<CMsgClientGoodbye> msg )
+        void OnConnectionStatus( ClientGCMsgProtobuf<CMsgConnectionStatus> msg )
         {
-            IRC.Instance.SendAll( "GC shutting down: " + msg.Body );
+            IRC.Instance.SendAll( "GC status: " + msg.Body.status );
         }
     }
 

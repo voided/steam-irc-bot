@@ -68,6 +68,7 @@ namespace SteamIrcBot
             Type[] eMsgEnums =
             {
                 typeof( SteamKit2.GC.Internal.EGCBaseMsg ),
+                typeof( SteamKit2.GC.Internal.EGCBaseClientMsg ),
                 typeof( SteamKit2.GC.Internal.ESOMsg ),
                 typeof( SteamKit2.GC.Internal.EGCSystemMsg ),
                 typeof( SteamKit2.GC.Internal.EGCItemMsg ),
