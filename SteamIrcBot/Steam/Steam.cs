@@ -17,7 +17,9 @@ namespace SteamIrcBot
         public SteamClient Client { get; private set; }
 
         public CallbackManager CallbackManager { get; private set; }
+
         public GCManager GCManager { get; private set; }
+        public SteamManager SteamManager { get; private set; }
 
         public JobManager JobManager { get; private set; }
 
@@ -47,6 +49,8 @@ namespace SteamIrcBot
             CallbackManager = new CallbackManager( Client );
 
             GCManager = new GCManager( CallbackManager );
+            SteamManager = new SteamManager( CallbackManager );
+
             JobManager = new JobManager( CallbackManager );
 
             User = Client.GetHandler<SteamUser>();
