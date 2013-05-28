@@ -133,7 +133,7 @@ namespace SteamIrcBot
             return false;
         }
 
-        public static string ExpandGID( GID input )
+        public static string ExpandGID( GlobalID input )
         {
             return string.Format( "{0} (SeqCount = {1}, StartTime = {2}, ProcessID = {3}, BoxID = {4})",
                 ( ulong )input, input.SequentialCount, input.StartTime, input.ProcessID, input.BoxID );

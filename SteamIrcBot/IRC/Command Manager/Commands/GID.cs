@@ -31,7 +31,7 @@ namespace SteamIrcBot
                 return;
             }
 
-            GID gid = ulGid;
+            GlobalID gid = ulGid;
 
             IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, SteamUtils.ExpandGID( gid ) );
         }
