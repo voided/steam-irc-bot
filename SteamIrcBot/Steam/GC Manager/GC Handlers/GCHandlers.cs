@@ -20,12 +20,12 @@ namespace SteamIrcBot
 
         void OnWelcome( ClientGCMsgProtobuf<CMsgClientWelcome> msg )
         {
-            IRC.Instance.SendAll( "New GC session (version: " + msg.Body.version + ")" );
+            IRC.Instance.SendAll( "New {0} GC session (version: {1})", Settings.Current.GCApp, msg.Body.version );
         }
 
         void OnConnectionStatus( ClientGCMsgProtobuf<CMsgConnectionStatus> msg )
         {
-            IRC.Instance.SendAll( "GC status: " + msg.Body.status );
+            IRC.Instance.SendAll( "GC status: {0}", msg.Body.status );
         }
     }
 

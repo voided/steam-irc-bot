@@ -18,9 +18,10 @@ namespace SteamIrcBot
             if ( !Steam.Instance.Connected )
                 return;
 
-            Log.WriteDebug( "GameSessionJob", "Updating game session" );
-
-            Steam.Instance.Games.PlayGame( 440 );
+            if ( Settings.Current.GCApp != 0 )
+            {
+                Steam.Instance.Games.PlayGame( Settings.Current.GCApp );
+            }
         }
     }
 }

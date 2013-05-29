@@ -66,6 +66,11 @@ namespace SteamIrcBot
                 Log.WriteWarn( "Settings", "Missing WebPath/WebURL, web share will be unavailable" );
             }
 
+            if ( Current.GCApp == 0 )
+            {
+                Log.WriteWarn( "Settings", "No GCApp configured, GC session info will be unavailable" );
+            }
+
             return true;
         }
     }
@@ -85,6 +90,8 @@ namespace SteamIrcBot
 
         public string IRCAnnounceChannel;
         public string IRCMainChannel;
+
+        public uint GCApp;
 
         [XmlArrayItem( "AppID" )]
         public List<uint> ImportantApps;
