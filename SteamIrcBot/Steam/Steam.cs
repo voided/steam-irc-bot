@@ -74,6 +74,8 @@ namespace SteamIrcBot
 
             new Callback<SteamUser.LoggedOnCallback>( OnLoggedOn, CallbackManager );
             new Callback<SteamUser.LoggedOffCallback>( OnLoggedOff, CallbackManager );
+
+            new Callback<SteamUser.AccountInfoCallback>( OnAccountInfo, CallbackManager );
         }
 
 
@@ -196,6 +198,12 @@ namespace SteamIrcBot
             Log.WriteWarn( "Steam", "Logged off Steam3: {0}", callback.Result );
 
             IRC.Instance.SendEmoteAll( "Logged off of Steam: {0}", callback.Result );
+        }
+
+        void OnAccountInfo( SteamUser.AccountInfoCallback callback )
+        {
+            // go online on friends in order to receive clan state callbacks
+            Friends.SetPersonaState( EPersonaState.Online );
         }
     }
 }
