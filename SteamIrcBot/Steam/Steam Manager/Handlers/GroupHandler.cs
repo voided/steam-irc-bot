@@ -17,16 +17,24 @@ namespace SteamIrcBot
 
         void OnClanState( SteamFriends.ClanStateCallback callback )
         {
+            string clanName = callback.ClanName;
+
+            if ( string.IsNullOrEmpty( clanName ) )
+                clanName = Steam.Instance.Friends.GetClanName( callback.ClanID );
+
+            if ( clanName == "[unknown]" ) // god this sucks. why on earth did i make steamkit follow steamclient to the letter
+                clanName = "Group";
+
             foreach ( var announcement in callback.Announcements )
             {
                 string announceUrl = string.Format( "http://steamcommunity.com/gid/{0}/announcements/detail/{1}", callback.ClanID.ConvertToUInt64(), announcement.ID.Value );
-                IRC.Instance.SendAll( "{0} announcement: {1} - {2}", callback.ClanName, announcement.Headline, announceUrl );
+                IRC.Instance.SendAll( "{0} announcement: {1} - {2}", clanName, announcement.Headline, announceUrl );
             }
 
             foreach ( var clanEvent in callback.Events )
             {
                 string eventUrl = string.Format( "http://steamcommunity.com/gid/{0}/events/{1}", callback.ClanID.ConvertToUInt64(), clanEvent.ID.Value );
-                IRC.Instance.SendAll( "{0} event: {1} - {2}", callback.ClanName, clanEvent.Headline, eventUrl );
+                IRC.Instance.SendAll( "{0} event: {1} - {2}", clanName, clanEvent.Headline, eventUrl );
             }
         }
     }
