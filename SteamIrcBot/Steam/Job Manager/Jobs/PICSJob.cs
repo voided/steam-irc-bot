@@ -35,10 +35,8 @@ namespace SteamIrcBot
 
             lastChangeNumber = callback.CurrentChangeNumber;
 
-            string changelistUrl = string.Format( "http://steamdb.info/changelist.php?changeid={0}", lastChangeNumber );
-
             IRC.Instance.SendAnnounce( "Got PICS changelist {0} for {1} apps and {2} packages - {3}",
-                lastChangeNumber, callback.AppChanges.Count, callback.PackageChanges.Count, changelistUrl );
+                lastChangeNumber, callback.AppChanges.Count, callback.PackageChanges.Count, GetChangelistURL( lastChangeNumber ) );
 
             if ( callback.AppChanges.Count > 0 )
             {
@@ -55,8 +53,7 @@ namespace SteamIrcBot
 
                 foreach ( var app in importantApps )
                 {
-                    string historyUrl = string.Format( "http://steamdb.info/app/{0}/#section_history", app );
-                    IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), historyUrl );
+                    IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetHistoryUrl( app ) );
                 }
 
             }
@@ -71,6 +68,44 @@ namespace SteamIrcBot
                     return Steam.Instance.GetPackageName( p.ID );
                 } ) ) );
             }
+        }
+
+        string GetChangelistURL( uint changeNumber )
+        {
+            string changelistUrl = "";
+
+            if ( !string.IsNullOrEmpty( Settings.Current.SteamDBChangelistURL ) )
+            {
+                try
+                {
+                    changelistUrl = string.Format( Settings.Current.SteamDBChangelistURL, changeNumber );
+                }
+                catch ( FormatException ex )
+                {
+                    Log.WriteWarn( "Unable to format SteamDB changelist url: {0}", ex.Message );
+                }
+            }
+
+            return changelistUrl;
+        }
+
+        string GetHistoryUrl( uint appId )
+        {
+            string historyUrl = "";
+
+            if ( !string.IsNullOrEmpty( Settings.Current.SteamDBHistoryURL ) )
+            {
+                try
+                {
+                    historyUrl = string.Format( Settings.Current.SteamDBHistoryURL, appId );
+                }
+                catch ( FormatException ex )
+                {
+                    Log.WriteWarn( "Unable to format SteamDB history url: {0}", ex.Message );
+                }
+            }
+
+            return historyUrl;
         }
     }
 

@@ -37,6 +37,9 @@
   <WebPath></WebPath>
   <!-- the root url for the website hosting app/packageinfo -->
   <WebURL></WebURL>
+
+  <SteamDBChangelistURL>http://steamdb.info/changelist/{0}/</SteamDBChangelistURL>
+  <SteamDBHistoryURL>http://steamdb.info/app/{0}/#section_history</SteamDBHistoryURL>
   
   <!--
     ex:

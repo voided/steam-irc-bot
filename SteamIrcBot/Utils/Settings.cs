@@ -99,6 +99,9 @@ namespace SteamIrcBot
         public string WebPath;
         public string WebURL;
 
+        public string SteamDBChangelistURL;
+        public string SteamDBHistoryURL;
+
 
         [XmlIgnore]
         public bool IsWebEnabled { get { return !string.IsNullOrEmpty( WebPath ) && !string.IsNullOrEmpty( WebURL ); } }
