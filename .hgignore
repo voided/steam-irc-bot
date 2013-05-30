@@ -3,8 +3,9 @@ syntax: glob
 # user files
 *.suo
 
-# nuget
+# nuget & thirdparty libs
 packages/
+libs/
 
 # bins
 bin/
