@@ -35,8 +35,10 @@ namespace SteamIrcBot
 
             lastChangeNumber = callback.CurrentChangeNumber;
 
-            IRC.Instance.SendAnnounce( "Got PICS changelist {0} with info for {1} apps and {2} packages! {3}",
-                lastChangeNumber, callback.AppChanges.Count, callback.PackageChanges.Count, callback.RequiresFullUpdate ? "(fullupdate)" : "" );
+            string changelistUrl = string.Format( "http://steamdb.info/changelist.php?changeid={0}", lastChangeNumber );
+
+            IRC.Instance.SendAnnounce( "Got PICS changelist {0} for {1} apps and {2} packages - {3}",
+                lastChangeNumber, callback.AppChanges.Count, callback.PackageChanges.Count, changelistUrl );
 
             if ( callback.AppChanges.Count > 0 )
             {
@@ -53,7 +55,8 @@ namespace SteamIrcBot
 
                 foreach ( var app in importantApps )
                 {
-                    IRC.Instance.SendAll( "Important App Update: {0}", Steam.Instance.GetAppName( app ) );
+                    string historyUrl = string.Format( "http://steamdb.info/app/{0}/#section_history", app );
+                    IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), historyUrl );
                 }
 
             }
