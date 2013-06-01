@@ -45,6 +45,8 @@ namespace SteamIrcBot
 
             ServiceDispatcher.Instance.Start();
 
+            RSS.Instance.Start();
+
             IRC.Instance.Connect();
         }
 
@@ -54,7 +56,10 @@ namespace SteamIrcBot
 
             IRC.Instance.Disconnect();
 
+            RSS.Instance.Stop();
+
             ServiceDispatcher.Instance.Stop();
+
         }
     }
 }

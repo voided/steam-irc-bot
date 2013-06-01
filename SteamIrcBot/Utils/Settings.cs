@@ -102,6 +102,9 @@ namespace SteamIrcBot
         public string SteamDBChangelistURL;
         public string SteamDBHistoryURL;
 
+        [XmlArrayItem( "Feed" )]
+        public List<string> RssFeeds;
+
 
         [XmlIgnore]
         public bool IsWebEnabled { get { return !string.IsNullOrEmpty( WebPath ) && !string.IsNullOrEmpty( WebURL ); } }

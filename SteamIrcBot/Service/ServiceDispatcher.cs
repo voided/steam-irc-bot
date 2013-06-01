@@ -33,6 +33,7 @@ namespace SteamIrcBot
 
                 Steam.Instance.Tick();
                 IRC.Instance.Tick();
+                RSS.Instance.Tick();
             }
         }
 
