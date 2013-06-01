@@ -33,6 +33,9 @@ namespace SteamIrcBot
 
             foreach ( var clanEvent in callback.Events )
             {
+                if ( !clanEvent.JustPosted )
+                    continue; // we're only interested in recent clan events
+
                 string eventUrl = string.Format( "http://steamcommunity.com/gid/{0}/events/{1}", callback.ClanID.ConvertToUInt64(), clanEvent.ID.Value );
                 IRC.Instance.SendAll( "{0} event: {1} - {2}", clanName, clanEvent.Headline, eventUrl );
             }
