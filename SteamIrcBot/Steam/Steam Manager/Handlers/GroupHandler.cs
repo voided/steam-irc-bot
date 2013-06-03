@@ -19,10 +19,10 @@ namespace SteamIrcBot
         {
             string clanName = callback.ClanName;
 
-            if ( string.IsNullOrEmpty( clanName ) )
+            if ( string.IsNullOrWhiteSpace( clanName ) )
                 clanName = Steam.Instance.Friends.GetClanName( callback.ClanID );
 
-            if ( clanName == "[unknown]" ) // god this sucks. why on earth did i make steamkit follow steamclient to the letter
+            if ( string.IsNullOrWhiteSpace( clanName ) || clanName == "[unknown]" ) // god this sucks. why on earth did i make steamkit follow steamclient to the letter
                 clanName = "Group";
 
             foreach ( var announcement in callback.Announcements )
