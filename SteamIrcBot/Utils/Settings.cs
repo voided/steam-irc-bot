@@ -78,6 +78,20 @@ namespace SteamIrcBot
     // the backing store of settings
     public class SettingsXml : XmlSerializable<SettingsXml>
     {
+        public class RssFeedXml
+        {
+            [XmlAttribute]
+            public bool IsRss10;
+
+            [XmlAttribute]
+            public string URL;
+
+            public RssFeedXml()
+            {
+                IsRss10 = false;
+            }
+        }
+
         public string SteamUsername;
         public string SteamPassword;
 
@@ -103,7 +117,7 @@ namespace SteamIrcBot
         public string SteamDBHistoryURL;
 
         [XmlArrayItem( "Feed" )]
-        public List<string> RssFeeds;
+        public List<RssFeedXml> RssFeeds;
 
 
         [XmlIgnore]

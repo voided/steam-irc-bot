@@ -42,14 +42,15 @@
 	<SteamDBHistoryURL>http://steamdb.info/app/{0}/#section_history</SteamDBHistoryURL>
 
 	<RssFeeds>
-		<Feed>http://blog.dota2.com/feed/</Feed>
-		<Feed>http://www.l4d.com/blog/rss.xml</Feed>
-		<Feed>http://www.teamfortress.com/rss.xml</Feed>
-		<Feed>http://www.thinkwithportals.com/rss.xml</Feed>
-		<Feed>http://blog.counter-strike.net/index.php/feed/</Feed>
-		<Feed>http://www.sourcefilmmaker.com/rss.xml</Feed>
-		<Feed>http://blogs.valvesoftware.com/feed/</Feed>
-		<Feed>http://www.teachwithportals.com/index.php/feed/</Feed>
+		<Feed URL="http://blog.dota2.com/feed/" />
+		<Feed URL="http://www.l4d.com/blog/rss.xml" />
+		<Feed URL="http://www.teamfortress.com/rss.xml" />
+		<Feed URL="http://www.thinkwithportals.com/rss.xml" />
+		<Feed URL="http://blog.counter-strike.net/index.php/feed/" />
+		<Feed URL="http://www.sourcefilmmaker.com/rss.xml" />
+		<Feed URL="http://blogs.valvesoftware.com/feed/" />
+		<Feed URL="http://www.teachwithportals.com/index.php/feed/" />
+		<Feed URL="http://store.steampowered.com/feeds/news.xml" IsRss10="true" />
 	</RssFeeds>
   
 <!--
