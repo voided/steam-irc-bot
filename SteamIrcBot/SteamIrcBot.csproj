@@ -108,6 +108,7 @@
     <Compile Include="Steam\Utils\SteamLevelHandler.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\Utils.cs" />
+    <Compile Include="Utils\XmlSanitizingStream.cs" />
     <Compile Include="Utils\XmlSerializable.cs" />
   </ItemGroup>
   <ItemGroup>

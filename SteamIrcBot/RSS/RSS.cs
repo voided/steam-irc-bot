@@ -6,6 +6,7 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace SteamIrcBot
 {
@@ -133,7 +134,7 @@ namespace SteamIrcBot
             {
                 try
                 {
-                    return LoadRSS10( reader );
+                    return LoadRSS10( feedSettings.URL );
                 }
                 catch ( Exception ex )
                 {
@@ -156,41 +157,46 @@ namespace SteamIrcBot
             return feed;
         }
 
-        SyndicationFeed LoadRSS10( XmlReader reader )
+        SyndicationFeed LoadRSS10( string url )
         {
-            XmlDocument doc = new XmlDocument();
-            try
+            using ( var webClient = new WebClient() )
+            using ( var reader = new XmlSanitizingStream( webClient.OpenRead( url ) ) )
+            using ( var xmlReader = XmlReader.Create( reader ) )
             {
-                doc.Load( reader );
+                XmlDocument doc = new XmlDocument();
+                try
+                {
+                    doc.Load( xmlReader );
+                }
+                catch ( Exception ex )
+                {
+                    Log.WriteWarn( "RSS", "Unable to load RSS 1.0 feed: {0}", ex.Message );
+                    return null;
+                }
+
+                List<SyndicationItem> feedItems = new List<SyndicationItem>();
+                SyndicationFeed feed = new SyndicationFeed();
+                feed.Items = feedItems;
+
+                XmlNamespaceManager nsManager = new XmlNamespaceManager( doc.NameTable );
+                nsManager.AddNamespace( "rss", "http://purl.org/rss/1.0/" );
+
+                feed.Title = new TextSyndicationContent( doc.SelectSingleNode( "//rss:channel/rss:title/text()", nsManager ).Value );
+
+                foreach ( XmlNode node in doc.SelectNodes( "//rss:item", nsManager ) )
+                {
+                    var item = new SyndicationItem();
+
+                    item.Title = new TextSyndicationContent( node.SelectSingleNode( "./rss:title/text()", nsManager ).Value );
+                    item.PublishDate = DateTimeOffset.Parse( node.SelectSingleNode( "./rss:pubDate/text()", nsManager ).Value );
+
+                    item.Links.Add( new SyndicationLink( new Uri( node.SelectSingleNode( "./rss:link/text()", nsManager ).Value ) ) );
+
+                    feedItems.Add( item );
+                }
+
+                return feed;
             }
-            catch ( Exception ex )
-            {
-                Log.WriteWarn( "RSS", "Unable to load RSS 1.0 feed: {0}", ex.Message );
-                return null;
-            }
-
-            List<SyndicationItem> feedItems = new List<SyndicationItem>();
-            SyndicationFeed feed = new SyndicationFeed();
-            feed.Items = feedItems;
-
-            XmlNamespaceManager nsManager = new XmlNamespaceManager( doc.NameTable );
-            nsManager.AddNamespace( "rss", "http://purl.org/rss/1.0/" );
-
-            feed.Title = new TextSyndicationContent( doc.SelectSingleNode( "//rss:channel/rss:title/text()", nsManager ).Value );
-
-            foreach ( XmlNode node in doc.SelectNodes( "//rss:item", nsManager ) )
-            {
-                var item = new SyndicationItem();
-
-                item.Title = new TextSyndicationContent( node.SelectSingleNode( "./rss:title/text()", nsManager ).Value );
-                item.PublishDate = DateTimeOffset.Parse( node.SelectSingleNode( "./rss:pubDate/text()", nsManager ).Value );
-
-                item.Links.Add( new SyndicationLink( new Uri( node.SelectSingleNode( "./rss:link/text()", nsManager ).Value ) ) );
-
-                feedItems.Add( item );
-            }
-
-            return feed;
         }
     }
 }
