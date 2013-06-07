@@ -119,17 +119,6 @@ namespace SteamIrcBot
 
         SyndicationFeed LoadRSS( SettingsXml.RssFeedXml feedSettings )
         {
-            XmlReader reader = null;
-            try
-            {
-                reader = XmlReader.Create( feedSettings.URL );
-            }
-            catch ( Exception ex )
-            {
-                Log.WriteWarn( "RSS", "Unable to create xmlreader for feed: {0}", ex.Message );
-                return null;
-            }
-
             if ( feedSettings.IsRss10 )
             {
                 try
@@ -138,41 +127,40 @@ namespace SteamIrcBot
                 }
                 catch ( Exception ex )
                 {
-                    Log.WriteWarn( "RSS", "Unable to load RSS 1.0 feed: {0}", ex.Message );
+                    Log.WriteWarn( "RSS", "Unable to load RSS 1.0 feed {0}: {1}", feedSettings.URL, ex.Message );
                     return null;
                 }
             }
 
-            SyndicationFeed feed = null;
             try
             {
-                feed = SyndicationFeed.Load( reader );
+                WebRequest webReq = WebRequest.Create( feedSettings.URL );
+                webReq.Timeout = ( int )TimeSpan.FromSeconds( 10 ).TotalMilliseconds;
+
+                using ( var resp = webReq.GetResponse() )
+                using ( var reader = XmlReader.Create( resp.GetResponseStream() ) )
+                {
+                    return SyndicationFeed.Load( reader );
+                }
             }
             catch ( Exception ex )
             {
-                Log.WriteWarn( "RSS", "Unable to load syndication feed: {0}", ex.Message );
+                Log.WriteWarn( "RSS", "Unable to load RSS feed {0}: {1}", feedSettings.URL, ex.Message );
                 return null;
             }
-
-            return feed;
         }
 
         SyndicationFeed LoadRSS10( string url )
         {
-            using ( var webClient = new WebClient() )
-            using ( var reader = new XmlSanitizingStream( webClient.OpenRead( url ) ) )
+            WebRequest webReq = WebRequest.Create( url );
+            webReq.Timeout = ( int )TimeSpan.FromSeconds( 10 ).TotalMilliseconds;
+
+            using ( var resp = webReq.GetResponse() )
+            using ( var reader = new XmlSanitizingStream( resp.GetResponseStream() ) )
             using ( var xmlReader = XmlReader.Create( reader ) )
             {
                 XmlDocument doc = new XmlDocument();
-                try
-                {
-                    doc.Load( xmlReader );
-                }
-                catch ( Exception ex )
-                {
-                    Log.WriteWarn( "RSS", "Unable to load RSS 1.0 feed: {0}", ex.Message );
-                    return null;
-                }
+                doc.Load( xmlReader );
 
                 List<SyndicationItem> feedItems = new List<SyndicationItem>();
                 SyndicationFeed feed = new SyndicationFeed();
