@@ -81,9 +81,11 @@ namespace SteamIrcBot
 
         public void Disconnect()
         {
+            Log.WriteInfo( "IRC", "Disconnecting..." );
+
             shuttingDown = true;
 
-            client.WriteLine( "DISCONNECT :fork it all" );
+            client.WriteLine( "QUIT :fork it all", Priority.Critical );
         }
 
 
