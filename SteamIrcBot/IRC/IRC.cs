@@ -128,6 +128,10 @@ namespace SteamIrcBot
                 nextConnect = DateTime.MaxValue;
 
                 Log.WriteInfo( "IRC", "Connecting..." );
+
+                if ( client.IsConnected )
+                    client.Disconnect();
+
                 client.Connect( Settings.Current.IRCServer, Settings.Current.IRCPort );
 
                 var nickList = new string[] { Settings.Current.IRCNick, Settings.Current.IRCNick + "_" };
