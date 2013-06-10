@@ -62,6 +62,7 @@
     <Compile Include="IRC\Command Manager\Command.cs" />
     <Compile Include="IRC\Command Manager\CommandManager.cs" />
     <Compile Include="IRC\Command Manager\Commands\AppInfo.cs" />
+    <Compile Include="IRC\Command Manager\Commands\EResult.cs" />
     <Compile Include="IRC\Command Manager\Commands\FindAccounts.cs" />
     <Compile Include="IRC\Command Manager\Commands\GID.cs" />
     <Compile Include="IRC\Command Manager\Commands\Help.cs" />
