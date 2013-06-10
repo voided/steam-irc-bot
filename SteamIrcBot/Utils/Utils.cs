@@ -174,8 +174,8 @@ namespace SteamIrcBot
                     break;
             }
 
-            return string.Format( "{0} (UInt64 = {1}, IsValid = {2}, Universe = {3}, Instance = {4}, Type = {5}, AccountID = {6})",
-                input.ToString(), input.ConvertToUInt64(), input.IsValid, input.AccountUniverse, displayInstance, input.AccountType, input.AccountID );
+            return string.Format( "{0} / {1} (UInt64 = {2}, IsValid = {3}, Universe = {4}, Instance = {5}, Type = {6}, AccountID = {7})",
+                input.Render(), input.Render( true ), input.ConvertToUInt64(), input.IsValid, input.AccountUniverse, displayInstance, input.AccountType, input.AccountID );
         }
     }
 
