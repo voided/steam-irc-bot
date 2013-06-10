@@ -99,8 +99,20 @@ namespace SteamIrcBot
 
             SteamID steamID = new SteamID( accountId, uiInstance, eUniv, eType );
 
-            IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, SteamUtils.ExpandSteamID( steamID ) );
+            var sidCommand = IRC.Instance.CommandManager.RegisteredCommands
+                .SingleOrDefault( c => c is SIDCommand );
 
+            if ( sidCommand != null )
+            {
+                // loading up on the dirty hacks
+                details.Args = new string[] { steamID.ConvertToUInt64().ToString() };
+                sidCommand.DoRun( details );
+            }
+            else
+            {
+                IRC.Instance.Send( details.Channel, "{0}: An internal error has occurred", details.Sender.Nickname );
+                Log.WriteError( "MakeSIDCommand", "Unable to find SIDCommand!" );
+            }
         }
     }
 }
