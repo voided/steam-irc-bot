@@ -15,6 +15,7 @@ namespace SteamIrcBot
             HelpText = "!makesid <universe> <type> <instance> <id> - Crafts a SteamID with the given parameters, <id> can be a resolvable SteamID";
         }
 
+
         protected override void OnRun( CommandDetails details )
         {
             if ( details.Args.Length < 4 )
@@ -69,7 +70,7 @@ namespace SteamIrcBot
 
                 default:
                     SteamID.ChatInstanceFlags instanceFlags;
-                    if ( Enum.TryParse( instance, false, out instanceFlags ) )
+                    if ( Enum.TryParse( instance, true, out instanceFlags ) )
                     {
                         uiInstance = ( uint )instanceFlags;
                         break;
