@@ -51,7 +51,7 @@ namespace SteamIrcBot
 
     class GCSchemaHandler : GCHandler
     {
-        uint lastSchemaVersion;
+        uint lastSchemaVersion = 0;
 
 
         public GCSchemaHandler( GCManager manager )
@@ -63,12 +63,12 @@ namespace SteamIrcBot
 
         void OnItemSchema( ClientGCMsgProtobuf<CMsgUpdateItemSchema> msg )
         {
-            if ( lastSchemaVersion != msg.Body.item_schema_version )
+            if ( lastSchemaVersion != msg.Body.item_schema_version && lastSchemaVersion != 0 )
             {
-                lastSchemaVersion = msg.Body.item_schema_version;
-
                 IRC.Instance.SendAll( "New GC item schema (version: " + lastSchemaVersion.ToString( "X4" ) + "): " + msg.Body.items_game_url );
             }
+
+            lastSchemaVersion = msg.Body.item_schema_version;
         }
     }
 }
