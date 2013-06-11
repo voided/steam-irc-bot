@@ -110,6 +110,8 @@ namespace SteamIrcBot
 
             using ( dynamic iface = WebAPI.GetInterface( "ISteamUser", apiKey ) )
             {
+                iface.Timeout = ( int )TimeSpan.FromSeconds( 5 ).TotalMilliseconds;
+
                 KeyValue results = null;
 
                 try
