@@ -57,6 +57,7 @@ namespace SteamIrcBot
 
             JoinEvent = new AutoResetEvent( false );
 
+            client.SendDelay = 500;
             client.Encoding = Encoding.UTF8;
             client.AutoRetry = true;
             client.AutoRejoin = true;
