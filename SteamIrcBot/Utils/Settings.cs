@@ -114,7 +114,8 @@ namespace SteamIrcBot
         public string WebURL;
 
         public string SteamDBChangelistURL;
-        public string SteamDBHistoryURL;
+        public string SteamDBAppHistoryURL;
+        public string SteamDBPackageHistoryURL;
 
         [XmlArrayItem( "Feed" )]
         public List<RssFeedXml> RssFeeds;
@@ -129,6 +130,10 @@ namespace SteamIrcBot
             ImportantApps = new List<uint>();
 
             IRCPort = 6667;
+
+            SteamDBChangelistURL = "http://steamdb.info/changelist/{0}/";
+            SteamDBAppHistoryURL = "http://steamdb.info/app/{0}/#section_history";
+            SteamDBPackageHistoryURL = "http://steamdb.info/sub/{0}/#section_history";
         }
     }
 }

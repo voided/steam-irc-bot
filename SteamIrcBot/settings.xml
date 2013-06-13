@@ -37,9 +37,15 @@
 	<WebPath></WebPath>
 	<!-- the root url for the website hosting app/packageinfo -->
 	<WebURL></WebURL>
-
+	<!--
+		ex:
+		<WebPath>C:\inetpub\MySite\</WebPath>
+		<WebURL>http://mysite.com</WebURL>
+	-->
+  
 	<SteamDBChangelistURL>http://steamdb.info/changelist/{0}/</SteamDBChangelistURL>
-	<SteamDBHistoryURL>http://steamdb.info/app/{0}/#section_history</SteamDBHistoryURL>
+	<SteamDBAppHistoryURL>http://steamdb.info/app/{0}/#section_history</SteamDBAppHistoryURL>
+	<SteamDBPackageHistoryURL>http://steamdb.info/sub/{0}/#section_history</SteamDBPackageHistoryURL>
 
 	<RssFeeds>
 		<Feed URL="http://blog.dota2.com/feed/" />
@@ -53,10 +59,6 @@
 		<Feed URL="http://store.steampowered.com/feeds/news.xml" IsRss10="true" />
 	</RssFeeds>
   
-<!--
-	ex:
-	<WebPath>C:\inetpub\MySite\</WebPath>
-	<WebURL>http://mysite.com</WebURL>
--->
+
 	
 </SettingsXml>

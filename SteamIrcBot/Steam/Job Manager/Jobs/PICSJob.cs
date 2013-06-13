@@ -40,72 +40,70 @@ namespace SteamIrcBot
 
             if ( callback.AppChanges.Count > 0 )
             {
-                IRC.Instance.SendAnnounce( "PICS Apps: {0}", string.Join( ", ", callback.AppChanges.Values.Select( a =>
-                {
-                    if ( a.NeedsToken )
-                        return string.Format( "{0} (needs token)", Steam.Instance.GetAppName( a.ID ) );
-
-                    return Steam.Instance.GetAppName( a.ID );
-                } ) ) );
-
+                // prioritize important apps first
                 var importantApps = callback.AppChanges.Keys
                     .Intersect( Settings.Current.ImportantApps );
 
                 foreach ( var app in importantApps )
                 {
-                    IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetHistoryUrl( app ) );
+                    IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );
                 }
 
+                // then announce all apps that changed
+                foreach ( var app in callback.AppChanges.Values )
+                {
+                    IRC.Instance.SendAnnounce( "App: {0} {1}- {2}",
+                        Steam.Instance.GetAppName( app.ID ),
+                        app.NeedsToken ? "(needs token) " : "",
+                        GetAppHistoryUrl( app.ID )
+                    );
+                }
             }
 
             if ( callback.PackageChanges.Count > 0 )
             {
-                IRC.Instance.SendAnnounce( "PICS Packages: {0}", string.Join( ", ", callback.PackageChanges.Values.Select( p =>
-                {
-                    if ( p.NeedsToken )
-                        return string.Format( "{0} (needs token)", Steam.Instance.GetPackageName( p.ID ) );
+                // todo: important packages
 
-                    return Steam.Instance.GetPackageName( p.ID );
-                } ) ) );
+                foreach ( var package in callback.PackageChanges.Values )
+                {
+                    IRC.Instance.SendAnnounce( "Package: {0} {1}- {2}",
+                        Steam.Instance.GetPackageName( package.ID ),
+                        package.NeedsToken ? "(needs token) " : "",
+                        GetPackageHistoryUrl( package.ID )
+                    );
+                }
             }
         }
 
         string GetChangelistURL( uint changeNumber )
         {
-            string changelistUrl = "";
-
-            if ( !string.IsNullOrEmpty( Settings.Current.SteamDBChangelistURL ) )
-            {
-                try
-                {
-                    changelistUrl = string.Format( Settings.Current.SteamDBChangelistURL, changeNumber );
-                }
-                catch ( FormatException ex )
-                {
-                    Log.WriteWarn( "Unable to format SteamDB changelist url: {0}", ex.Message );
-                }
-            }
-
-            return changelistUrl;
+            return GetSteamDBUrl( Settings.Current.SteamDBChangelistURL, changeNumber );
         }
 
-        string GetHistoryUrl( uint appId )
+        string GetAppHistoryUrl( uint appId )
         {
-            string historyUrl = "";
+            return GetSteamDBUrl( Settings.Current.SteamDBAppHistoryURL, appId );
+        }
+        string GetPackageHistoryUrl( uint packageId )
+        {
+            return GetSteamDBUrl( Settings.Current.SteamDBPackageHistoryURL, packageId );
+        }
 
-            if ( !string.IsNullOrEmpty( Settings.Current.SteamDBHistoryURL ) )
+        string GetSteamDBUrl( string formatUrl, uint id )
+        {
+            if ( !string.IsNullOrEmpty( formatUrl ) )
             {
                 try
                 {
-                    historyUrl = string.Format( Settings.Current.SteamDBHistoryURL, appId );
+                    formatUrl = string.Format( formatUrl, id );
                 }
                 catch ( FormatException ex )
                 {
-                    Log.WriteWarn( "Unable to format SteamDB history url: {0}", ex.Message );
+                    Log.WriteWarn( "Unable to format SteamDB url: {0}", ex.Message );
                 }
             }
 
-            return historyUrl;
+            return formatUrl;
         }
     }
 
