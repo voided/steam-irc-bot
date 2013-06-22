@@ -179,6 +179,13 @@ namespace SteamIrcBot
             return string.Format( "{0} / {1} (UInt64 = {2}, IsValid = {3}, Universe = {4}, Instance = {5}, Type = {6}, AccountID = {7})",
                 input.Render(), input.Render( true ), input.ConvertToUInt64(), input.IsValid, input.AccountUniverse, displayInstance, input.AccountType, input.AccountID );
         }
+
+        public static string ExpandGameID( GameID input )
+        {
+            return string.Format( "{0} (Type = {1}, AppID = {2}, ModID = {3})",
+                input, input.AppType, input.AppID, input.ModID
+            );
+        }
     }
 
 }

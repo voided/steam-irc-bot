@@ -90,6 +90,34 @@ namespace SteamIrcBot
         }
     }
 
+    class GameIDCommand : Command
+    {
+        public GameIDCommand()
+        {
+            Trigger = "!gameid";
+            HelpText = "!gameid <gameid> - Expands GameID";
+        }
+
+
+        protected override void OnRun( CommandDetails details )
+        {
+            if ( details.Args.Length == 0 )
+            {
+                IRC.Instance.Send( details.Channel, "{0}: GameID argument required", details.Sender.Nickname );
+                return;
+            }
+
+            ulong gameId;
+            if ( !ulong.TryParse( details.Args[ 0 ], out gameId ) )
+            {
+                IRC.Instance.Send( details.Channel, "{0}: Invalid GameID", details.Sender.Nickname );
+                return;
+            }
+
+            IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, SteamUtils.ExpandGameID( gameId ) );
+        }
+    }
+
     class AppInfoCommand : Command<AppInfoCommand.Request>
     {
         public class Request : BaseRequest
