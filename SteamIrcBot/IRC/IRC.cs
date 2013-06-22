@@ -57,7 +57,7 @@ namespace SteamIrcBot
 
             JoinEvent = new AutoResetEvent( false );
 
-            client.SendDelay = 500;
+            client.SendDelay = ( int )TimeSpan.FromSeconds( 1.5 ).TotalMilliseconds;
             client.Encoding = Encoding.UTF8;
             client.AutoRetry = true;
             client.AutoRejoin = true;
@@ -168,7 +168,7 @@ namespace SteamIrcBot
 
             Log.WriteInfo( "IRC", "Disconnected!" );
 
-            Reconnect( TimeSpan.FromSeconds( 5 ) );
+            Reconnect( TimeSpan.FromSeconds( 30 ) );
         }
 
         void OnJoin( object sender, JoinEventArgs e )
