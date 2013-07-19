@@ -35,8 +35,20 @@ namespace SteamIrcBot
 
             lastChangeNumber = callback.CurrentChangeNumber;
 
-            IRC.Instance.SendAnnounce( "Got PICS changelist {0} for {1} apps and {2} packages - {3}",
+            string message = string.Format( "Got PICS changelist {0} for {1} apps and {2} packages - {3}",
                 lastChangeNumber, callback.AppChanges.Count, callback.PackageChanges.Count, GetChangelistURL( lastChangeNumber ) );
+
+            const int ChangesReqToBeImportant = 50;
+            if ( callback.PackageChanges.Count >= ChangesReqToBeImportant || callback.AppChanges.Count >= ChangesReqToBeImportant )
+            {
+                // if this changelist contains a number of changes over a specific threshold, we'll consider it "important" and send to all channels
+                IRC.Instance.SendAll( message );
+            }
+            else
+            {
+                // otherwise, only send to announce
+                IRC.Instance.SendAnnounce( message );
+            }
 
             if ( callback.AppChanges.Count > 0 )
             {
