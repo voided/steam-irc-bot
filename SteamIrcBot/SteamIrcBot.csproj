@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SERVICE_BUILD</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -76,6 +76,7 @@
     <Compile Include="IRC\Command Manager\Commands\SteamLevel.cs" />
     <Compile Include="IRC\Command Manager\Commands\UGC.cs" />
     <Compile Include="IRC\IRC.cs" />
+    <Compile Include="RSS\DateXmlReader.cs" />
     <Compile Include="RSS\RSS.cs" />
     <Compile Include="Service\ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -111,7 +112,7 @@
     <Compile Include="Steam\Utils\SteamLevelHandler.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\Utils.cs" />
-    <Compile Include="Utils\XmlSanitizingStream.cs" />
+    <Compile Include="RSS\XmlSanitizingStream.cs" />
     <Compile Include="Utils\XmlSerializable.cs" />
   </ItemGroup>
   <ItemGroup>

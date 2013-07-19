@@ -138,7 +138,7 @@ namespace SteamIrcBot
                 webReq.Timeout = ( int )TimeSpan.FromSeconds( 10 ).TotalMilliseconds;
 
                 using ( var resp = webReq.GetResponse() )
-                using ( var reader = XmlReader.Create( resp.GetResponseStream() ) )
+                using ( var reader = DateXmlReader.Create( resp.GetResponseStream() ) )
                 {
                     return SyndicationFeed.Load( reader );
                 }
