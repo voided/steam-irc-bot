@@ -58,7 +58,9 @@
 		<Feed URL="http://www.teachwithportals.com/index.php/feed/" />
 		<Feed URL="http://store.steampowered.com/feeds/news.xml" IsRss10="true" />
 	</RssFeeds>
-  
+
+	<BrunoQuotes>
+	</BrunoQuotes>
 
 	
 </SettingsXml>

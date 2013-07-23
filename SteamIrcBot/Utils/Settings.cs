@@ -120,6 +120,9 @@ namespace SteamIrcBot
         [XmlArrayItem( "Feed" )]
         public List<RssFeedXml> RssFeeds;
 
+        [XmlArrayItem( "Quote" )]
+        public List<string> BrunoQuotes;
+
 
         [XmlIgnore]
         public bool IsWebEnabled { get { return !string.IsNullOrEmpty( WebPath ) && !string.IsNullOrEmpty( WebURL ); } }
@@ -134,6 +137,8 @@ namespace SteamIrcBot
             SteamDBChangelistURL = "http://steamdb.info/changelist/{0}/";
             SteamDBAppHistoryURL = "http://steamdb.info/app/{0}/#section_history";
             SteamDBPackageHistoryURL = "http://steamdb.info/sub/{0}/#section_history";
+
+            BrunoQuotes = new List<string>();
         }
     }
 }
