@@ -16,6 +16,7 @@
 	<!-- irc channels -->
 	<IRCAnnounceChannel></IRCAnnounceChannel>
 	<IRCMainChannel></IRCMainChannel>
+	<IRCAuxChnnel></IRCAuxChnnel>
 
 	<!-- the app we want to maintain a gc session with -->
 	<GCApp>440</GCApp>

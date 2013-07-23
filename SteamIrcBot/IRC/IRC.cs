@@ -155,7 +155,7 @@ namespace SteamIrcBot
         {
             Log.WriteInfo( "IRC", "Connected!" );
 
-            client.RfcJoin( new string[] { Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel } );
+            client.RfcJoin( new string[] { Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel, Settings.Current.IRCAuxChnnel } );
         }
 
         void OnDisconnected( object sender, EventArgs e )

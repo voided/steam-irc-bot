@@ -104,6 +104,7 @@ namespace SteamIrcBot
 
         public string IRCAnnounceChannel;
         public string IRCMainChannel;
+        public string IRCAuxChnnel;
 
         public uint GCApp;
 
