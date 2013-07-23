@@ -28,8 +28,6 @@ namespace SteamIrcBot
 
         public CommandManager CommandManager { get; private set; }
 
-        public AutoResetEvent JoinEvent { get; private set; }
-
 
         IrcClient client = new IrcClient();
         bool shuttingDown = false;
@@ -54,8 +52,6 @@ namespace SteamIrcBot
         IRC()
         {
             nextConnect = DateTime.MaxValue;
-
-            JoinEvent = new AutoResetEvent( false );
 
             client.SendDelay = ( int )TimeSpan.FromSeconds( 1.5 ).TotalMilliseconds;
             client.Encoding = Encoding.UTF8;
