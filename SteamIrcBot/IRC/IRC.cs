@@ -117,6 +117,11 @@ namespace SteamIrcBot
             SendEmote( string.Format( "{0},{1}", Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel ), format, args );
         }
 
+        public void Join( string[] channels )
+        {
+            client.RfcJoin( channels );
+        }
+
 
         public void Tick()
         {

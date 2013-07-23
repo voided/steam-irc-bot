@@ -45,6 +45,9 @@ namespace SteamIrcBot
             }
 
             IRC.Instance.Send( details.Channel, "{0}: Rehashed", details.Sender.Nickname );
+
+            // rejoin any channels we may have edited
+            IRC.Instance.Join( new string[] { Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel, Settings.Current.IRCAuxChnnel } );
         }
     }
 }
