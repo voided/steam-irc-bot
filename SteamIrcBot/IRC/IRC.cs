@@ -78,6 +78,9 @@ namespace SteamIrcBot
 
         public void Disconnect()
         {
+            if ( !client.IsConnected )
+                return;
+
             Log.WriteInfo( "IRC", "Disconnecting..." );
 
             shuttingDown = true;
