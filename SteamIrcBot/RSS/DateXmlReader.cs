@@ -77,7 +77,7 @@ namespace SteamIrcBot
         }
 
 
-        public static XmlReader Create( Stream input )
+        public new static XmlReader Create( Stream input )
         {
             return new DateXmlReader( input );
         }
