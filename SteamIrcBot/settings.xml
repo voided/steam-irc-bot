@@ -18,6 +18,16 @@
 	<IRCMainChannel></IRCMainChannel>
 	<IRCAuxChnnel></IRCAuxChnnel>
 
+	<!-- admins that can use admin-only commands -->
+	<!-- ex:
+		<IRCAdmins>
+			<Admin>irc-hostname.com</Admin>
+		</IRCAdmins>
+	-->
+	<IRCAdmins>
+		<Admin>VoiDeDMaSTeR.script-kiddie.gamesurge</Admin>
+	</IRCAdmins>
+
 	<!-- the app we want to maintain a gc session with -->
 	<GCApp>440</GCApp>
 	
@@ -60,6 +70,7 @@
 		<Feed URL="http://store.steampowered.com/feeds/news.xml" IsRss10="true" />
 	</RssFeeds>
 
+	<!-- knowledge is power -->
 	<BrunoQuotes>
 	</BrunoQuotes>
 
