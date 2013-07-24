@@ -90,11 +90,20 @@ namespace SteamIrcBot
             {
                 IsRss10 = false;
             }
+
+            public override string ToString()
+            {
+                return URL;
+            }
         }
 
+
+        [ConfigHidden]
         public string SteamUsername;
+        [ConfigHidden]
         public string SteamPassword;
 
+        [ConfigHidden]
         public string WebAPIKey;
 
         public string IRCServer;
@@ -106,11 +115,15 @@ namespace SteamIrcBot
         public string IRCMainChannel;
         public string IRCAuxChnnel;
 
+        [XmlArrayItem( "Admin" ), ConfigHidden]
+        public List<string> IRCAdmins;
+
         public uint GCApp;
 
         [XmlArrayItem( "AppID" )]
         public List<uint> ImportantApps;
 
+        [ConfigHidden]
         public string WebPath;
         public string WebURL;
 
@@ -135,11 +148,19 @@ namespace SteamIrcBot
 
             IRCPort = 6667;
 
+            IRCAdmins = new List<string>();
+
             SteamDBChangelistURL = "http://steamdb.info/changelist/{0}/";
             SteamDBAppHistoryURL = "http://steamdb.info/app/{0}/#section_history";
             SteamDBPackageHistoryURL = "http://steamdb.info/sub/{0}/#section_history";
 
             BrunoQuotes = new List<string>();
+        }
+
+
+        internal bool IsAdmin( SenderDetails sender )
+        {
+            return IRCAdmins.Any( a => string.Equals( sender.Hostname, a, StringComparison.OrdinalIgnoreCase ) );
         }
     }
 }
