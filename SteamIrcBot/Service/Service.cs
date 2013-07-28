@@ -43,6 +43,8 @@ namespace SteamIrcBot
                 return;
             }
 
+            Steam.Instance.Init();
+
             ServiceDispatcher.Instance.Start();
 
             RSS.Instance.Start();

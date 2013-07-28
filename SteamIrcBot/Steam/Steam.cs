@@ -16,7 +16,11 @@ namespace SteamIrcBot
 
         public SteamClient Client { get; private set; }
 
+        public uint CellID { get; private set; }
+
         public CallbackManager CallbackManager { get; private set; }
+
+        public TaskManager TaskManager { get; private set; }
 
         public GCManager GCManager { get; private set; }
         public SteamManager SteamManager { get; private set; }
@@ -39,20 +43,14 @@ namespace SteamIrcBot
         bool loggedOn;
         public bool Connected { get { return Client.ConnectedUniverse != EUniverse.Invalid && loggedOn; } }
 
-        DateTime nextConnect;
+        DateTime nextConnect = DateTime.MaxValue;
 
-        Steam()
+
+        public void Init()
         {
-            nextConnect = DateTime.MaxValue;
-
             Client = new SteamClient();
 
             CallbackManager = new CallbackManager( Client );
-
-            GCManager = new GCManager( CallbackManager );
-            SteamManager = new SteamManager( CallbackManager );
-
-            JobManager = new JobManager( CallbackManager );
 
             User = Client.GetHandler<SteamUser>();
             Friends = Client.GetHandler<SteamFriends>();
@@ -70,6 +68,13 @@ namespace SteamIrcBot
             Client.AddHandler( Games );
             Client.AddHandler( AppInfo );
             Client.AddHandler( Account );
+
+            TaskManager = new TaskManager( CallbackManager );
+
+            GCManager = new GCManager( CallbackManager );
+            SteamManager = new SteamManager( CallbackManager );
+
+            JobManager = new JobManager( CallbackManager );
 
             new Callback<SteamClient.ConnectedCallback>( OnConnected, CallbackManager );
             new Callback<SteamClient.DisconnectedCallback>( OnDisconnected, CallbackManager );
@@ -187,6 +192,8 @@ namespace SteamIrcBot
             }
 
             loggedOn = true;
+
+            CellID = callback.CellID;
 
             Log.WriteInfo( "Steam", "Logged onto Steam3!" );
 
