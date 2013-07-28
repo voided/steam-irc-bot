@@ -13,7 +13,7 @@ namespace SteamIrcBot
 
         public PICSJob( CallbackManager manager )
         {
-            Period = TimeSpan.FromSeconds( 1 );
+            Period = TimeSpan.FromSeconds( 5 );
 
             new JobCallback<SteamApps.PICSChangesCallback>( OnPICSChanges, manager );
         }
