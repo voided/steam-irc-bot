@@ -16,7 +16,7 @@ namespace SteamIrcBot
         }
     }
 
-    public class GCManager
+    class GCManager
     {
         List<GCCallback> callbacks;
         List<GCHandler> handlers;
