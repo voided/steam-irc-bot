@@ -125,6 +125,16 @@ namespace SteamIrcBot
             return string.Format( "{0} ({1})", packageName, packageId );
         }
 
+        public string GetDepotName( uint depotId, uint appId )
+        {
+            string depotName;
+
+            if ( !AppInfo.GetDepotName( depotId, appId, out depotName ) )
+                return depotId.ToString();
+
+            return string.Format( "{0} ({1})", depotName, depotId );
+        }
+
 
         public void Tick()
         {

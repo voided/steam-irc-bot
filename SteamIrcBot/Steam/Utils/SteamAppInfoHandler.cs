@@ -48,6 +48,31 @@ namespace SteamIrcBot
             return name != null;
         }
 
+        public bool GetDepotManifest( uint depotId, uint appId, out ulong manifest, string branch = "public" )
+        {
+            manifest = default( ulong );
+
+            KeyValue appInfo;
+            if ( !GetAppInfo( appId, out appInfo ) )
+                return false;
+
+            manifest = ( ulong )appInfo[ "depots" ][ depotId.ToString() ][ "manifests" ][ branch ].AsLong();
+
+            return manifest != default( ulong );
+        }
+
+        public bool GetDepotName( uint depotId, uint appId, out string name )
+        {
+            name = null;
+
+            KeyValue appInfo;
+            if ( !GetAppInfo( appId, out appInfo ) )
+                return false;
+
+            name = appInfo[ "depots" ][ depotId.ToString() ][ "name" ].AsString();
+
+            return name != null;
+        }
 
         public bool GetPackageInfo( uint packageId, out KeyValue packageInfo )
         {
