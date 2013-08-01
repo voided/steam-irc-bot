@@ -113,7 +113,7 @@ namespace SteamIrcBot
 
         public string IRCAnnounceChannel;
         public string IRCMainChannel;
-        public string IRCAuxChnnel;
+        public string IRCAuxChannel;
 
         [XmlArrayItem( "Admin" ), ConfigHidden]
         public List<string> IRCAdmins;

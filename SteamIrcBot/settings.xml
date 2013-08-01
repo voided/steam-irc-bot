@@ -16,7 +16,7 @@
 	<!-- irc channels -->
 	<IRCAnnounceChannel></IRCAnnounceChannel>
 	<IRCMainChannel></IRCMainChannel>
-	<IRCAuxChnnel></IRCAuxChnnel>
+	<IRCAuxChannel></IRCAuxChannel>
 
 	<!-- admins that can use admin-only commands -->
 	<!-- ex:
