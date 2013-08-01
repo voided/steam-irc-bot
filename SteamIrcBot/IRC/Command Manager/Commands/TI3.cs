@@ -7,6 +7,7 @@ namespace SteamIrcBot
 {
     class TI3Command : Command
     {
+        DateTime WildCard = new DateTime( 2013, 8 /*august*/, 2, 12 + 8 /*pm*/, 0, 0, DateTimeKind.Utc );
         DateTime GroupStages = new DateTime( 2013, 8 /*august*/, 3, 12 + 4 /*pm*/, 0, 0, DateTimeKind.Utc );
         DateTime MainEvent = new DateTime( 2013, 8 /*august*/, 7, 12 + 7 /*pm*/, 0, 0, DateTimeKind.Utc );
 
@@ -20,10 +21,12 @@ namespace SteamIrcBot
 
         protected override void OnRun( CommandDetails details )
         {
+            TimeSpan timeToWildCard = WildCard - DateTime.UtcNow;
             TimeSpan timeToGroupStages = GroupStages - DateTime.UtcNow;
             TimeSpan timeToManEvent = MainEvent - DateTime.UtcNow;
 
-            IRC.Instance.Send( details.Channel, "{0}: Group Stages: {1} | Main Event: {2}", details.Sender.Nickname, GetTime( timeToGroupStages ), GetTime( timeToManEvent ) );
+            IRC.Instance.Send( details.Channel, "{0}: Wild Card: {1} | Group Stages: {2} | Main Event: {3}",
+                details.Sender.Nickname, GetTime( timeToWildCard ), GetTime( timeToGroupStages ), GetTime( timeToManEvent ) );
         }
 
         string GetTime( TimeSpan input )
