@@ -28,7 +28,7 @@ namespace SteamIrcBot
             {
                 var cmd = Activator.CreateInstance( command ) as Command;
 
-                Log.WriteDebug( "CommandManager", "Registering command {0}: {1}", command.Name, cmd.Trigger );
+                Log.WriteDebug( "CommandManager", "Registering command {0}: {1}", command.Name, cmd.Triggers.First() );
 
                 RegisteredCommands.Add( cmd );
             }
@@ -93,12 +93,12 @@ namespace SteamIrcBot
             }
 
             var triggeredCommand = RegisteredCommands
-                .FirstOrDefault( c => string.Equals( command, c.Trigger, StringComparison.OrdinalIgnoreCase ) );
+                .FirstOrDefault( c => c.Triggers.Any( t => string.Equals( command, t, StringComparison.OrdinalIgnoreCase ) ) );
 
             if ( triggeredCommand == null )
                 return;
 
-            Log.WriteInfo( "CommandManager", "Handling command {0} from {1} in {2}", triggeredCommand.Trigger, from, e.Data.Channel );
+            Log.WriteInfo( "CommandManager", "Handling command {0} from {1} in {2}", triggeredCommand.Triggers.First(), from, e.Data.Channel );
 
             triggeredCommand.DoRun( new CommandDetails
             {

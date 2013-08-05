@@ -18,7 +18,7 @@ namespace SteamIrcBot
 
         public LevelDistributionCommand()
         {
-            Trigger = "!leveldist";
+            Triggers.Add( "!leveldist" );
             HelpText = "!leveldist <level> - Displays the Steam level distribution for a given level";
 
             new JobCallback<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod, Steam.Instance.CallbackManager );
@@ -84,7 +84,8 @@ namespace SteamIrcBot
 
         public SteamLevelCommand()
         {
-            Trigger = "!level";
+            Triggers.Add( "!level" );
+            Triggers.Add( "!steamlevel" );
             HelpText = "!level <steamid> - Displays the Steam level of a given SteamID";
 
             new JobCallback<SteamLevels.SteamLevelsCallback>( OnLevels, Steam.Instance.CallbackManager );

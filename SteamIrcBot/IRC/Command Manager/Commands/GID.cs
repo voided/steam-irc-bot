@@ -10,7 +10,8 @@ namespace SteamIrcBot
     {
         public GIDCommand()
         {
-            Trigger = "!gid";
+            Triggers.Add( "!gid" );
+            Triggers.Add( "!globalid" );
             HelpText = "!gid - decompose a Steam GID_t";
         }
 

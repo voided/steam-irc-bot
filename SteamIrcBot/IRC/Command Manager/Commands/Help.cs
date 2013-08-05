@@ -9,7 +9,7 @@ namespace SteamIrcBot
     {
         public HelpCommand()
         {
-            Trigger = "!help";
+            Triggers.Add( "!help" );
             HelpText = "!help <command> - Displays a list of commands or info about a specific command";
         }
 
@@ -20,14 +20,14 @@ namespace SteamIrcBot
 
             if ( details.Args.Length == 0 )
             {
-                IRC.Instance.Send( details.Channel, "{0}: Available commands: {1}", details.Sender.Nickname, string.Join( ", ", commands.Select( c => c.Trigger ) ) );
+                IRC.Instance.Send( details.Channel, "{0}: Available commands: {1}", details.Sender.Nickname, string.Join( ", ", commands.Select( c => c.Triggers.First() ) ) );
                 return;
             }
 
             var cmd = details.Args[ 0 ];
 
             var foundCommands = commands
-                .Where( c => c.Trigger.IndexOf( cmd, StringComparison.OrdinalIgnoreCase ) != -1 )
+                .Where( c => c.Triggers.Any( t => t.IndexOf( cmd, StringComparison.OrdinalIgnoreCase ) != -1 ) )
                 .ToList();
 
             if ( foundCommands.Count == 0 )
@@ -40,7 +40,7 @@ namespace SteamIrcBot
             }
             else
             {
-                IRC.Instance.Send( details.Channel, "{0}: Found multiple commands: {1}", details.Sender.Nickname, string.Join( ", ", foundCommands.Select( c => c.Trigger ) ) );
+                IRC.Instance.Send( details.Channel, "{0}: Found multiple commands: {1}", details.Sender.Nickname, string.Join( ", ", foundCommands.Select( c => c.Triggers.First() ) ) );
             }
         }
     }

@@ -10,7 +10,7 @@ namespace SteamIrcBot
     {
         public EResultCommand()
         {
-            Trigger = "!eresult";
+            Triggers.Add( "!eresult" );
             HelpText = "!eresult <eresult> - Returns the EResult string for a given value";
         }
 

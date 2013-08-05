@@ -18,7 +18,9 @@ namespace SteamIrcBot
         {
             new Callback<SteamFriends.PersonaStateCallback>( OnPersonaState, Steam.Instance.CallbackManager );
 
-            Trigger = "!sid";
+            Triggers.Add( "!sid" );
+            Triggers.Add( "!steamid" );
+            Triggers.Add( "!steam" );
             HelpText = "!sid <steamid> - Displays info about the given SteamID, and requests persona/clan name for relevant types";
         }
 
@@ -94,7 +96,8 @@ namespace SteamIrcBot
         {
             new JobCallback<SteamFriends.ProfileInfoCallback>( OnProfileInfo, Steam.Instance.CallbackManager );
 
-            Trigger = "!profile";
+            Triggers.Add( "!profile" );
+            Triggers.Add( "!steamprofile" );
             HelpText = "!profile <steamid> - Request profile details about a given user";
         }
 

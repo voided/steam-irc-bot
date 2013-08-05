@@ -18,7 +18,7 @@ namespace SteamIrcBot
 
         public OwnedGamesCommand()
         {
-            Trigger = "!ownedgames";
+            Triggers.Add( "!ownedgames" );
             HelpText = "!ownedgames <steamid> - Displays the number of owned games of a given SteamID";
 
             new JobCallback<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod, Steam.Instance.CallbackManager );
@@ -88,7 +88,7 @@ namespace SteamIrcBot
 
         public PlayedGamesCommand()
         {
-            Trigger = "!playedgames";
+            Triggers.Add( "!playedgames" );
             HelpText = "!playedgames <steamid> - Displays info about recently played games of a given SteamID";
 
             new JobCallback<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod, Steam.Instance.CallbackManager );
@@ -177,7 +177,7 @@ namespace SteamIrcBot
 
         public BadgesCommand()
         {
-            Trigger = "!badges";
+            Triggers.Add( "!badges" );
             HelpText = "!badges <steamid> - Displays info about badges and XP of a given SteamID";
 
             new JobCallback<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod, Steam.Instance.CallbackManager );

@@ -11,7 +11,7 @@ namespace SteamIrcBot
 
         public RehashCommand()
         {
-            Trigger = "!rehash";
+            Triggers.Add( "!rehash" );
             HelpText = "!rehash - Reloads bot settings";
         }
 

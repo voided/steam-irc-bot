@@ -18,7 +18,8 @@ namespace SteamIrcBot
 
         public PIDCommand()
         {
-            Trigger = "!pid";
+            Triggers.Add( "!pid" );
+            Triggers.Add( "!packageid" );
             HelpText = "!pid <packageid> - Requests package name for a given PackageID";
 
             new JobCallback<SteamApps.PackageInfoCallback>( OnPackageInfo, Steam.Instance.CallbackManager );
@@ -93,7 +94,7 @@ namespace SteamIrcBot
 
         public PackageInfoCommand()
         {
-            Trigger = "!packageinfo";
+            Triggers.Add( "!packageinfo" );
             HelpText = "!packageinfo <packageid> - Requests package info for a given PackageID, and serves it";
 
             new JobCallback<SteamApps.PICSProductInfoCallback>( OnProductInfo, Steam.Instance.CallbackManager );

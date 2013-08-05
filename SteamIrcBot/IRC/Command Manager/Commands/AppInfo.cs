@@ -19,7 +19,8 @@ namespace SteamIrcBot
 
         public AppIDCommand()
         {
-            Trigger = "!appid";
+            Triggers.Add( "!appid" );
+            Triggers.Add( "!appname" );
             HelpText = "!appid <appid> - Requests app name for given AppID";
 
             new JobCallback<SteamApps.AppInfoCallback>( OnAppInfo, Steam.Instance.CallbackManager );
@@ -94,7 +95,7 @@ namespace SteamIrcBot
     {
         public GameIDCommand()
         {
-            Trigger = "!gameid";
+            Triggers.Add( "!gameid" );
             HelpText = "!gameid <gameid> - Expands GameID";
         }
 
@@ -130,7 +131,7 @@ namespace SteamIrcBot
 
         public AppInfoCommand()
         {
-            Trigger = "!appinfo";
+            Triggers.Add( "!appinfo" );
             HelpText = "!appinfo <appid> - Requests app info for a given app, and provides it";
 
             new JobCallback<SteamApps.PICSProductInfoCallback>( OnProductInfo, Steam.Instance.CallbackManager );

@@ -7,9 +7,15 @@ namespace SteamIrcBot
 {
     abstract class Command
     {
-        public string Trigger { get; set; }
+        public List<string> Triggers { get; set; }
 
         public string HelpText { get; set; }
+
+
+        protected Command()
+        {
+            Triggers = new List<string>();
+        }
 
 
         internal void DoRun( CommandDetails details )

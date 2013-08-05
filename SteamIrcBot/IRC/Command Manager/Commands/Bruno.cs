@@ -9,7 +9,7 @@ namespace SteamIrcBot
     {
         public BrunoCommand()
         {
-            Trigger = "!bruno";
+            Triggers.Add( "!bruno" );
             HelpText = "!bruno - Acquire vast sums of knowledge through stats, one quote at a time";
         }
 

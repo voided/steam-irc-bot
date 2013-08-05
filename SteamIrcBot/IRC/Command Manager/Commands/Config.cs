@@ -11,7 +11,7 @@ namespace SteamIrcBot
     {
         public ConfigCommand()
         {
-            Trigger = "!config";
+            Triggers.Add( "!config" );
             HelpText = "!config <get/set/add/remove/clear> <option> [value] - Modify config settings";
         }
 

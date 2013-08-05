@@ -18,7 +18,8 @@ namespace SteamIrcBot
 
         public UGCCommand()
         {
-            Trigger = "!ugc";
+            Triggers.Add( "!ugc" );
+            Triggers.Add( "!ugcid" );
             HelpText = "!ugc <ugcid> - Requests UGC details for the given UGC ID";
 
             new JobCallback<SteamCloud.UGCDetailsCallback>( OnUGCInfo, Steam.Instance.CallbackManager );
@@ -88,7 +89,8 @@ namespace SteamIrcBot
 
         public PubFileCommand()
         {
-            Trigger = "!pubfile";
+            Triggers.Add( "!pubfile" );
+            Triggers.Add( "!publishedfile" );
             HelpText = "!pubfile <pubfileid> - Requests published file details for the given published file ID";
 
             new JobCallback<SteamWorkshop.PublishedFileDetailsCallback>( OnPubInfo, Steam.Instance.CallbackManager );

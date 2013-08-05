@@ -14,7 +14,7 @@ namespace SteamIrcBot
 
         public PonyCommand()
         {
-            Trigger = "!pony";
+            Triggers.Add( "!pony" );
             HelpText = "!pony - pony verb the noun";
         }
 

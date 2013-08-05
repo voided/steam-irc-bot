@@ -14,7 +14,7 @@ namespace SteamIrcBot
 
         public TI3Command()
         {
-            Trigger = "!ti3";
+            Triggers.Add( "!ti3" );
             HelpText = "!ti3 - Countdown to Doters";
         }
 
