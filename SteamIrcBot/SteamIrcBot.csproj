@@ -68,6 +68,7 @@
     <Compile Include="IRC\Command Manager\Commands\AppInfo.cs" />
     <Compile Include="IRC\Command Manager\Commands\Bruno.cs" />
     <Compile Include="IRC\Command Manager\Commands\Config.cs" />
+    <Compile Include="IRC\Command Manager\Commands\NumServers.cs" />
     <Compile Include="IRC\Command Manager\Commands\TI3.cs" />
     <Compile Include="IRC\Command Manager\Commands\EResult.cs" />
     <Compile Include="IRC\Command Manager\Commands\FindAccounts.cs" />
