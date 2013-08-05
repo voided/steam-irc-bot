@@ -203,7 +203,11 @@ namespace SteamIrcBot
                 // write out diff
                 File.WriteAllText( GetManifestDiffPath( depotId, cachedManifest, manifest ), diffString );
 
-                if ( Settings.Current.ImportantApps.Contains( depotInfo.AppID ) )
+                // the manifest diff has changes if at least one of the diffs in the list isn't equal
+                bool hasDiffs = diffList
+                    .Any( d => d.operation != Operation.EQUAL );
+
+                if ( Settings.Current.ImportantApps.Contains( depotInfo.AppID ) && hasDiffs )
                 {
                     string path = Path.Combine( "manifest_diffs", depotId.ToString(), string.Format( "{0}_{1}.html", cachedManifest, manifest ) );
                     var webUri = new Uri( new Uri( Settings.Current.WebURL ), path );
