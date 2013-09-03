@@ -47,7 +47,10 @@ namespace SteamIrcBot
                     if ( !results[ "success" ].AsBoolean() )
                         return; // no useful result from the api, or app isn't configured
 
-                    uint requiredVersion = ( uint )results[ "required_version" ].AsInteger();
+                    uint requiredVersion = ( uint )results[ "required_version" ].AsInteger( -1 );
+
+                    if ( ( int )requiredVersion == -1 )
+                        return; // some apps are incorrectly configured and don't report a required version
 
                     if ( !results[ "up_to_date" ].AsBoolean() )
                     {
