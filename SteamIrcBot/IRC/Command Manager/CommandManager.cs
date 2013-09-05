@@ -17,7 +17,10 @@ namespace SteamIrcBot
             RegisteredCommands = new List<Command>();
 
             client.OnChannelMessage += MessageParser_ChannelMessage;
+        }
 
+        public void Init()
+        {
             var commandTypes =
                 Assembly.GetExecutingAssembly()
                 .GetTypes()

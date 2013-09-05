@@ -67,9 +67,10 @@ namespace SteamIrcBot
         }
 
 
-
         public void Connect()
         {
+            CommandManager.Init();
+
             if ( client.IsConnected )
                 return;
 
