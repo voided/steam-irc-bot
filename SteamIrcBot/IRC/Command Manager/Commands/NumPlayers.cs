@@ -85,8 +85,9 @@ namespace SteamIrcBot
         {
             if ( appId == 0 )
             {
-                // steam tracks player counts for appid 0 as "Steam", so we want the package name instead
-                return Steam.Instance.GetPackageName( appId );
+                // steam tracks player counts for appid 0 as "Steam"
+                // not using the package name because sumbaudy at valve renamed all the packages to Steam Sub #
+                return "Steam";
             }
 
             return Steam.Instance.GetAppName( appId );
