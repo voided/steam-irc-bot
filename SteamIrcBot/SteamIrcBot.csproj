@@ -67,6 +67,7 @@
     <Compile Include="IRC\Command Manager\CommandManager.cs" />
     <Compile Include="IRC\Command Manager\Commands\AppInfo.cs" />
     <Compile Include="IRC\Command Manager\Commands\Bruno.cs" />
+    <Compile Include="IRC\Command Manager\Commands\Bug.cs" />
     <Compile Include="IRC\Command Manager\Commands\Config.cs" />
     <Compile Include="IRC\Command Manager\Commands\NumServers.cs" />
     <Compile Include="IRC\Command Manager\Commands\TI3.cs" />

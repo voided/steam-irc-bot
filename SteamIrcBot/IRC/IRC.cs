@@ -58,6 +58,7 @@ namespace SteamIrcBot
             client.AutoRetry = true;
             client.AutoRejoin = true;
             client.AutoRejoinOnKick = true;
+            client.ActiveChannelSyncing = true;
 
             CommandManager = new CommandManager( client );
 
@@ -124,6 +125,12 @@ namespace SteamIrcBot
         public void Join( string[] channels )
         {
             client.RfcJoin( channels );
+        }
+
+        public bool IsUserOnChannel( string channel, string user )
+        {
+            ChannelUser userObj = client.GetChannelUser( channel, user );
+            return userObj != null;
         }
 
 
