@@ -10,6 +10,7 @@ namespace SteamIrcBot
     class CommandManager
     {
         public List<Command> RegisteredCommands { get; private set; }
+        object commandLock = new object();
 
 
         public CommandManager( IrcClient client )
@@ -27,13 +28,19 @@ namespace SteamIrcBot
                 .Where( t => !t.IsAbstract )
                 .Where( t => t.IsSubclassOf( typeof( Command ) ) );
 
-            foreach ( var command in commandTypes )
+            lock ( commandLock )
             {
-                var cmd = Activator.CreateInstance( command ) as Command;
+                // Init and Tick are called on different threads during startup
+                // so we need to serialize access to our command list during initialization
 
-                Log.WriteDebug( "CommandManager", "Registering command {0}: {1}", command.Name, cmd.Triggers.First() );
+                foreach ( var command in commandTypes )
+                {
+                    var cmd = Activator.CreateInstance( command ) as Command;
 
-                RegisteredCommands.Add( cmd );
+                    Log.WriteDebug( "CommandManager", "Registering command {0}: {1}", command.Name, cmd.Triggers.First() );
+
+                    RegisteredCommands.Add( cmd );
+                }
             }
         }
 
@@ -43,9 +50,12 @@ namespace SteamIrcBot
                 .Where( c => c.GetType().Implements( typeof( IRequestableCommand ) ) )
                 .Cast<IRequestableCommand>();
 
-            foreach ( var cmd in expirableCommands )
+            lock ( commandLock )
             {
-                cmd.ExpireRequests();
+                foreach ( var cmd in expirableCommands )
+                {
+                    cmd.ExpireRequests();
+                }
             }
         }
 
