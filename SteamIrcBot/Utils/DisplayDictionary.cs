@@ -16,21 +16,26 @@ namespace SteamIrcBot
         }
 
 
-        public new void Add( string key, string value )
+        public void Add( string key, string value, bool quotes = false )
         {
             if ( string.IsNullOrEmpty( value ) )
                 return;
 
-            value = value.Clean();
+            value = value
+                .Clean()
+                .Truncate( maxValueLen );
 
-            base[ key ] = value.Truncate( maxValueLen );
+            if ( quotes )
+                value = string.Format( "\"{0}\"", value );
+
+            base[ key ] = value;
         }
-        public void Add( string key, object value )
+        public void Add( string key, object value, bool quotes = false )
         {
             if ( value == null )
                 return;
 
-            this.Add( key, value.ToString() );
+            this.Add( key, value.ToString(), quotes );
         }
 
         public override string ToString()

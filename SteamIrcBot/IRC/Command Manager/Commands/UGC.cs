@@ -70,7 +70,7 @@ namespace SteamIrcBot
             displayDict.Add( "URL", callback.URL );
             displayDict.Add( "Creator", callback.Creator );
             displayDict.Add( "App", callback.AppID );
-            displayDict.Add( "File", string.Format( "\"{0}\"", callback.FileName ) );
+            displayDict.Add( "File", callback.FileName, true );
             displayDict.Add( "Size", Utils.GetByteSizeString( callback.FileSize ) );
 
             IRC.Instance.Send( req.Channel, "{0}: {1}: {2}", req.Requester.Nickname, req.UGC, displayDict );
@@ -138,17 +138,17 @@ namespace SteamIrcBot
 
             var displayDict = new DisplayDictionary();
 
-            displayDict.Add( "Title", string.Format( "\"{0}\"", callback.Title ) );
+            displayDict.Add( "Title",  callback.Title, true );
             displayDict.Add( "URL", callback.URL );
             displayDict.Add( "Creator", callback.Creator );
             displayDict.Add( "Creator App", Steam.Instance.GetAppName( callback.CreatorAppID ) );
             displayDict.Add( "Consumer App", Steam.Instance.GetAppName( callback.ConsumerAppID ) );
             displayDict.Add( "File UGC", callback.FileUGC );
             displayDict.Add( "Preview UGC", callback.PreviewFileUGC );
-            displayDict.Add( "Description", string.Format( "\"{0}\"", callback.Description ) );
+            displayDict.Add( "Description", callback.Description, true );
             displayDict.Add( "Creation Time", callback.CreationTime );
             displayDict.Add( "Visibility", callback.Visiblity );
-            displayDict.Add( "File", string.Format( "\"{0}\"", callback.FileName ) );
+            displayDict.Add( "File", callback.FileName, true );
 
             IRC.Instance.Send( req.Channel, "{0}: {1}: {2}", req.Requester.Nickname, req.PubFileID, displayDict );
 
