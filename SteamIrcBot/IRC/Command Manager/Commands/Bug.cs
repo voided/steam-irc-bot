@@ -95,7 +95,10 @@ namespace SteamIrcBot
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: {1} - {2}", req.Requester.Nickname, req.Url, textNode.InnerText.Clean().Trim() );
+            string cleanTitle = textNode.InnerText.Clean().Trim();
+            cleanTitle = HttpUtility.HtmlDecode( cleanTitle );
+
+            IRC.Instance.Send( req.Channel, "{0}: {1} - {2}", req.Requester.Nickname, req.Url, cleanTitle );
         }
     }
 }
