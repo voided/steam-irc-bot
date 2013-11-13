@@ -65,8 +65,12 @@ namespace SteamIrcBot
                 string message = string.Format( "Got PICS changelist {0} for {1} apps and {2} packages - {3}",
                     changeList.ChangeNumber, changeList.Apps.Count, changeList.Packages.Count, GetChangelistURL( changeList.ChangeNumber ) );
 
+                bool isLargeChangelist = false;
+
                 if ( numPackageChanges >= ChangesReqToBeImportant || numAppChanges >= ChangesReqToBeImportant )
                 {
+                    isLargeChangelist = true;
+
                     // if this changelist contains a number of changes over a specific threshold, we'll consider it "important" and send to all channels
                     IRC.Instance.SendAll( message );
                 }
@@ -87,14 +91,17 @@ namespace SteamIrcBot
                         IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );
                     }
 
-                    // then announce all apps that changed
-                    foreach ( var app in changeList.Apps )
+                    if ( !isLargeChangelist )
                     {
-                        IRC.Instance.SendAnnounce( "App: {0} {1}- {2}",
-                            Steam.Instance.GetAppName( app.ID ),
-                            app.NeedsToken ? "(needs token) " : "",
-                            GetAppHistoryUrl( app.ID )
-                        );
+                        // then announce all apps that changed, if we're not part of a large changelist
+                        foreach ( var app in changeList.Apps )
+                        {
+                            IRC.Instance.SendAnnounce( "App: {0} {1}- {2}",
+                                Steam.Instance.GetAppName( app.ID ),
+                                app.NeedsToken ? "(needs token) " : "",
+                                GetAppHistoryUrl( app.ID )
+                            );
+                        }
                     }
                 }
 
@@ -102,13 +109,16 @@ namespace SteamIrcBot
                 {
                     // todo: important packages
 
-                    foreach ( var package in changeList.Packages )
+                    if ( !isLargeChangelist )
                     {
-                        IRC.Instance.SendAnnounce( "Package: {0} {1}- {2}",
-                            Steam.Instance.GetPackageName( package.ID ),
-                            package.NeedsToken ? "(needs token) " : "",
-                            GetPackageHistoryUrl( package.ID )
-                        );
+                        foreach ( var package in changeList.Packages )
+                        {
+                            IRC.Instance.SendAnnounce( "Package: {0} {1}- {2}",
+                                Steam.Instance.GetPackageName( package.ID ),
+                                package.NeedsToken ? "(needs token) " : "",
+                                GetPackageHistoryUrl( package.ID )
+                            );
+                        }
                     }
                 }
             }
