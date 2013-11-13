@@ -37,20 +37,24 @@ namespace SteamIrcBot
 
             // group apps and package changes by changelist, this will seperate into individual changelists
             var appGrouping = callback.AppChanges
-                .GroupBy( a => a.Value.ChangeNumber );
+                .Select( a => a.Value )
+                .GroupBy( a => a.ChangeNumber );
 
             var packageGrouping = callback.PackageChanges
-                .GroupBy( p => p.Value.ChangeNumber );
+                .Select( p => p.Value )
+                .GroupBy( p => p.ChangeNumber );
 
             // join apps and packages back together based on changelist number
             var changeLists = appGrouping
-                .Join( packageGrouping, a => a.Key, p => p.Key, ( a, p ) => new
+                .FullOuterJoin( packageGrouping, a => a.Key, p => p.Key, ( a, p, key ) => new
                 {
-                    ChangeNumber = a.Key,
+                    ChangeNumber = key,
 
-                    Apps = a.Select( app => app.Value ).ToList(),
-                    Packages = p.Select( package => package.Value ).ToList(),
-                } )
+                    Apps = a.ToList(),
+                    Packages = p.ToList(),
+                },
+                new EmptyGrouping<uint, SteamApps.PICSChangesCallback.PICSChangeData>(),
+                new EmptyGrouping<uint, SteamApps.PICSChangesCallback.PICSChangeData>() )
                 .OrderBy( c => c.ChangeNumber );
 
             // the number of changes required in a changelist in order to be important enough to display
