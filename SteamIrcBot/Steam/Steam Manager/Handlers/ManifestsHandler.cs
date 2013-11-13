@@ -11,6 +11,7 @@ using SteamKit2;
 
 namespace SteamIrcBot
 {
+/*
     class ManifestsHandler : SteamHandler
     {
         public ManifestsHandler( CallbackManager manager )
@@ -422,6 +423,6 @@ namespace SteamIrcBot
             return ulong.TryParse( manifestName, out manifestId );
         }
     }
-
+*/
 
 }
