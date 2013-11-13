@@ -158,9 +158,6 @@ namespace SteamIrcBot
             displayDict.Add( "Country", callback.CountryName );
             displayDict.Add( "Time Created", callback.TimeCreated );
 
-            var time = callback.RecentPlaytime;
-            displayDict.Add( "Playtime", string.Format( "{0} days, {1} hours, {2} minutes", time.Days, time.Hours, time.Minutes ) );
-
             displayDict.Add( "Summary", callback.Summary );
 
             IRC.Instance.Send( req.Channel, "{0}: {1}: {2}", req.Requester.Nickname, req.SteamID, displayDict );
