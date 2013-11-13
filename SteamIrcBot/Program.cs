@@ -24,7 +24,6 @@ namespace SteamIrcBot
                 Log.WriteError( "Program", "Unhandled exception (IsTerm: {0}): {1}", e.IsTerminating, e.ExceptionObject );
             };
 
-
             var service = new BotService();
 
 #if SERVICE_BUILD

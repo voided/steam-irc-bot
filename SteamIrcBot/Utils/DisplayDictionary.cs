@@ -16,6 +16,10 @@ namespace SteamIrcBot
         }
 
 
+        public new void Add( string key, string value )
+        {
+            Add( key, value, false );
+        }
         public void Add( string key, string value, bool quotes = false )
         {
             if ( string.IsNullOrEmpty( value ) )

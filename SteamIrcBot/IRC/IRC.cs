@@ -153,6 +153,7 @@ namespace SteamIrcBot
             }
 
             client.ListenOnce( false );
+
             CommandManager.Tick();
         }
 
