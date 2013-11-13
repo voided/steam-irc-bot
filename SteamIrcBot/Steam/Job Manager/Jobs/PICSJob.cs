@@ -31,58 +31,85 @@ namespace SteamIrcBot
         void OnPICSChanges( SteamApps.PICSChangesCallback callback, JobID jobId )
         {
             if ( lastChangeNumber == callback.CurrentChangeNumber )
-                return;
+                return; // no new changes
 
             lastChangeNumber = callback.CurrentChangeNumber;
 
-            string message = string.Format( "Got PICS changelist {0} for {1} apps and {2} packages - {3}",
-                lastChangeNumber, callback.AppChanges.Count, callback.PackageChanges.Count, GetChangelistURL( lastChangeNumber ) );
+            // group apps and package changes by changelist, this will seperate into individual changelists
+            var appGrouping = callback.AppChanges
+                .GroupBy( a => a.Value.ChangeNumber );
 
+            var packageGrouping = callback.PackageChanges
+                .GroupBy( p => p.Value.ChangeNumber );
+
+            // join apps and packages back together based on changelist number
+            var changeLists = appGrouping
+                .Join( packageGrouping, a => a.Key, p => p.Key, ( a, p ) => new
+                {
+                    ChangeNumber = a.Key,
+
+                    Apps = a.Select( app => app.Value ).ToList(),
+                    Packages = p.Select( package => package.Value ).ToList(),
+                } )
+                .OrderBy( c => c.ChangeNumber );
+
+            // the number of changes required in a changelist in order to be important enough to display
+            // to all broadcast channels
             const int ChangesReqToBeImportant = 50;
-            if ( callback.PackageChanges.Count >= ChangesReqToBeImportant || callback.AppChanges.Count >= ChangesReqToBeImportant )
-            {
-                // if this changelist contains a number of changes over a specific threshold, we'll consider it "important" and send to all channels
-                IRC.Instance.SendAll( message );
-            }
-            else
-            {
-                // otherwise, only send to announce
-                IRC.Instance.SendAnnounce( message );
-            }
 
-            if ( callback.AppChanges.Count > 0 )
+            foreach ( var changeList in changeLists )
             {
-                // prioritize important apps first
-                var importantApps = callback.AppChanges.Keys
-                    .Intersect( Settings.Current.ImportantApps );
+                int numAppChanges = changeList.Apps.Count;
+                int numPackageChanges = changeList.Packages.Count;
 
-                foreach ( var app in importantApps )
+                string message = string.Format( "Got PICS changelist {0} for {1} apps and {2} packages - {3}",
+                    changeList.ChangeNumber, changeList.Apps.Count, changeList.Packages.Count, GetChangelistURL( changeList.ChangeNumber ) );
+
+                if ( numPackageChanges >= ChangesReqToBeImportant || numAppChanges >= ChangesReqToBeImportant )
                 {
-                    IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );
+                    // if this changelist contains a number of changes over a specific threshold, we'll consider it "important" and send to all channels
+                    IRC.Instance.SendAll( message );
+                }
+                else
+                {
+                    // otherwise, only send to announce
+                    IRC.Instance.SendAnnounce( message );
                 }
 
-                // then announce all apps that changed
-                foreach ( var app in callback.AppChanges.Values )
+                if ( numAppChanges > 0 )
                 {
-                    IRC.Instance.SendAnnounce( "App: {0} {1}- {2}",
-                        Steam.Instance.GetAppName( app.ID ),
-                        app.NeedsToken ? "(needs token) " : "",
-                        GetAppHistoryUrl( app.ID )
-                    );
+                    // prioritize important apps first
+                    var importantApps = changeList.Apps.Select( a => a.ID )
+                        .Intersect( Settings.Current.ImportantApps );
+
+                    foreach ( var app in importantApps )
+                    {
+                        IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );
+                    }
+
+                    // then announce all apps that changed
+                    foreach ( var app in changeList.Apps )
+                    {
+                        IRC.Instance.SendAnnounce( "App: {0} {1}- {2}",
+                            Steam.Instance.GetAppName( app.ID ),
+                            app.NeedsToken ? "(needs token) " : "",
+                            GetAppHistoryUrl( app.ID )
+                        );
+                    }
                 }
-            }
 
-            if ( callback.PackageChanges.Count > 0 )
-            {
-                // todo: important packages
-
-                foreach ( var package in callback.PackageChanges.Values )
+                if ( numPackageChanges > 0 )
                 {
-                    IRC.Instance.SendAnnounce( "Package: {0} {1}- {2}",
-                        Steam.Instance.GetPackageName( package.ID ),
-                        package.NeedsToken ? "(needs token) " : "",
-                        GetPackageHistoryUrl( package.ID )
-                    );
+                    // todo: important packages
+
+                    foreach ( var package in changeList.Packages )
+                    {
+                        IRC.Instance.SendAnnounce( "Package: {0} {1}- {2}",
+                            Steam.Instance.GetPackageName( package.ID ),
+                            package.NeedsToken ? "(needs token) " : "",
+                            GetPackageHistoryUrl( package.ID )
+                        );
+                    }
                 }
             }
         }
