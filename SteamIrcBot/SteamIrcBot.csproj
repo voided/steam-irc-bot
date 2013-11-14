@@ -73,6 +73,7 @@
     <Compile Include="IRC\Command Manager\Commands\Bruno.cs" />
     <Compile Include="IRC\Command Manager\Commands\Bug.cs" />
     <Compile Include="IRC\Command Manager\Commands\Config.cs" />
+    <Compile Include="IRC\Command Manager\Commands\Fennec.cs" />
     <Compile Include="IRC\Command Manager\Commands\NumServers.cs" />
     <Compile Include="IRC\Command Manager\Commands\TI3.cs" />
     <Compile Include="IRC\Command Manager\Commands\EResult.cs" />
@@ -126,7 +127,9 @@
     <Compile Include="Steam\Utils\SteamGamesHandler.cs" />
     <Compile Include="Steam\Utils\SteamLevelHandler.cs" />
     <Compile Include="Utils\Settings.cs" />
-    <Compile Include="Utils\Utils.cs" />
+    <Compile Include="Utils\Utils.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="RSS\XmlSanitizingStream.cs" />
     <Compile Include="Utils\XmlSerializable.cs" />
   </ItemGroup>

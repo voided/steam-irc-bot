@@ -229,4 +229,39 @@ namespace SteamIrcBot
         }
     }
 
+    class RedirectDownloadStringCompletedEventArgs : EventArgs
+    {
+        public DownloadStringCompletedEventArgs EventArgs { get; set; }
+        public Uri RedirectUri { get; set; }
+    }
+
+    class RedirectWebClient : WebClient
+    {
+        public Uri ResponseUri { get; private set; }
+
+        public event EventHandler<RedirectDownloadStringCompletedEventArgs> RedirectDownloadStringCompleted;
+
+
+        protected override WebResponse GetWebResponse( WebRequest request, IAsyncResult result )
+        {
+            var response = base.GetWebResponse( request, result );
+
+            ResponseUri = response.ResponseUri;
+
+            return response;
+        }
+
+        protected override void OnDownloadStringCompleted( DownloadStringCompletedEventArgs e )
+        {
+            var eventArgs = new RedirectDownloadStringCompletedEventArgs();
+
+            eventArgs.EventArgs = e;
+            eventArgs.RedirectUri = ResponseUri;
+
+            RedirectDownloadStringCompleted( this, eventArgs );
+
+            base.OnDownloadStringCompleted( e );
+        }
+    }
+
 }
