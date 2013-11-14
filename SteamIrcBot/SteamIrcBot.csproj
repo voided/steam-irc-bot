@@ -102,13 +102,11 @@
     <Compile Include="Steam\Job Manager\Jobs\PICSJob.cs" />
     <Compile Include="Steam\Job Manager\Jobs\UpToDateJob.cs" />
     <Compile Include="Steam\Steam Manager\Handlers\GroupHandler.cs" />
-    <Compile Include="Steam\Steam Manager\Handlers\ManifestsHandler.cs" />
     <Compile Include="Steam\Steam Manager\SteamManager.cs" />
     <Compile Include="Steam\Task Manager\Task.cs" />
     <Compile Include="Steam\Task Manager\TaskManager.cs" />
     <Compile Include="Steam\Utils\SteamAccountHandler.cs" />
     <Compile Include="Steam\Utils\SteamAppInfoHandler.cs" />
-    <Compile Include="Utils\DiffMatchPatch.cs" />
     <Compile Include="Utils\DisplayDictionary.cs" />
     <Compile Include="Utils\Log.cs" />
     <Compile Include="Steam\Job Manager\JobManager.cs" />
