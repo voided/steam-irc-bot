@@ -105,11 +105,11 @@ namespace SteamIrcBot
         {
             switch ( packetMsg.MsgType )
             {
-                case EMsg.PICSChangesSinceResponse:
+                case EMsg.ClientPICSChangesSinceResponse:
                     HandleChangesResponse( packetMsg );
                     break;
 
-                case EMsg.PICSProductInfoResponse:
+                case EMsg.ClientPICSProductInfoResponse:
                     HandleProductInfoResponse( packetMsg );
                     break;
             }
@@ -118,7 +118,7 @@ namespace SteamIrcBot
 
         void HandleChangesResponse( IPacketMsg packetMsg )
         {
-            var changesResponse = new ClientMsgProtobuf<CMsgPICSChangesSinceResponse>( packetMsg );
+            var changesResponse = new ClientMsgProtobuf<CMsgClientPICSChangesSinceResponse>( packetMsg );
 
             if ( lastChangelist == changesResponse.Body.current_change_number )
                 return;
@@ -140,7 +140,7 @@ namespace SteamIrcBot
 
         void HandleProductInfoResponse( IPacketMsg packetMsg )
         {
-            var productInfo = new ClientMsgProtobuf<CMsgPICSProductInfoResponse>( packetMsg );
+            var productInfo = new ClientMsgProtobuf<CMsgClientPICSProductInfoResponse>( packetMsg );
 
             foreach ( var app in productInfo.Body.apps )
             {
