@@ -119,7 +119,13 @@ namespace SteamIrcBot
                 return;
             }
 
-            var pubFileRequest = new CPublishedFile_GetDetails_Request();
+            var pubFileRequest = new CPublishedFile_GetDetails_Request
+            {
+                includetags = true,
+                includekvtags = true,
+                includevotes = true,
+            };
+
             pubFileRequest.publishedfileids.Add( pubFileId );
 
             var jobId = Steam.Instance.PublishedFiles.SendMessage( api => api.GetDetails( pubFileRequest ) );
@@ -204,6 +210,26 @@ namespace SteamIrcBot
             if ( details.vote_data != null )
             {
                 displayDict.Add( "Votes", string.Format( "{0} up, {1} down", details.vote_data.votes_up, details.vote_data.votes_down ) );
+                displayDict.Add( "Score", string.Format( "{0:N4}", details.vote_data.score ) );
+            }
+
+            if ( details.kvtags.Count > 0 )
+            {
+                string kvTagsString = string.Join( ", ", details.kvtags.Select( kv => string.Format( "{0}={1}", kv.key, kv.value ) ) );
+                displayDict.Add( "KVTags", kvTagsString );
+            }
+
+            if ( details.tags.Count > 0 )
+            {
+                string tagString = string.Join( ", ", details.tags.Select( tag =>
+                {
+                    if ( tag.adminonly )
+                        return string.Format( "{0} (admin)", tag.tag );
+
+                    return tag.tag;
+                } ) );
+
+                displayDict.Add( "Tags", tagString );
             }
 
             IRC.Instance.Send( req.Channel, "{0}: {1}: {2}", req.Requester.Nickname, req.PubFileID, displayDict );
