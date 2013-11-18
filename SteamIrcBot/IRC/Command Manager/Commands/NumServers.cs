@@ -88,7 +88,11 @@ namespace SteamIrcBot
             if ( req == null )
                 return;
 
-            if ( callback.Servers.Count <= 20 )
+            if ( callback.Servers.Count == 0 )
+            {
+                IRC.Instance.Send( req.Channel, "{0}: No servers", req.Requester.Nickname );
+            }
+            else if ( callback.Servers.Count <= 20 )
             {
                 var response = string.Join( ", ", callback.Servers
                     .Take( 10 )
