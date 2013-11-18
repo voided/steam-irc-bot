@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Reflection;
+using System.IO;
 using SteamKit2;
+using SteamKit2.Unified.Internal;
 
 namespace SteamIrcBot
 {
@@ -40,6 +42,8 @@ namespace SteamIrcBot
         public SteamAppInfo AppInfo { get; private set; }
         public SteamAccount Account { get; private set; }
 
+        public SteamUnifiedMessages.UnifiedService<IPublishedFile> PublishedFiles { get; private set; }
+
 
         bool loggedOn;
         public bool Connected { get { return Client.ConnectedUniverse != EUniverse.Invalid && loggedOn; } }
@@ -65,6 +69,8 @@ namespace SteamIrcBot
             Games = new SteamGames();
             AppInfo = new SteamAppInfo();
             Account = new SteamAccount();
+
+            PublishedFiles = Unified.CreateService<IPublishedFile>();
 
             Client.AddHandler( Levels );
             Client.AddHandler( Games );
