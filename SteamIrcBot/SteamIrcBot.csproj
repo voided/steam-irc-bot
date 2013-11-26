@@ -48,6 +48,9 @@
     <Reference Include="Meebey.SmartIrc4net">
       <HintPath>..\libs\Meebey.SmartIrc4net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
@@ -72,6 +75,7 @@
     <Compile Include="IRC\Command Manager\Commands\AppInfo.cs" />
     <Compile Include="IRC\Command Manager\Commands\Bruno.cs" />
     <Compile Include="IRC\Command Manager\Commands\Bug.cs" />
+    <Compile Include="IRC\Command Manager\Commands\Buttcoin.cs" />
     <Compile Include="IRC\Command Manager\Commands\Config.cs" />
     <Compile Include="IRC\Command Manager\Commands\Fennec.cs" />
     <Compile Include="IRC\Command Manager\Commands\NumServers.cs" />
