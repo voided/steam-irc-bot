@@ -158,7 +158,7 @@ namespace SteamIrcBot
 
             if ( result != EResult.OK )
             {
-                IRC.Instance.Send( req.Channel, "{0}: Unable to get published file info: {1}", result );
+                IRC.Instance.Send( req.Channel, "{0}: Unable to get published file info: {1}", req.Requester.Nickname, result );
                 return;
             }
 
