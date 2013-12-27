@@ -23,6 +23,7 @@ namespace SteamIrcBot
 
         RSS()
         {
+            ServicePointManager.DefaultConnectionLimit = 100;
         }
 
 
@@ -134,8 +135,9 @@ namespace SteamIrcBot
 
             try
             {
-                WebRequest webReq = WebRequest.Create( feedSettings.URL );
-                webReq.Timeout = ( int )TimeSpan.FromSeconds( 10 ).TotalMilliseconds;
+                HttpWebRequest webReq = WebRequest.Create( feedSettings.URL ) as HttpWebRequest;
+                webReq.Timeout = ( int )TimeSpan.FromSeconds( 5 ).TotalMilliseconds;
+                webReq.ReadWriteTimeout = (int)TimeSpan.FromSeconds( 5 ).TotalMilliseconds;
 
                 using ( var resp = webReq.GetResponse() )
                 using ( var reader = DateXmlReader.Create( resp.GetResponseStream() ) )
@@ -152,8 +154,9 @@ namespace SteamIrcBot
 
         SyndicationFeed LoadRSS10( string url )
         {
-            WebRequest webReq = WebRequest.Create( url );
-            webReq.Timeout = ( int )TimeSpan.FromSeconds( 10 ).TotalMilliseconds;
+            HttpWebRequest webReq = WebRequest.Create( url ) as HttpWebRequest;
+            webReq.Timeout = ( int )TimeSpan.FromSeconds( 5 ).TotalMilliseconds;
+            webReq.ReadWriteTimeout = (int)TimeSpan.FromSeconds( 5 ).TotalMilliseconds;
 
             using ( var resp = webReq.GetResponse() )
             using ( var reader = new XmlSanitizingStream( resp.GetResponseStream() ) )
