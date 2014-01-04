@@ -30,11 +30,6 @@ namespace SteamIrcBot
 
         void OnPICSChanges( SteamApps.PICSChangesCallback callback, JobID jobId )
         {
-            if ( lastChangeNumber == callback.CurrentChangeNumber )
-                return; // no new changes
-
-            lastChangeNumber = callback.CurrentChangeNumber;
-
             // group apps and package changes by changelist, this will seperate into individual changelists
             var appGrouping = callback.AppChanges
                 .Select( a => a.Value )
@@ -61,8 +56,20 @@ namespace SteamIrcBot
             // to all broadcast channels
             const int ChangesReqToBeImportant = 50;
 
+            if ( changeLists.Count() == 0 )
+            {
+                // this will happen on the first changes request
+                lastChangeNumber = callback.CurrentChangeNumber;
+                return;
+            }
+
             foreach ( var changeList in changeLists )
             {
+                if ( changeList.ChangeNumber <= lastChangeNumber )
+                    return; // old changelist
+
+                lastChangeNumber = changeList.ChangeNumber;
+
                 int numAppChanges = changeList.Apps.Count;
                 int numPackageChanges = changeList.Packages.Count;
 
