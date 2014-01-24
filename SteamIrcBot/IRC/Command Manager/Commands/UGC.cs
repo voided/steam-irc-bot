@@ -194,7 +194,7 @@ namespace SteamIrcBot
             if ( details.banned )
             {
                 displayDict.Add( "Ban Reason", details.ban_reason, true );
-                displayDict.Add( "Banner", details.banned );
+                displayDict.Add( "Banner", details.banner );
             }
 
             if ( details.incompatible )
