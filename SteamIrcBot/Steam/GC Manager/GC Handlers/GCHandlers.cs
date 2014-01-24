@@ -10,6 +10,8 @@ namespace SteamIrcBot
 {
     class GCSessionHandler : GCHandler
     {
+        uint lastGcVersion = 0;
+
         public GCSessionHandler( GCManager manager )
             : base( manager )
         {
@@ -25,12 +27,21 @@ namespace SteamIrcBot
 
         void OnWelcome( ClientGCMsgProtobuf<CMsgClientWelcome> msg )
         {
-            IRC.Instance.SendAll( "New {0} GC session (version: {1})", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.version );
+            if ( msg.Body.version != lastGcVersion && lastGcVersion != 0 )
+            {
+                IRC.Instance.SendAll( "New {0} GC session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.version, lastGcVersion );
+            }
+            else
+            {
+                IRC.Instance.SendAll( "New {0} GC session (version: {1})", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.version );
+            }
+
+            lastGcVersion = msg.Body.version;
         }
 
         void OnConnectionStatus( ClientGCMsgProtobuf<CMsgConnectionStatus> msg )
         {
-            IRC.Instance.SendAll( "GC status: {0}", msg.Body.status );
+            IRC.Instance.SendAll( "{0} GC status: {1}", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.status );
         }
     }
 
@@ -45,7 +56,7 @@ namespace SteamIrcBot
 
         void OnSystemMessage( ClientGCMsgProtobuf<CMsgSystemBroadcast> msg )
         {
-            IRC.Instance.SendAll( "GC system message: " + msg.Body.message );
+            IRC.Instance.SendAll( "{0} GC system message: {1}", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.message );
         }
     }
 
@@ -65,7 +76,7 @@ namespace SteamIrcBot
         {
             if ( lastSchemaVersion != msg.Body.item_schema_version && lastSchemaVersion != 0 )
             {
-                IRC.Instance.SendAll( "New GC item schema (version: " + lastSchemaVersion.ToString( "X4" ) + "): " + msg.Body.items_game_url );
+                IRC.Instance.SendAll( "New {0} GC item schema (version: {1:X4}): {2}", Steam.Instance.GetAppName( Settings.Current.GCApp ), lastSchemaVersion, msg.Body.items_game_url );
             }
 
             lastSchemaVersion = msg.Body.item_schema_version;
