@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamIrcBot", "SteamIrcBot\SteamIrcBot.csproj", "{9145A4BA-6739-4760-8EF5-F5BF3BFB60ED}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F27709F2-6A72-44BE-9F87-3805014E0C62}"
