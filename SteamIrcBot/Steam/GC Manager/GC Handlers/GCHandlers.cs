@@ -5,6 +5,9 @@ using System.Text;
 using SteamKit2.GC;
 using SteamKit2.GC.Internal;
 using SteamKit2.GC.TF2.Internal;
+using System.Net;
+using System.IO;
+using System.Windows.Forms;
 
 namespace SteamIrcBot
 {
@@ -80,6 +83,11 @@ namespace SteamIrcBot
             }
 
             lastSchemaVersion = msg.Body.item_schema_version;
+
+            using ( var webClient = new WebClient() )
+            {
+                webClient.DownloadFileAsync( new Uri( msg.Body.items_game_url ), Path.Combine( Application.StartupPath, "items_game.txt" ) );
+            }
         }
     }
 }

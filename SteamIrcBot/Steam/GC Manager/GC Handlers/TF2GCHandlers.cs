@@ -48,6 +48,47 @@ namespace SteamIrcBot
         }
     }
 
+    class GCClientItemBroadcastNotificationHandler : GCHandler
+    {
+        const uint ItemBroadcastNotification = 1096;
+
+
+        public GCClientItemBroadcastNotificationHandler( GCManager manager )
+            : base( manager )
+        {
+            new GCCallback<CMsgGCTFSpecificItemBroadcast>( ItemBroadcastNotification, OnNotification, manager );
+        }
+
+
+        void OnNotification( ClientGCMsgProtobuf<CMsgGCTFSpecificItemBroadcast> msg )
+        {
+            string itemName = GetItemName( msg.Body.item_def_index );
+
+            if ( msg.Body.was_destruction )
+            {
+                IRC.Instance.SendAll( "Item notification: {0} has destroyed their {1}!", msg.Body.user_name, itemName );
+            }
+            else
+            {
+                IRC.Instance.SendAll( "Item notification: {0} just received a {1}!", msg.Body.user_name, itemName );
+            }
+        }
+
+        string GetItemName( uint defIndex )
+        {
+            KeyValue itemsGame = KeyValue.LoadAsText( Path.Combine( Application.StartupPath, "items_game.txt" ) );
+
+            if ( itemsGame == null )
+            {
+                Log.WriteWarn( "GCClientItemBroadcastNotificationHandler", "Unable to load items_game.txt!" );
+                return string.Format( "Unknown Item {0}", defIndex );
+            }
+
+            return itemsGame[ "items" ][ defIndex.ToString() ][ "name" ].AsString();
+        }
+    }
+
+
     class GCClientNotificationHandler : GCHandler
     {
         const uint ClientNotification = 1069; // k_EMsgGCApplyConsumableEffects ??
