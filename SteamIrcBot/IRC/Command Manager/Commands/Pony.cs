@@ -28,7 +28,7 @@ namespace SteamIrcBot
                 var req = new Request();
                 AddRequest( details, req );
 
-                var uri = new Uri( string.Format( "http://areweponyyet.com/?chatty=1&pony={0}", pony ) );
+                var uri = new Uri( string.Format( "https://areweponyyet.com/?chatty=1&pony={0}", pony ) );
 
                 webClient.DownloadStringCompleted += OnDownloadCompleted;
                 webClient.DownloadStringAsync( uri, req );
@@ -48,7 +48,7 @@ namespace SteamIrcBot
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: http://areweponyyet.com/{1}", req.Requester.Nickname, e.Result );
+            IRC.Instance.Send( req.Channel, "{0}: https://areweponyyet.com/{1}", req.Requester.Nickname, e.Result );
         }
     }
 }
