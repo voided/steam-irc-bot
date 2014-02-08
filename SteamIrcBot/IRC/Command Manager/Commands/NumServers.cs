@@ -95,7 +95,7 @@ namespace SteamIrcBot
             else if ( callback.Servers.Count <= 20 )
             {
                 var response = string.Join( ", ", callback.Servers
-                    .Take( 10 )
+                    .Take( 20 )
                     .Select( s => string.Format( "{0} ({1})", s.EndPoint, s.AuthedPlayers ) ) );
 
                 IRC.Instance.Send( req.Channel, "{0}: {1}", req.Requester.Nickname, response );
