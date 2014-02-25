@@ -10,7 +10,7 @@ namespace SteamIrcBot
 {
     class ButtcoinCommand : Command<ButtcoinCommand.Request>
     {
-        const string MTGOX_TICKER = "http://data.mtgox.com/api/2/BTCUSD/money/ticker_fast";
+        const string TICKER = "https://blockchain.info/ticker";
 
 
         public class Request : BaseRequest
@@ -24,7 +24,7 @@ namespace SteamIrcBot
             Triggers.Add( "!bitcoin" );
             Triggers.Add( "!buttcoin" );
 
-            HelpText = "!btc - Request current MtGox BTC prices";
+            HelpText = "!btc - Request current BTC prices";
         }
 
         protected override void OnRun( CommandDetails details )
@@ -35,7 +35,7 @@ namespace SteamIrcBot
                 AddRequest( details, req );
 
                 webClient.DownloadStringCompleted += OnDownloadStringCompleted;
-                webClient.DownloadStringAsync( new Uri( MTGOX_TICKER ), req );
+                webClient.DownloadStringAsync( new Uri( TICKER ), req );
             }
         }
 
@@ -52,32 +52,23 @@ namespace SteamIrcBot
                 return;
             }
 
-            bool success = false;
             string bid, ask;
 
             try
             {
                 dynamic tickerData = JObject.Parse( e.Result );
 
-                success = tickerData.result == "success";
-
-                bid = tickerData.data.buy.display;
-                ask = tickerData.data.sell.display;
+                bid = tickerData.USD.buy;
+                ask = tickerData.USD.sell;
             }
             catch ( Exception ex )
             {
-                IRC.Instance.Send( req.Channel, "{0}: An error occurred while parsing the response from the MtGox API", req.Requester.Nickname );
+                IRC.Instance.Send( req.Channel, "{0}: An error occurred while parsing the response from the Blockchain.info API", req.Requester.Nickname );
                 Log.WriteWarn( "ButtcoinCommand", "Parse error: {0}", ex );
                 return;
             }
 
-            if ( !success )
-            {
-                IRC.Instance.Send( req.Channel, "{0}: The MtGox API encountered an error", req.Requester.Nickname );
-                return;
-            }
-
-            IRC.Instance.Send( req.Channel, "{0}: Bid: {1} USD - Ask: {2} USD", req.Requester.Nickname, bid, ask );
+            IRC.Instance.Send( req.Channel, "{0}: Bid: ${1} USD - Ask: ${2} USD", req.Requester.Nickname, bid, ask );
         }
     }
 }
