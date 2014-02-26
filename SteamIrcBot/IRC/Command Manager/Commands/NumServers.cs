@@ -18,7 +18,7 @@ namespace SteamIrcBot
         public NumServersCommand()
         {
             Triggers.Add( "!numservers" );
-            HelpText = "!numservers <filter> / !numservers <filter> - Request a server list from the GMS";
+            HelpText = "!numservers <filter> - Request a server list from the GMS";
 
             new JobCallback<SteamMasterServer.QueryCallback>( OnQuery, Steam.Instance.CallbackManager );
         }
