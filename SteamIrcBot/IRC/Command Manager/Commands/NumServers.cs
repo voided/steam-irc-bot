@@ -18,7 +18,7 @@ namespace SteamIrcBot
         public NumServersCommand()
         {
             Triggers.Add( "!numservers" );
-            HelpText = "!numservers <appid> <filter> [region] / !numservers <filter> - Request a server list from the GMS";
+            HelpText = "!numservers <filter> / !numservers <filter> - Request a server list from the GMS";
 
             new JobCallback<SteamMasterServer.QueryCallback>( OnQuery, Steam.Instance.CallbackManager );
         }
@@ -28,7 +28,7 @@ namespace SteamIrcBot
         {
             if ( details.Args.Length == 0 )
             {
-                IRC.Instance.Send( details.Channel, "{0}: filter or AppID and filter arguments required", details.Sender.Nickname );
+                IRC.Instance.Send( details.Channel, "{0}: filter argument required", details.Sender.Nickname );
                 return;
             }
 
@@ -43,38 +43,7 @@ namespace SteamIrcBot
                 Region = ERegionCode.World,
             };
 
-            if ( details.Args.Length >= 2 )
-            {
-                // specifying appid, filter, and possibly region
-                uint appId;
-                if ( !uint.TryParse( details.Args[ 0 ], out appId ) )
-                {
-                    IRC.Instance.Send( details.Channel, "{0}: Invalid AppID argument", details.Sender.Nickname );
-                    return;
-                }
-
-                query.AppID = appId;
-                query.Filter = details.Args[ 1 ];
-
-                if ( details.Args.Length >= 3 )
-                {
-                    ERegionCode region;
-                    if ( !Enum.TryParse<ERegionCode>( details.Args[ 2 ], out region ) )
-                    {
-                        IRC.Instance.Send( details.Channel, "{0}: Invalid region argument, should be one of: {1}",
-                            details.Sender.Nickname, string.Join( ", ", Enum.GetNames( typeof( ERegionCode ) ) )
-                        );
-                        return;
-                    }
-
-                    query.Region = region;
-                }
-            }
-            else
-            {
-                // just filter
-                query.Filter = details.Args[ 0 ];
-            }
+            query.Filter = string.Join( " ", details.Args );
 
             var jobId = Steam.Instance.MasterServer.ServerQuery( query );
             AddRequest( details, new Request { JobID = jobId } );
