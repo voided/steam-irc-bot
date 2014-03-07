@@ -53,7 +53,7 @@ namespace SteamIrcBot
         {
             nextConnect = DateTime.MaxValue;
 
-            client.SendDelay = ( int )TimeSpan.FromSeconds( 1.5 ).TotalMilliseconds;
+            client.SendDelay = ( int )TimeSpan.FromSeconds( 0.5 ).TotalMilliseconds;
             client.Encoding = Encoding.UTF8;
             client.AutoRetry = true;
             client.AutoRejoin = true;
