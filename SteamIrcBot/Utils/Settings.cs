@@ -61,6 +61,12 @@ namespace SteamIrcBot
                 return false;
             }
 
+            if ( Current.GetChannelsForTag( "main" ).Count() == 0 )
+            {
+                Log.WriteError( "Settings", "Missing IRC channel with main tag!" );
+                return false;
+            }
+
             if ( !Current.IsWebEnabled )
             {
                 Log.WriteWarn( "Settings", "Missing WebPath/WebURL, web share will be unavailable" );
