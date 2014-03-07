@@ -33,6 +33,9 @@ namespace SteamIrcBot
         {
             bool inThePast = input < TimeSpan.Zero;
 
+            if ( inThePast )
+                input = input.Negate();
+
             return string.Format( new PluralizeFormatProvider(), "{0:day/days}, {1:hour/hours}, {2:minute/minutes}, {3:second/seconds} {4}", input.Days, input.Hours, input.Minutes, input.Seconds, inThePast ? "ago" : "" );
         }
 
