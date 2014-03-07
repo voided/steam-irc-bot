@@ -60,7 +60,7 @@ namespace SteamIrcBot
                         if ( hasLastVersion )
                         {
                             // if we previously cached the version, display that it changed
-                            IRC.Instance.SendAll( "{0} (version: {1}) is no longer up to date. New version: {2}", Steam.Instance.GetAppName( app ), lastVersion, requiredVersion );
+                            IRC.Instance.SendToTag( "game-updates", "{0} (version: {1}) is no longer up to date. New version: {2}", Steam.Instance.GetAppName( app ), lastVersion, requiredVersion );
                         }
                     }
 

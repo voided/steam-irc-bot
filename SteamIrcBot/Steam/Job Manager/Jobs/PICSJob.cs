@@ -79,7 +79,7 @@ namespace SteamIrcBot
                 if ( numPackageChanges >= ChangesReqToBeImportant || numAppChanges >= ChangesReqToBeImportant )
                 {
                     // if this changelist contains a number of changes over a specific threshold, we'll consider it "important" and send to all channels
-                    IRC.Instance.SendAll( message );
+                    IRC.Instance.SendToTag( "pics", message );
                 }
 
                 if ( numAppChanges > 0 )
@@ -89,7 +89,7 @@ namespace SteamIrcBot
 
                     foreach ( var app in importantApps )
                     {
-                        IRC.Instance.SendAll( "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );
+                        IRC.Instance.SendToTag( "pics", "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );
                     }
                 }
 

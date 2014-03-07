@@ -109,7 +109,7 @@ namespace SteamIrcBot
                         newsUrl = link.Uri.ToString();
                     }
 
-                    IRC.Instance.SendAll( "{0} News: {1} - {2}", rss.Title.Text, item.Title.Text, newsUrl );
+                    IRC.Instance.SendToTag( "rss-news", "{0} News: {1} - {2}", rss.Title.Text, item.Title.Text, newsUrl );
 
                     // guaranteed to give us the most recent item at the last iteration because of our sort order
                     lastUpdated[ feed.URL ] = item.PublishDate.DateTime;

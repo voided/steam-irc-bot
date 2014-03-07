@@ -22,7 +22,7 @@ namespace SteamIrcBot
 
         void OnSaxxyBroadcast( ClientGCMsgProtobuf<CMsgTFSaxxyBroadcast> msg )
         {
-            IRC.Instance.SendAll( msg.Body.user_name + " has won a saxxy in category: " + msg.Body.category_number );
+            IRC.Instance.SendToTag( "tf2-gc", msg.Body.user_name + " has won a saxxy in category: " + msg.Body.category_number );
         }
     }
 
@@ -39,11 +39,11 @@ namespace SteamIrcBot
         {
             if ( msg.Body.deleted )
             {
-                IRC.Instance.SendAll( msg.Body.user_name + " has deleted golden wrench " + msg.Body.wrench_number );
+                IRC.Instance.SendToTag( "tf2-gc", msg.Body.user_name + " has deleted golden wrench " + msg.Body.wrench_number );
             }
             else
             {
-                IRC.Instance.SendAll( msg.Body.user_name + " got golden wrench number " + msg.Body.wrench_number );
+                IRC.Instance.SendToTag( "tf2-gc", msg.Body.user_name + " got golden wrench number " + msg.Body.wrench_number );
             }
         }
     }
@@ -66,11 +66,11 @@ namespace SteamIrcBot
 
             if ( msg.Body.was_destruction )
             {
-                IRC.Instance.SendAll( "Item notification: {0} has destroyed their {1}!", msg.Body.user_name, itemName );
+                IRC.Instance.SendToTag( "tf2-gc", "Item notification: {0} has destroyed their {1}!", msg.Body.user_name, itemName );
             }
             else
             {
-                IRC.Instance.SendAll( "Item notification: {0} just received a {1}!", msg.Body.user_name, itemName );
+                IRC.Instance.SendToTag( "tf2-gc", "Item notification: {0} just received a {1}!", msg.Body.user_name, itemName );
             }
         }
 
@@ -131,8 +131,8 @@ namespace SteamIrcBot
                 body = body.Replace( replaceKey, LookupToken( kvp.Value ) );
             }
 
-            IRC.Instance.SendAll( "GC Client Notification: {0}", title );
-            IRC.Instance.SendAll( "{0}", body );
+            IRC.Instance.SendToTag( "tf2-gc", "GC Client Notification: {0}", title );
+            IRC.Instance.SendToTag( "tf2-gc", "{0}", body );
         }
 
         string LookupToken( string tokenName )

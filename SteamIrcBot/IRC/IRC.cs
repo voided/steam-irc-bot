@@ -91,6 +91,35 @@ namespace SteamIrcBot
         }
 
 
+        public void SendToTag( string tag, string format, params object[] args )
+        {
+            if ( !Connected )
+                return;
+
+            var chans = Settings.Current.GetChannelsForTag( tag );
+
+            if ( chans.Count() == 0 )
+                return;
+
+            string targetString = string.Join( ",", chans.Select( c => c.Channel ) );
+
+            client.SendMessage( SendType.Message, targetString, string.Format( format, args ) );
+        }
+        public void SendEmoteToTag( string tag, string format, params object[] args )
+        {
+            if ( !Connected )
+                return;
+
+            var chans = Settings.Current.GetChannelsForTag( tag );
+
+            if ( chans.Count() == 0 )
+                return;
+
+            string targetString = string.Join( ",", chans.Select( c => c.Channel ) );
+
+            client.SendMessage( SendType.Action, targetString, string.Format( format, args ) );
+        }
+
         public void Send( string channel, string format, params object[] args )
         {
             if ( !Connected )
@@ -104,22 +133,6 @@ namespace SteamIrcBot
                 return;
 
             client.SendMessage( SendType.Action, channel, string.Format( format, args ) );
-        }
-        public void SendAnnounce( string format, params object[] args )
-        {
-            Send( Settings.Current.IRCAnnounceChannel, format, args );
-        }
-        public void SendEmoteAnnounce( string format, params object[] args )
-        {
-            SendEmote( Settings.Current.IRCAnnounceChannel, format, args );
-        }
-        public void SendAll( string format, params object[] args )
-        {
-            Send( string.Format( "{0},{1}", Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel ), format, args );
-        }
-        public void SendEmoteAll( string format, params object[] args )
-        {
-            SendEmote( string.Format( "{0},{1}", Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel ), format, args );
         }
 
         public void Join( string[] channels )
@@ -168,7 +181,7 @@ namespace SteamIrcBot
         {
             Log.WriteInfo( "IRC", "Connected!" );
 
-            client.RfcJoin( new string[] { Settings.Current.IRCMainChannel, Settings.Current.IRCAnnounceChannel, Settings.Current.IRCAuxChannel } );
+            client.RfcJoin( Settings.Current.Channels.Select( chan => chan.Channel ).ToArray() );
         }
 
         void OnDisconnected( object sender, EventArgs e )
@@ -186,7 +199,16 @@ namespace SteamIrcBot
 
         void OnJoin( object sender, JoinEventArgs e )
         {
-            if ( e.Data.Nick == client.Nickname && e.Channel == Settings.Current.IRCMainChannel )
+            var mainChan = Settings.Current.GetChannelsForTag( "main" )
+                .FirstOrDefault();
+
+            if ( mainChan == null )
+            {
+                Log.WriteWarn( "IRC", "No main channel configured, won't connect to Steam!" );
+                return;
+            }
+
+            if ( e.Data.Nick == client.Nickname && string.Equals( e.Channel, mainChan.Channel, StringComparison.OrdinalIgnoreCase ) )
             {
                 if ( !Steam.Instance.Connected )
                     Steam.Instance.Connect();

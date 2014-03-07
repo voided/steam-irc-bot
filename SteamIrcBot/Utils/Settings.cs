@@ -97,6 +97,23 @@ namespace SteamIrcBot
             }
         }
 
+        public class IrcChannel
+        {
+            [XmlAttribute]
+            public string Channel;
+            [XmlAttribute]
+            public string Tags;
+
+
+            public IEnumerable<string> GetTags()
+            {
+                if ( string.IsNullOrEmpty( Tags ) )
+                    return Enumerable.Empty<string>();
+
+                return Tags.Split( new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+            }
+        }
+
 
         [ConfigHidden]
         public string SteamUsername;
@@ -111,9 +128,7 @@ namespace SteamIrcBot
 
         public string IRCNick;
 
-        public string IRCAnnounceChannel;
-        public string IRCMainChannel;
-        public string IRCAuxChannel;
+        public List<IrcChannel> Channels;
 
         [XmlArrayItem( "Admin" ), ConfigHidden]
         public List<string> IRCAdmins;
@@ -155,12 +170,25 @@ namespace SteamIrcBot
             SteamDBPackageHistoryURL = "http://steamdb.info/sub/{0}/#section_history";
 
             BrunoQuotes = new List<string>();
+
+            Channels = new List<IrcChannel>();
         }
 
 
         internal bool IsAdmin( SenderDetails sender )
         {
             return IRCAdmins.Any( a => string.Equals( sender.Hostname, a, StringComparison.OrdinalIgnoreCase ) );
+        }
+
+        internal IEnumerable<IrcChannel> GetChannelsForTag( string tag )
+        {
+            // return any channels that contain the given tag
+
+            return Channels.Where( c =>
+            {
+                return c.GetTags()
+                    .Any( chanTag => string.Equals( tag, chanTag, StringComparison.OrdinalIgnoreCase ) );
+            } );
         }
     }
 }

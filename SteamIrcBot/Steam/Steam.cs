@@ -154,7 +154,7 @@ namespace SteamIrcBot
 
                 Log.WriteInfo( "Steam", "Connecting to Steam..." );
 
-                IRC.Instance.SendEmoteAnnounce( "Connecting to Steam..." );
+                IRC.Instance.SendEmoteToTag( "steam-logon", "Connecting to Steam..." );
                 Client.Connect();
             }
         }
@@ -174,13 +174,13 @@ namespace SteamIrcBot
             {
                 Log.WriteWarn( "Steam", "Unable to connect to Steam3: {0}", callback.Result );
 
-                IRC.Instance.SendEmoteAnnounce( "Unable to connect to Steam: {0}", callback.Result );
+                IRC.Instance.SendEmoteToTag( "steam-logon", "Unable to connect to Steam: {0}", callback.Result );
                 return;
             }
 
             Log.WriteInfo( "Steam", "Connected to Steam3: {0}", callback.Result );
 
-            IRC.Instance.SendEmoteAnnounce( "Connected to Steam! Logging on..." );
+            IRC.Instance.SendEmoteToTag( "steam-logon", "Connected to Steam! Logging on..." );
 
             User.LogOn( new SteamUser.LogOnDetails
             {
@@ -194,7 +194,7 @@ namespace SteamIrcBot
 
             Log.WriteInfo( "Steam", "Disconnected from Steam" );
 
-            IRC.Instance.SendEmoteAnnounce( "Disconnected from Steam! Reconnecting in 10..." );
+            IRC.Instance.SendEmoteToTag( "steam-logon", "Disconnected from Steam! Reconnecting in 10..." );
 
             Reconnect( TimeSpan.FromSeconds( 10 ) );
         }
@@ -205,7 +205,7 @@ namespace SteamIrcBot
             {
                 Log.WriteWarn( "Steam", "Unable to logon to Steam3: {0} / {1}", callback.Result, callback.ExtendedResult );
 
-                IRC.Instance.SendEmoteAnnounce( "Unable to logon to Steam: {0} / {1}", callback.Result, callback.ExtendedResult );
+                IRC.Instance.SendEmoteToTag( "steam-logon", "Unable to logon to Steam: {0} / {1}", callback.Result, callback.ExtendedResult );
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace SteamIrcBot
 
             Log.WriteInfo( "Steam", "Logged onto Steam3!" );
 
-            IRC.Instance.SendEmoteAll( "Logged on to Steam! Server time: {0}", callback.ServerTime );
+            IRC.Instance.SendEmoteToTag( "steam", "Logged on to Steam! Server time: {0}", callback.ServerTime );
 
             JobManager.ForceRun<GameSessionJob>();
         }
@@ -224,7 +224,7 @@ namespace SteamIrcBot
         {
             Log.WriteWarn( "Steam", "Logged off Steam3: {0}", callback.Result );
 
-            IRC.Instance.SendEmoteAll( "Logged off of Steam: {0}", callback.Result );
+            IRC.Instance.SendEmoteToTag( "steam", "Logged off of Steam: {0}", callback.Result );
         }
 
         void OnAccountInfo( SteamUser.AccountInfoCallback callback )
