@@ -109,7 +109,19 @@ namespace SteamIrcBot
                         newsUrl = link.Uri.ToString();
                     }
 
-                    IRC.Instance.SendToTag( "rss-news", "{0} News: {1} - {2}", rss.Title.Text, item.Title.Text, newsUrl );
+                    // get the channels interested in rss news
+                    var rssChannels = Settings.Current.GetChannelsForTag( "rss-news" );
+
+                    if ( !string.IsNullOrEmpty( feed.Tag ) )
+                    {
+                        // this feed has a tag specified, so we want the channels that also have this tag
+                        rssChannels = Settings.Current.GetChannelsForTag( feed.Tag )
+                            .Intersect( rssChannels );
+                    }
+
+                    string targetChans = string.Join( ",", rssChannels.Select( c => c.Channel ) );
+
+                    IRC.Instance.Send( targetChans, "{0} News: {1} - {2}", rss.Title.Text, item.Title.Text, newsUrl );
 
                     // guaranteed to give us the most recent item at the last iteration because of our sort order
                     lastUpdated[ feed.URL ] = item.PublishDate.DateTime;

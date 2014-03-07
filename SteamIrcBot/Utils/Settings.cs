@@ -92,6 +92,10 @@ namespace SteamIrcBot
             [XmlAttribute]
             public string URL;
 
+            [XmlAttribute]
+            public string Tag;
+
+
             public RssFeedXml()
             {
                 IsRss10 = false;
