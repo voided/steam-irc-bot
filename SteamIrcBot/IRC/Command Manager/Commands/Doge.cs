@@ -21,7 +21,6 @@ namespace SteamIrcBot
         public DOGECommand()
         {
             Triggers.Add( "!doge" );
-            Triggers.Add( "!tothemoon" );
 
             HelpText = "!doge - Request current DOGE prices in BTC";
         }
@@ -67,7 +66,7 @@ namespace SteamIrcBot
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: Bid: ${1} USD - Ask: ${2} USD", req.Requester.Nickname, bid, ask );
+            IRC.Instance.Send( req.Channel, "{0}: Bid: {1} BTC - Ask: {2} BTC", req.Requester.Nickname, bid, ask );
         }
     }
 }
