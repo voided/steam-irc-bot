@@ -186,9 +186,9 @@ namespace SteamIrcBot
                 displayDict.Add( "Preview UGC", details.hcontent_preview );
             }
 
-            displayDict.Add( "Description", details.short_description, true );
-            displayDict.Add( "Creation Time", Utils.DateTimeFromUnixTime( details.time_created ) );
-            displayDict.Add( "Visibility", ( EPublishedFileVisibility )details.visibility );
+            displayDict.Add( "Desc.", details.short_description, true );
+            displayDict.Add( "Creation", Utils.DateTimeFromUnixTime( details.time_created ) );
+            displayDict.Add( "Vis.", ( EPublishedFileVisibility )details.visibility );
             displayDict.Add( "File", details.file_url );
 
             if ( details.banned )
