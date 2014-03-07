@@ -99,7 +99,10 @@ namespace SteamIrcBot
             var chans = Settings.Current.GetChannelsForTag( tag );
 
             if ( chans.Count() == 0 )
+            {
+                Log.WriteWarn( "IRC", "Tag {0} has no channels!", tag );
                 return;
+            }
 
             string targetString = string.Join( ",", chans.Select( c => c.Channel ) );
 
@@ -113,7 +116,10 @@ namespace SteamIrcBot
             var chans = Settings.Current.GetChannelsForTag( tag );
 
             if ( chans.Count() == 0 )
+            {
+                Log.WriteWarn( "IRC", "Tag {0} has no channels!", tag );
                 return;
+            }
 
             string targetString = string.Join( ",", chans.Select( c => c.Channel ) );
 
