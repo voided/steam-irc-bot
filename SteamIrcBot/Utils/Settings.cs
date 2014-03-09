@@ -120,7 +120,10 @@ namespace SteamIrcBot
                 if ( string.IsNullOrEmpty( Tags ) )
                     return Enumerable.Empty<string>();
 
-                return Tags.Split( new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries );
+                return Tags
+                    .Split( new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries )
+                    .Select( tag => tag.Trim() )
+                    .Distinct();
             }
         }
 
