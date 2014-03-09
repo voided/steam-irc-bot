@@ -14,9 +14,13 @@
 	<IRCNick></IRCNick>
 	
 	<!-- irc channels -->
-	<IRCAnnounceChannel></IRCAnnounceChannel>
-	<IRCMainChannel></IRCMainChannel>
-	<IRCAuxChannel></IRCAuxChannel>
+	<!-- ex:
+		<IRCChannels>
+			<Chan Channel="#opensteamworks" Tag="steam,steam-logon,main" />
+		</IRCChannels>
+	-->
+	<IRCChannels>
+	</IRCChannels>
 
 	<!-- admins that can use admin-only commands -->
 	<!-- ex:
@@ -25,7 +29,6 @@
 		</IRCAdmins>
 	-->
 	<IRCAdmins>
-		<Admin>VoiDeDMaSTeR.script-kiddie.gamesurge</Admin>
 	</IRCAdmins>
 
 	<!-- the app we want to maintain a gc session with -->
@@ -72,6 +75,21 @@
 
 	<!-- knowledge is power -->
 	<BrunoQuotes>
+		<Quote>I think the problem with EG was a surplus of legs. Look at tongfu's lineup: Naga - no legs, Venomancer - no legs, Morphling - no legs, Enigma - no legs, Lina has two legs but she's flying so she doesn't use it. That's the strat right there.</Quote>
+		<Quote>You pick an Anti-Mage who has a 50% chance of winning... You pick a Lycan who has a 65% chance of winning... That makes you a 115% chance of winning. There's no way to lose!</Quote>
+		<Quote>Actually I have no favorite because no matter who wins, we get to see a funny interview at the end</Quote>
+		<Quote>You know, we've been there for 16 hours but it only looked like it was 15 and a half.</Quote>
+		<Quote>I don't know if you've seen Navi vs DK game 3, but you should because it was awesome and Dendi was in it.</Quote>
+		<Quote>As we get sleepier and sleepier the quality of the jokes will be going down and down but hopefully you can laugh not with our joke, but at us.</Quote>
+		<Quote>I mean, I'm a software developer but who needs computers?</Quote>
+		<Quote>I'm just going to keep talking because I move my mouth and words come out.</Quote>
+		<Quote>That's how we rrrrrrrrroll.</Quote>
+		<Quote>I've never been to a map, they're too small for me to stand on.</Quote>
+		<Quote>Amazing here I am!</Quote>
+		<Quote>Shake it Shake it Shake it like a Polaroid picture</Quote>
+		<Quote>I am magic itself</Quote>
+		<Quote>They banned the Lich. Lich is this guy, who used to love the colour blue. And sadly, he loved it too much that he painted himself blue, ripped his lips, and bound himself into chains. Blue Chains. And that somehow gave him powers, to turn things around, and, after that. Do I look better?</Quote>
+		<Quote>Weppas, see you tomorrow. But most importantly, see ~YOU~ tomorrow. Well, I can't see you, you can see me. Unless if you're camera shaped, I really can't see you.</Quote>
 	</BrunoQuotes>
 
 	

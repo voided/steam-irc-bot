@@ -187,7 +187,7 @@ namespace SteamIrcBot
         {
             Log.WriteInfo( "IRC", "Connected!" );
 
-            client.RfcJoin( Settings.Current.Channels.Select( chan => chan.Channel ).ToArray() );
+            client.RfcJoin( Settings.Current.IRCChannels.Select( chan => chan.Channel ).ToArray() );
         }
 
         void OnDisconnected( object sender, EventArgs e )

@@ -138,7 +138,8 @@ namespace SteamIrcBot
 
         public string IRCNick;
 
-        public List<IrcChannel> Channels;
+        [XmlArrayItem( "Chan" )]
+        public List<IrcChannel> IRCChannels;
 
         [XmlArrayItem( "Admin" ), ConfigHidden]
         public List<string> IRCAdmins;
@@ -181,7 +182,7 @@ namespace SteamIrcBot
 
             BrunoQuotes = new List<string>();
 
-            Channels = new List<IrcChannel>();
+            IRCChannels = new List<IrcChannel>();
         }
 
 
@@ -194,7 +195,7 @@ namespace SteamIrcBot
         {
             // return any channels that contain the given tag
 
-            return Channels.Where( c =>
+            return IRCChannels.Where( c =>
             {
                 return c.GetTags()
                     .Any( chanTag => string.Equals( tag, chanTag, StringComparison.OrdinalIgnoreCase ) );
