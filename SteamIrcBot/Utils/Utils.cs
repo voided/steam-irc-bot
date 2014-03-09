@@ -116,6 +116,11 @@ namespace SteamIrcBot
                 steamId = new SteamID( input, EUniverse.Public );
                 return true;
             }
+            else if ( input.StartsWith( "[", StringComparison.OrdinalIgnoreCase ) )
+            {
+                if ( steamId.SetFromSteam3String( input ) )
+                    return true;
+            }
 
             ulong uSteamID;
             if ( ulong.TryParse( input, out uSteamID ) )
