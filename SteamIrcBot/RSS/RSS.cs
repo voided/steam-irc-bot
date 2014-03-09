@@ -51,8 +51,8 @@ namespace SteamIrcBot
                 lastUpdated[ feed.URL ] = feedItem.PublishDate.DateTime;
             } );
 
-            Log.WriteInfo( "RSS", "Done! Beginning updates in 1 minute." );
-            nextUpdate = DateTime.Now + TimeSpan.FromMinutes( 1 );
+            Log.WriteInfo( "RSS", "Done! Beginning updates in 30 seconds." );
+            nextUpdate = DateTime.Now + TimeSpan.FromSeconds( 30 );
         }
 
         public void Stop()
@@ -66,7 +66,7 @@ namespace SteamIrcBot
             if ( nextUpdate >= DateTime.Now )
                 return;
 
-            nextUpdate = DateTime.Now + TimeSpan.FromMinutes( 5 );
+            nextUpdate = DateTime.Now + TimeSpan.FromSeconds( 30 );
 
             Parallel.ForEach( Settings.Current.RssFeeds, feed =>
             {
