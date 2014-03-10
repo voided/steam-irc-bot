@@ -10,8 +10,7 @@ namespace SteamIrcBot
 {
     class DOGECommand : Command<DOGECommand.Request>
     {
-        const string TICKER = "http://data.bter.com/api/1/ticker/doge_btc";
-
+        const string TICKER = "https://dogeapi.com/wow/v2/?a=get_info";
 
         public class Request : BaseRequest
         {
@@ -23,7 +22,7 @@ namespace SteamIrcBot
             Triggers.Add( "!doge" );
             Triggers.Add( "!tothemoon" );
 
-            HelpText = "!doge - Request current DOGE prices in BTC";
+            HelpText = "!doge - Request current DOGE prices in USD & BTC";
         }
 
         protected override void OnRun( CommandDetails details )
@@ -51,23 +50,26 @@ namespace SteamIrcBot
                 return;
             }
 
-            string bid, ask;
+            string usd, btc, difficulty, networkhashrate, currentblock;
 
             try
             {
                 dynamic tickerData = JObject.Parse( e.Result );
 
-                bid = tickerData.buy;
-                ask = tickerData.sell;
+                usd = tickerData.data.info.doge_usd;
+                btc = tickerData.data.info.doge_btc;
+                difficulty = tickerData.data.info.difficulty;
+                networkhashrate = tickerData.data.info.network_hashrate;
+                currentblock = tickerData.data.info.current_block;
             }
             catch ( Exception ex )
             {
-                IRC.Instance.Send( req.Channel, "{0}: An error occurred while parsing the response from the BTER API", req.Requester.Nickname );
+                IRC.Instance.Send( req.Channel, "{0}: An error occurred while parsing the response from the DOGE API", req.Requester.Nickname );
                 Log.WriteWarn( "DOGECommand", "Parse error: {0}", ex );
                 return;
             }
 
-            IRC.Instance.Send( req.Channel, "{0}: Bid: ${1} USD - Ask: ${2} USD", req.Requester.Nickname, bid, ask );
+            IRC.Instance.Send( req.Channel, "{0}: ${1}USD / ${2}BTC (Difficulty: ${3} Network Hashrate: ${4} Block: ${5})", req.Requester.Nickname, usd, btc, difficulty, networkhashrate, currentblock );
         }
     }
 }
