@@ -109,15 +109,15 @@ namespace SteamIrcBot
                         newsUrl = link.Uri.ToString();
                     }
 
-                    // get the channels interested in rss news
-                    var rssChannels = Settings.Current.GetChannelsForTag( "rss-news" );
+                    string tag = "rss-news";
 
                     if ( !string.IsNullOrEmpty( feed.Tag ) )
                     {
-                        // this feed has a tag specified, so we want the channels that also have this tag
-                        rssChannels = Settings.Current.GetChannelsForTag( feed.Tag )
-                            .Intersect( rssChannels );
+                        tag = string.Format( "{0}-{1}", tag, feed.Tag );
                     }
+
+                    // get the channels interested in rss news
+                    var rssChannels = Settings.Current.GetChannelsForTag( tag );
 
                     string targetChans = string.Join( ",", rssChannels.Select( c => c.Channel ) );
 
