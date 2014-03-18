@@ -10,7 +10,8 @@ namespace SteamIrcBot
 {
     class ButtcoinCommand : Command<ButtcoinCommand.Request>
     {
-        const string TICKER = "https://blockchain.info/ticker";
+        //const string TICKER = "https://blockchain.info/ticker";
+        const string TICKER = "https://www.bitstamp.net/api/ticker/";
 
 
         public class Request : BaseRequest
@@ -58,12 +59,12 @@ namespace SteamIrcBot
             {
                 dynamic tickerData = JObject.Parse( e.Result );
 
-                bid = tickerData.USD.buy;
-                ask = tickerData.USD.sell;
+                bid = tickerData.bid;
+                ask = tickerData.ask;
             }
             catch ( Exception ex )
             {
-                IRC.Instance.Send( req.Channel, "{0}: An error occurred while parsing the response from the Blockchain.info API", req.Requester.Nickname );
+                IRC.Instance.Send( req.Channel, "{0}: An error occurred while parsing the response from the API", req.Requester.Nickname );
                 Log.WriteWarn( "ButtcoinCommand", "Parse error: {0}", ex );
                 return;
             }
