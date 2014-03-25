@@ -19,7 +19,7 @@ namespace SteamIrcBot
         {
             if ( details.Args.Length == 0 )
             {
-                IRC.Instance.Send( details.Channel, "{0}: SteamID argument required", details.Sender.Nickname );
+                IRC.Instance.Send( details.Channel, "{0}: GID argument required", details.Sender.Nickname );
                 return;
             }
 
