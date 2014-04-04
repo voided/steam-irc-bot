@@ -36,15 +36,15 @@
 	
 	<!-- apps which are tracked for updates -->
 	<ImportantApps>
-		<AppID>440</AppID>		<!-- Team Fortress 2 -->
-		<AppID>520</AppID>		<!-- Team Fortress 2 Beta -->
-		<AppID>240</AppID>		<!-- Counter-Strike: Source -->
-		<AppID>730</AppID>		<!-- Counter-Strike: Global Offensive -->
-		<AppID>320</AppID>		<!-- Half-Life 2: Deathmatch -->
-		<AppID>300</AppID>		<!-- Day of Defeat: Source -->
-		<AppID>570</AppID>		<!-- Dota 2 -->
-		<AppID>205790</AppID>	<!-- Dota 2 Test -->
-		<AppID>4000</AppID> 	<!-- Garry's Mod -->
+		<App AppID="440" />		<!-- Team Fortress 2 -->
+		<App AppID="520" />		<!-- Team Fortress 2 Beta -->
+		<App AppID="240" />		<!-- Counter-Strike: Source -->
+		<App AppID="730" />		<!-- Counter-Strike: Global Offensive -->
+		<App AppID="320" />		<!-- Half-Life 2: Deathmatch -->
+		<App AppID="300" />		<!-- Day of Defeat: Source -->
+		<App AppID="570" Tag="dota" />		<!-- Dota 2 -->
+		<App AppID="205790" Tag="dota" />	<!-- Dota 2 Test -->
+		<App AppID="4000" />	<!-- Garry's Mod -->
 	</ImportantApps>
 
 	<!-- local filesystem path to where app/package info should be served from -->
