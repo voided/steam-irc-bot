@@ -127,6 +127,15 @@ namespace SteamIrcBot
             }
         }
 
+        public class ImportantApp
+        {
+            [XmlAttribute]
+            public uint AppID;
+
+            [XmlAttribute]
+            public string Tag;
+        }
+
 
         [ConfigHidden]
         public string SteamUsername;
@@ -149,8 +158,8 @@ namespace SteamIrcBot
 
         public uint GCApp;
 
-        [XmlArrayItem( "AppID" )]
-        public List<uint> ImportantApps;
+        [XmlArrayItem( "App" )]
+        public List<ImportantApp> ImportantApps;
 
         [ConfigHidden]
         public string WebPath;
@@ -173,7 +182,7 @@ namespace SteamIrcBot
 
         public SettingsXml()
         {
-            ImportantApps = new List<uint>();
+            ImportantApps = new List<ImportantApp>();
 
             IRCPort = 6667;
 

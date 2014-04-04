@@ -85,11 +85,26 @@ namespace SteamIrcBot
                 if ( numAppChanges > 0 )
                 {
                     var importantApps = changeList.Apps.Select( a => a.ID )
-                        .Intersect( Settings.Current.ImportantApps );
+                        .Intersect( Settings.Current.ImportantApps.Select( a => a.AppID ) );
 
                     foreach ( var app in importantApps )
                     {
-                        IRC.Instance.SendToTag( "pics", "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );
+                        SettingsXml.ImportantApp importantApp = Settings.Current.ImportantApps
+                            .FirstOrDefault( a => a.AppID == app );
+
+                        string tag = "pics";
+
+                        if ( !string.IsNullOrEmpty( importantApp.Tag ) )
+                        {
+                            tag = string.Format( "{0}-{1}", tag, importantApp.Tag );
+                        }
+
+                        // get the channels interested in this pics update
+                        var picsChannels = Settings.Current.GetChannelsForTag( tag );
+
+                        string targetChans = string.Join( ",", picsChannels.Select( c => c.Channel ) );
+
+                        IRC.Instance.Send( targetChans, "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );
                     }
                 }
 
