@@ -102,6 +102,11 @@ namespace SteamIrcBot
                         // get the channels interested in this pics update
                         var picsChannels = Settings.Current.GetChannelsForTag( tag );
 
+                        if ( picsChannels.Count() == 0 )
+                        {
+                            Log.WriteWarn( "PICSJob", "No channels setup for tag: {0}", tag );
+                        }
+
                         string targetChans = string.Join( ",", picsChannels.Select( c => c.Channel ) );
 
                         IRC.Instance.Send( targetChans, "Important App Update: {0} - {1}", Steam.Instance.GetAppName( app ), GetAppHistoryUrl( app ) );

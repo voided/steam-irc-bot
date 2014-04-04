@@ -119,6 +119,11 @@ namespace SteamIrcBot
                     // get the channels interested in rss news
                     var rssChannels = Settings.Current.GetChannelsForTag( tag );
 
+                    if ( rssChannels.Count() == 0 )
+                    {
+                        Log.WriteWarn( "RSS", "No channels setup for tag: {0}", tag );
+                    }
+
                     string targetChans = string.Join( ",", rssChannels.Select( c => c.Channel ) );
 
                     IRC.Instance.Send( targetChans, "{0} News: {1} - {2}", rss.Title.Text, item.Title.Text, newsUrl );
