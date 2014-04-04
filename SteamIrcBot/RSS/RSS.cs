@@ -143,9 +143,13 @@ namespace SteamIrcBot
                 {
                     return LoadRSS10( feedSettings.URL );
                 }
-                catch ( Exception ex )
+                catch ( WebException ex )
                 {
-                    Log.WriteWarn( "RSS", "Unable to load RSS 1.0 feed {0}: {1}", feedSettings.URL, ex.Message );
+                    if ( ex.Status != WebExceptionStatus.Timeout )
+                    {
+                        Log.WriteWarn( "RSS", "Unable to load RSS 1.0 feed {0}: {1}", feedSettings.URL, ex.Message );
+                    }
+
                     return null;
                 }
             }
@@ -162,9 +166,13 @@ namespace SteamIrcBot
                     return SyndicationFeed.Load( reader );
                 }
             }
-            catch ( Exception ex )
+            catch ( WebException ex )
             {
-                Log.WriteWarn( "RSS", "Unable to load RSS feed {0}: {1}", feedSettings.URL, ex.Message );
+                if ( ex.Status != WebExceptionStatus.Timeout )
+                {
+                    Log.WriteWarn( "RSS", "Unable to load RSS feed {0}: {1}", feedSettings.URL, ex.Message );
+                }
+
                 return null;
             }
         }

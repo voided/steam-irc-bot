@@ -40,7 +40,11 @@ namespace SteamIrcBot
                     }
                     catch ( WebException ex )
                     {
-                        Log.WriteWarn( "UpToDateJob", "Unable to make UpToDateCheck request: {0}", ex.Message );
+                        if ( ex.Status != WebExceptionStatus.Timeout )
+                        {
+                            Log.WriteWarn( "UpToDateJob", "Unable to make UpToDateCheck request: {0}", ex.Message );
+                        }
+
                         return;
                     }
 
