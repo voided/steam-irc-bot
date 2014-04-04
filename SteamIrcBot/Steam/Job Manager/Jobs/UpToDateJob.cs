@@ -26,7 +26,7 @@ namespace SteamIrcBot
             Parallel.ForEach( Settings.Current.ImportantApps, app =>
             {
                 uint lastVersion = 0;
-                bool hasLastVersion = versionMap.TryGetValue( app, out lastVersion );
+                bool hasLastVersion = versionMap.TryGetValue( app.AppID, out lastVersion );
 
                 using ( dynamic steamApps = WebAPI.GetInterface( "ISteamApps" ) )
                 {
@@ -55,12 +55,12 @@ namespace SteamIrcBot
                     if ( !results[ "up_to_date" ].AsBoolean() )
                     {
                         // update our cache of required version
-                        versionMap[ app ] = requiredVersion;
+                        versionMap[ app.AppID ] = requiredVersion;
 
                         if ( hasLastVersion )
                         {
                             // if we previously cached the version, display that it changed
-                            IRC.Instance.SendToTag( "game-updates", "{0} (version: {1}) is no longer up to date. New version: {2}", Steam.Instance.GetAppName( app ), lastVersion, requiredVersion );
+                            IRC.Instance.SendToTag( "game-updates", "{0} (version: {1}) is no longer up to date. New version: {2}", Steam.Instance.GetAppName( app.AppID ), lastVersion, requiredVersion );
                         }
                     }
 
