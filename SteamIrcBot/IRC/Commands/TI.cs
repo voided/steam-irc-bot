@@ -9,7 +9,7 @@ namespace SteamIrcBot
     {
         DateTime RegionalQualifiers = new DateTime( 2014, 5 /*april*/, 12, 0, 0, 0, DateTimeKind.Utc );
         DateTime Playoffs = new DateTime( 2014, 7 /*july*/, 8, 0, 0, 0, DateTimeKind.Utc );
-        DateTime MainEvent = new DateTime( 2014, 7 /*july*/, 14, 0, 0, 0, DateTimeKind.Utc );
+        DateTime MainEvent = new DateTime( 2014, 7 /*july*/, 18, 0, 0, 0, DateTimeKind.Utc );
 
         public TI4Command()
         {
