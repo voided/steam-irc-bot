@@ -39,11 +39,11 @@ namespace SteamIrcBot
         {
             if ( msg.Body.deleted )
             {
-                IRC.Instance.SendToTag( "tf2-gc", msg.Body.user_name + " has deleted golden wrench " + msg.Body.wrench_number );
+                IRC.Instance.SendToTag( "tf2-gc", "{0} GC: {1} has deleted golden wrench {2}", Steam.Instance.GetAppName( gcAppId ), msg.Body.user_name, msg.Body.wrench_number );
             }
             else
             {
-                IRC.Instance.SendToTag( "tf2-gc", msg.Body.user_name + " got golden wrench number " + msg.Body.wrench_number );
+                IRC.Instance.SendToTag( "tf2-gc", "{0} GC: {1} got golden wrench number {2}", Steam.Instance.GetAppName( gcAppId ), msg.Body.user_name, msg.Body.wrench_number );
             }
         }
     }
@@ -66,11 +66,11 @@ namespace SteamIrcBot
 
             if ( msg.Body.was_destruction )
             {
-                IRC.Instance.SendToTag( "tf2-gc", "Item notification: {0} has destroyed their {1}!", msg.Body.user_name, itemName );
+                IRC.Instance.SendToTag( "tf2-gc", "{0} GC item notification: {1} has destroyed their {2}!", Steam.Instance.GetAppName( gcAppId ), msg.Body.user_name, itemName );
             }
             else
             {
-                IRC.Instance.SendToTag( "tf2-gc", "Item notification: {0} just received a {1}!", msg.Body.user_name, itemName );
+                IRC.Instance.SendToTag( "tf2-gc", "{0} GC item notification: {1} just received a {2}!", Steam.Instance.GetAppName( gcAppId ), msg.Body.user_name, itemName );
             }
         }
 
@@ -131,7 +131,7 @@ namespace SteamIrcBot
                 body = body.Replace( replaceKey, LookupToken( kvp.Value ) );
             }
 
-            IRC.Instance.SendToTag( "tf2-gc", "GC Client Notification: {0}", title );
+            IRC.Instance.SendToTag( "tf2-gc", "{0} GC Client Notification: {1}", Steam.Instance.GetAppName( gcAppId ), title );
             IRC.Instance.SendToTag( "tf2-gc", "{0}", body );
         }
 
