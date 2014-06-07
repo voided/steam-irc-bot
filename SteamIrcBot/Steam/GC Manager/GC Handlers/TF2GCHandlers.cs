@@ -62,7 +62,7 @@ namespace SteamIrcBot
 
         void OnNotification( ClientGCMsgProtobuf<CMsgGCTFSpecificItemBroadcast> msg, uint gcAppId )
         {
-            string itemName = GetItemName( msg.Body.item_def_index );
+            string itemName = GetItemName( msg.Body.item_def_index, gcAppId );
 
             if ( msg.Body.was_destruction )
             {
@@ -74,13 +74,15 @@ namespace SteamIrcBot
             }
         }
 
-        string GetItemName( uint defIndex )
+        string GetItemName( uint defIndex, uint gcAppId )
         {
-            KeyValue itemsGame = KeyValue.LoadAsText( Path.Combine( Application.StartupPath, "items_game.txt" ) );
+            string itemsGameFile = string.Format( "items_game_{0}.txt", gcAppId );
+
+            KeyValue itemsGame = KeyValue.LoadAsText( Path.Combine( Application.StartupPath, itemsGameFile ) );
 
             if ( itemsGame == null )
             {
-                Log.WriteWarn( "GCClientItemBroadcastNotificationHandler", "Unable to load items_game.txt!" );
+                Log.WriteWarn( "GCClientItemBroadcastNotificationHandler", "Unable to load {0}!", itemsGameFile );
                 return string.Format( "Unknown Item {0}", defIndex );
             }
 

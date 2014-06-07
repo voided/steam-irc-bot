@@ -86,7 +86,9 @@ namespace SteamIrcBot
 
             using ( var webClient = new WebClient() )
             {
-                webClient.DownloadFileAsync( new Uri( msg.Body.items_game_url ), Path.Combine( Application.StartupPath, "items_game.txt" ) );
+                string itemsGameFile = string.Format( "items_game_{0}.txt", gcAppId );
+
+                webClient.DownloadFileAsync( new Uri( msg.Body.items_game_url ), Path.Combine( Application.StartupPath, itemsGameFile ) );
             }
         }
     }
