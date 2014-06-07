@@ -20,7 +20,7 @@ namespace SteamIrcBot
 
             if ( Settings.Current.GCApps.Count > 0 )
             {
-                Steam.Instance.Games.PlayGames( Settings.Current.GCApps );
+                Steam.Instance.Games.PlayGames( Settings.Current.GCApps.Select( app => app.AppID ) );
             }
         }
     }

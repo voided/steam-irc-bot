@@ -73,14 +73,14 @@ namespace SteamIrcBot
             if ( !Steam.Instance.Connected )
                 return; // not connected to steam, so we don't tick gc sessions
 
-            foreach ( uint gcApp in Settings.Current.GCApps )
+            foreach ( var gcApp in Settings.Current.GCApps )
             {
-                SessionInfo info = GetSessionInfo( gcApp );
+                SessionInfo info = GetSessionInfo( gcApp.AppID );
 
                 if ( !info.HasSession )
                 {
                     var hello = new ClientGCMsgProtobuf<CMsgClientHello>( (uint)EGCBaseClientMsg.k_EMsgGCClientHello );
-                    Steam.Instance.GameCoordinator.Send( hello, gcApp );
+                    Steam.Instance.GameCoordinator.Send( hello, gcApp.AppID );
                 }
             }
         }
@@ -90,13 +90,15 @@ namespace SteamIrcBot
         {
             SessionInfo info = GetSessionInfo( gcAppId );
 
+            string ircTag = string.Format( "gc-{0}", Settings.Current.GetTagForGCApp( gcAppId ) );
+
             if ( msg.Body.version != info.Version && info.Version != 0 )
             {
-                IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version, info.Version );
+                IRC.Instance.SendToTag( ircTag, "New {0} GC session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version, info.Version );
             }
             else
             {
-                IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version );
+                IRC.Instance.SendToTag( ircTag, "New {0} GC session (version: {1})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version );
             }
 
             info.Version = msg.Body.version;
@@ -105,7 +107,9 @@ namespace SteamIrcBot
 
         void OnConnectionStatus( ClientGCMsgProtobuf<CMsgConnectionStatus> msg, uint gcAppId )
         {
-            IRC.Instance.SendToTag( "gc", "{0} GC status: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.status );
+            string ircTag = string.Format( "gc-{0}", Settings.Current.GetTagForGCApp( gcAppId ) );
+
+            IRC.Instance.SendToTag( ircTag, "{0} GC status: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.status );
 
             SessionInfo info = GetSessionInfo( gcAppId );
 
@@ -141,7 +145,9 @@ namespace SteamIrcBot
 
         void OnSystemMessage( ClientGCMsgProtobuf<CMsgSystemBroadcast> msg, uint gcAppId )
         {
-            IRC.Instance.SendToTag( "gc", "{0} GC system message: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.message );
+            string ircTag = string.Format( "gc-{0}", Settings.Current.GetTagForGCApp( gcAppId ) );
+
+            IRC.Instance.SendToTag( ircTag, "{0} GC system message: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.message );
         }
     }
 
@@ -159,9 +165,11 @@ namespace SteamIrcBot
 
         void OnItemSchema( ClientGCMsgProtobuf<CMsgUpdateItemSchema> msg, uint gcAppId )
         {
+            string ircTag = string.Format( "gc-{0}", Settings.Current.GetTagForGCApp( gcAppId ) );
+
             if ( lastSchemaVersion != msg.Body.item_schema_version && lastSchemaVersion != 0 )
             {
-                IRC.Instance.SendToTag( "gc", "New {0} GC item schema (version: {1:X4}): {2}", Steam.Instance.GetAppName( gcAppId ), lastSchemaVersion, msg.Body.items_game_url );
+                IRC.Instance.SendToTag( ircTag, "New {0} GC item schema (version: {1:X4}): {2}", Steam.Instance.GetAppName( gcAppId ), lastSchemaVersion, msg.Body.items_game_url );
             }
 
             lastSchemaVersion = msg.Body.item_schema_version;

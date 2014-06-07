@@ -136,6 +136,15 @@ namespace SteamIrcBot
             public string Tag;
         }
 
+        public class GCApp
+        {
+            [XmlAttribute]
+            public uint AppID;
+
+            [XmlAttribute]
+            public string Tag;
+        }
+
 
         [ConfigHidden]
         public string SteamUsername;
@@ -157,7 +166,7 @@ namespace SteamIrcBot
         public List<string> IRCAdmins;
 
         [XmlArrayItem( "App" )]
-        public List<uint> GCApps;
+        public List<GCApp> GCApps;
 
         [XmlArrayItem( "App" )]
         public List<ImportantApp> ImportantApps;
@@ -196,6 +205,8 @@ namespace SteamIrcBot
             BrunoQuotes = new List<string>();
 
             IRCChannels = new List<IrcChannel>();
+
+            GCApps = new List<GCApp>();
         }
 
 
@@ -213,6 +224,16 @@ namespace SteamIrcBot
                 return c.GetTags()
                     .Any( chanTag => string.Equals( tag, chanTag, StringComparison.OrdinalIgnoreCase ) );
             } );
+        }
+
+        internal string GetTagForGCApp( uint gcAppId )
+        {
+            GCApp gcApp = GCApps.SingleOrDefault( app => app.AppID == gcAppId );
+
+            if ( gcApp == null )
+                return "";
+
+            return gcApp.Tag;
         }
     }
 }
