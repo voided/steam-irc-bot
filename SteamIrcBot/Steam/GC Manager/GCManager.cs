@@ -51,7 +51,7 @@ namespace SteamIrcBot
 
         void OnGCMessage( SteamGameCoordinator.MessageCallback callback )
         {
-            Log.WriteDebug( "GCManager", "Got GC message {0}", GetEMsgName( callback.EMsg ) );
+            Log.WriteDebug( "GCManager", "Got {0} GC message {1}", callback.AppID, GetEMsgName( callback.EMsg ) );
 
             var matchingCallbacks = callbacks
                 .Where( call => call.EMsg == callback.EMsg );
@@ -74,6 +74,8 @@ namespace SteamIrcBot
                 typeof( SteamKit2.GC.Internal.EGCItemMsg ),
                 typeof( SteamKit2.GC.Internal.EGCToGCMsg ),
                 typeof( SteamKit2.GC.Dota.Internal.EDOTAGCMsg ),
+                typeof( SteamKit2.GC.TF2.Internal.EGCBaseMsg ),
+                typeof( SteamKit2.GC.TF2.Internal.ETFGCMsg ),
             };
 
             foreach ( var enumType in eMsgEnums )
