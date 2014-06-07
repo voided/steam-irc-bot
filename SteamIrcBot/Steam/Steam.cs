@@ -37,6 +37,7 @@ namespace SteamIrcBot
         public SteamWorkshop Workshop { get; private set; }
         public SteamUnifiedMessages Unified { get; private set; }
         public SteamMasterServer MasterServer { get; set; }
+        public SteamGameCoordinator GameCoordinator { get; private set; }
         public SteamLevels Levels { get; private set; }
         public SteamGames Games { get; private set; }
         public SteamAppInfo AppInfo { get; private set; }
@@ -65,6 +66,7 @@ namespace SteamIrcBot
             Workshop = Client.GetHandler<SteamWorkshop>();
             Unified = Client.GetHandler<SteamUnifiedMessages>();
             MasterServer = Client.GetHandler<SteamMasterServer>();
+            GameCoordinator = Client.GetHandler<SteamGameCoordinator>();
             Levels = new SteamLevels();
             Games = new SteamGames();
             AppInfo = new SteamAppInfo();

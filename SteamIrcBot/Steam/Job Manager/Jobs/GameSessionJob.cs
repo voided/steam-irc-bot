@@ -18,9 +18,9 @@ namespace SteamIrcBot
             if ( !Steam.Instance.Connected )
                 return;
 
-            if ( Settings.Current.GCApp != 0 )
+            if ( Settings.Current.GCApps.Count > 0 )
             {
-                Steam.Instance.Games.PlayGame( Settings.Current.GCApp );
+                Steam.Instance.Games.PlayGames( Settings.Current.GCApps );
             }
         }
     }

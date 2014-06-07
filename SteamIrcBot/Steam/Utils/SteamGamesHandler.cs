@@ -9,14 +9,16 @@ namespace SteamIrcBot
 {
     class SteamGames : ClientMsgHandler
     {
-        public void PlayGame( GameID game )
+        public void PlayGames( IEnumerable<uint> games )
         {
             var clientMsg = new ClientMsgProtobuf<CMsgClientGamesPlayed>( EMsg.ClientGamesPlayedNoDataBlob );
 
-            clientMsg.Body.games_played.Add( new CMsgClientGamesPlayed.GamePlayed
-            {
-                game_id = game,
-            } );
+            clientMsg.Body.games_played.AddRange(
+                games.Select( g => new CMsgClientGamesPlayed.GamePlayed
+                {
+                    game_id = g
+                } )
+            );
 
             Client.Send( clientMsg );
         }

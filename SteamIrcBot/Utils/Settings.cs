@@ -72,9 +72,9 @@ namespace SteamIrcBot
                 Log.WriteWarn( "Settings", "Missing WebPath/WebURL, web share will be unavailable" );
             }
 
-            if ( Current.GCApp == 0 )
+            if ( Current.GCApps.Count == 0 )
             {
-                Log.WriteWarn( "Settings", "No GCApp configured, GC session info will be unavailable" );
+                Log.WriteWarn( "Settings", "No GCApps configured, GC session info will be unavailable" );
             }
 
             return true;
@@ -156,7 +156,8 @@ namespace SteamIrcBot
         [XmlArrayItem( "Admin" ), ConfigHidden]
         public List<string> IRCAdmins;
 
-        public uint GCApp;
+        [XmlArrayItem( "App" )]
+        public List<uint> GCApps;
 
         [XmlArrayItem( "App" )]
         public List<ImportantApp> ImportantApps;

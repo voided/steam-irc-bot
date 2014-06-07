@@ -8,43 +8,125 @@ using SteamKit2.GC.TF2.Internal;
 using System.Net;
 using System.IO;
 using System.Windows.Forms;
+using System.Timers;
+using System.Collections.Concurrent;
+
+using CMsgClientWelcome = SteamKit2.GC.Internal.CMsgClientWelcome;
+using CMsgClientHello = SteamKit2.GC.Internal.CMsgClientHello;
+using CMsgSystemBroadcast = SteamKit2.GC.Internal.CMsgSystemBroadcast;
+using CMsgUpdateItemSchema = SteamKit2.GC.Internal.CMsgUpdateItemSchema;
+using EGCBaseMsg = SteamKit2.GC.Internal.EGCBaseMsg;
+using Timer = System.Timers.Timer;
 
 namespace SteamIrcBot
 {
     class GCSessionHandler : GCHandler
     {
-        uint lastGcVersion = 0;
+        class SessionInfo
+        {
+            public uint Version { get; set; }
+            public GCConnectionStatus Status { get; set; }
+
+            public bool HasSession
+            {
+                get
+                {
+                    if ( Status == GCConnectionStatus.GCConnectionStatus_HAVE_SESSION )
+                        return true; // we have an actual session
+
+                    if ( Status == GCConnectionStatus.GCConnectionStatus_NO_SESSION )
+                        return false; // no session
+
+                    if ( Status == GCConnectionStatus.GCConnectionStatus_GC_GOING_DOWN )
+                        return false;
+
+                    // otherwise we're likely in logon queue, so assume we'll get a session eventually
+                    return true;
+                }
+            }
+        }
+
+        Timer sessTimer = new Timer();
+
+        ConcurrentDictionary<uint, SessionInfo> sessionMap = new ConcurrentDictionary<uint, SessionInfo>();
+
 
         public GCSessionHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<SteamKit2.GC.Internal.CMsgClientWelcome>( (uint)EGCBaseClientMsg.k_EMsgGCClientWelcome, OnWelcome, manager );
+            new GCCallback<CMsgClientWelcome>( (uint)EGCBaseClientMsg.k_EMsgGCClientWelcome, OnWelcome, manager );
 
             // these two callbacks exist to cover the gc message differences between dota and tf2
             // in TF2, it still uses k_EMsgGCClientGoodbye, whereas dota is using k_EMsgGCClientConnectionStatus
             // luckily the message format between the two messages is the same
             new GCCallback<CMsgConnectionStatus>( ( uint )EGCBaseClientMsg.k_EMsgGCClientConnectionStatus, OnConnectionStatus, manager );
             new GCCallback<CMsgConnectionStatus>( 4008 /* tf2's k_EMsgGCClientGoodbye */, OnConnectionStatus, manager );
+
+            sessTimer.Interval = TimeSpan.FromSeconds( 30 ).TotalMilliseconds;
+            sessTimer.Elapsed += SessionTick;
+
+            sessTimer.Start();
+        }
+
+        private void SessionTick( object sender, ElapsedEventArgs e )
+        {
+            if ( !Steam.Instance.Connected )
+                return; // not connected to steam, so we don't tick gc sessions
+
+            foreach ( uint gcApp in Settings.Current.GCApps )
+            {
+                SessionInfo info = GetSessionInfo( gcApp );
+
+                if ( !info.HasSession )
+                {
+                    var hello = new ClientGCMsgProtobuf<CMsgClientHello>( (uint)EGCBaseClientMsg.k_EMsgGCClientHello );
+                    Steam.Instance.GameCoordinator.Send( hello, gcApp );
+                }
+            }
         }
 
 
-        void OnWelcome( ClientGCMsgProtobuf<SteamKit2.GC.Internal.CMsgClientWelcome> msg, uint gcAppId )
+        void OnWelcome( ClientGCMsgProtobuf<CMsgClientWelcome> msg, uint gcAppId )
         {
-            if ( msg.Body.version != lastGcVersion && lastGcVersion != 0 )
+            SessionInfo info = GetSessionInfo( gcAppId );
+
+            if ( msg.Body.version != info.Version && info.Version != 0 )
             {
-                IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version, lastGcVersion );
+                IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version, info.Version );
             }
             else
             {
                 IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version );
             }
 
-            lastGcVersion = msg.Body.version;
+            info.Version = msg.Body.version;
+            info.Status = GCConnectionStatus.GCConnectionStatus_HAVE_SESSION;
         }
 
         void OnConnectionStatus( ClientGCMsgProtobuf<CMsgConnectionStatus> msg, uint gcAppId )
         {
             IRC.Instance.SendToTag( "gc", "{0} GC status: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.status );
+
+            SessionInfo info = GetSessionInfo( gcAppId );
+
+            info.Status = msg.Body.status;
+        }
+
+        SessionInfo GetSessionInfo( uint gcAppId )
+        {
+            SessionInfo info;
+
+            if ( sessionMap.TryGetValue( gcAppId, out info ) )
+            {
+                return info;
+            }
+
+            info = new SessionInfo();
+            info.Status = GCConnectionStatus.GCConnectionStatus_NO_SESSION;
+
+            sessionMap[ gcAppId ] = info;
+
+            return info;
         }
     }
 
@@ -53,11 +135,11 @@ namespace SteamIrcBot
         public GCSystemMsgHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<SteamKit2.GC.Internal.CMsgSystemBroadcast>( (uint)SteamKit2.GC.Internal.EGCBaseMsg.k_EMsgGCSystemMessage, OnSystemMessage, manager );
+            new GCCallback<CMsgSystemBroadcast>( (uint)EGCBaseMsg.k_EMsgGCSystemMessage, OnSystemMessage, manager );
         }
 
 
-        void OnSystemMessage( ClientGCMsgProtobuf<SteamKit2.GC.Internal.CMsgSystemBroadcast> msg, uint gcAppId )
+        void OnSystemMessage( ClientGCMsgProtobuf<CMsgSystemBroadcast> msg, uint gcAppId )
         {
             IRC.Instance.SendToTag( "gc", "{0} GC system message: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.message );
         }
@@ -71,11 +153,11 @@ namespace SteamIrcBot
         public GCSchemaHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<SteamKit2.GC.Internal.CMsgUpdateItemSchema>( (uint)EGCItemMsg.k_EMsgGCUpdateItemSchema, OnItemSchema, manager );
+            new GCCallback<CMsgUpdateItemSchema>( (uint)EGCItemMsg.k_EMsgGCUpdateItemSchema, OnItemSchema, manager );
         }
 
 
-        void OnItemSchema( ClientGCMsgProtobuf<SteamKit2.GC.Internal.CMsgUpdateItemSchema> msg, uint gcAppId )
+        void OnItemSchema( ClientGCMsgProtobuf<CMsgUpdateItemSchema> msg, uint gcAppId )
         {
             if ( lastSchemaVersion != msg.Body.item_schema_version && lastSchemaVersion != 0 )
             {
