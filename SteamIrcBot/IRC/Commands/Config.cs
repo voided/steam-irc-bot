@@ -183,7 +183,7 @@ namespace SteamIrcBot
                 throw new InvalidOperationException( string.Format( "Config field {0} has no value", configName ) );
 
             IEnumerable enumValue = value as IEnumerable;
-            if ( enumValue != null )
+            if ( enumValue != null && !( enumValue is string ) )
             {
                 return string.Join( ", ", enumValue.Cast<object>() );
             }
