@@ -18,7 +18,7 @@ namespace SteamIrcBot
         public GCSessionHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<CMsgClientWelcome>( ( uint )EGCBaseClientMsg.k_EMsgGCClientWelcome, OnWelcome, manager );
+            new GCCallback<SteamKit2.GC.Internal.CMsgClientWelcome>( (uint)EGCBaseClientMsg.k_EMsgGCClientWelcome, OnWelcome, manager );
 
             // these two callbacks exist to cover the gc message differences between dota and tf2
             // in TF2, it still uses k_EMsgGCClientGoodbye, whereas dota is using k_EMsgGCClientConnectionStatus
@@ -28,23 +28,23 @@ namespace SteamIrcBot
         }
 
 
-        void OnWelcome( ClientGCMsgProtobuf<CMsgClientWelcome> msg )
+        void OnWelcome( ClientGCMsgProtobuf<SteamKit2.GC.Internal.CMsgClientWelcome> msg, uint gcAppId )
         {
             if ( msg.Body.version != lastGcVersion && lastGcVersion != 0 )
             {
-                IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.version, lastGcVersion );
+                IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version, lastGcVersion );
             }
             else
             {
-                IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1})", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.version );
+                IRC.Instance.SendToTag( "gc", "New {0} GC session (version: {1})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version );
             }
 
             lastGcVersion = msg.Body.version;
         }
 
-        void OnConnectionStatus( ClientGCMsgProtobuf<CMsgConnectionStatus> msg )
+        void OnConnectionStatus( ClientGCMsgProtobuf<CMsgConnectionStatus> msg, uint gcAppId )
         {
-            IRC.Instance.SendToTag( "gc", "{0} GC status: {1}", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.status );
+            IRC.Instance.SendToTag( "gc", "{0} GC status: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.status );
         }
     }
 
@@ -53,13 +53,13 @@ namespace SteamIrcBot
         public GCSystemMsgHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<CMsgSystemBroadcast>( ( uint )EGCBaseMsg.k_EMsgGCSystemMessage, OnSystemMessage, manager );
+            new GCCallback<SteamKit2.GC.Internal.CMsgSystemBroadcast>( (uint)SteamKit2.GC.Internal.EGCBaseMsg.k_EMsgGCSystemMessage, OnSystemMessage, manager );
         }
 
 
-        void OnSystemMessage( ClientGCMsgProtobuf<CMsgSystemBroadcast> msg )
+        void OnSystemMessage( ClientGCMsgProtobuf<SteamKit2.GC.Internal.CMsgSystemBroadcast> msg, uint gcAppId )
         {
-            IRC.Instance.SendToTag( "gc", "{0} GC system message: {1}", Steam.Instance.GetAppName( Settings.Current.GCApp ), msg.Body.message );
+            IRC.Instance.SendToTag( "gc", "{0} GC system message: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.message );
         }
     }
 
@@ -71,15 +71,15 @@ namespace SteamIrcBot
         public GCSchemaHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<CMsgUpdateItemSchema>( ( uint )EGCItemMsg.k_EMsgGCUpdateItemSchema, OnItemSchema, manager );
+            new GCCallback<SteamKit2.GC.Internal.CMsgUpdateItemSchema>( (uint)EGCItemMsg.k_EMsgGCUpdateItemSchema, OnItemSchema, manager );
         }
 
 
-        void OnItemSchema( ClientGCMsgProtobuf<CMsgUpdateItemSchema> msg )
+        void OnItemSchema( ClientGCMsgProtobuf<SteamKit2.GC.Internal.CMsgUpdateItemSchema> msg, uint gcAppId )
         {
             if ( lastSchemaVersion != msg.Body.item_schema_version && lastSchemaVersion != 0 )
             {
-                IRC.Instance.SendToTag( "gc", "New {0} GC item schema (version: {1:X4}): {2}", Steam.Instance.GetAppName( Settings.Current.GCApp ), lastSchemaVersion, msg.Body.items_game_url );
+                IRC.Instance.SendToTag( "gc", "New {0} GC item schema (version: {1:X4}): {2}", Steam.Instance.GetAppName( gcAppId ), lastSchemaVersion, msg.Body.items_game_url );
             }
 
             lastSchemaVersion = msg.Body.item_schema_version;

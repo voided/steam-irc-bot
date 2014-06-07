@@ -58,7 +58,7 @@ namespace SteamIrcBot
 
             foreach ( var call in matchingCallbacks )
             {
-                call.Run( callback.Message );
+                call.Run( callback.Message, callback.AppID );
             }
         }
 
@@ -101,7 +101,7 @@ namespace SteamIrcBot
     {
         public uint EMsg { get; protected set; }
 
-        abstract internal void Run( IPacketGCMsg msg );
+        abstract internal void Run( IPacketGCMsg msg, uint gcAppId );
     }
 
     class GCCallback<TMsg> : GCCallback
@@ -109,10 +109,10 @@ namespace SteamIrcBot
     {
 
         GCManager manager;
-        Action<ClientGCMsgProtobuf<TMsg>> func;
+        Action<ClientGCMsgProtobuf<TMsg>, uint> func;
 
 
-        public GCCallback( uint eMsg, Action<ClientGCMsgProtobuf<TMsg>> func, GCManager mgr )
+        public GCCallback( uint eMsg, Action<ClientGCMsgProtobuf<TMsg>, uint> func, GCManager mgr )
         {
             this.EMsg = eMsg;
 
@@ -123,10 +123,10 @@ namespace SteamIrcBot
         }
 
 
-        internal override void Run( IPacketGCMsg msg )
+        internal override void Run( IPacketGCMsg msg, uint gcAppId )
         {
             var obj = Activator.CreateInstance( typeof( ClientGCMsgProtobuf<TMsg> ), msg ) as ClientGCMsgProtobuf<TMsg>;
-            func( obj );
+            func( obj, gcAppId );
         }
     }
 }

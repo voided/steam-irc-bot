@@ -20,7 +20,7 @@ namespace SteamIrcBot
         }
 
 
-        void OnSaxxyBroadcast( ClientGCMsgProtobuf<CMsgTFSaxxyBroadcast> msg )
+        void OnSaxxyBroadcast( ClientGCMsgProtobuf<CMsgTFSaxxyBroadcast> msg, uint gcAppId )
         {
             IRC.Instance.SendToTag( "tf2-gc", msg.Body.user_name + " has won a saxxy in category: " + msg.Body.category_number );
         }
@@ -35,7 +35,7 @@ namespace SteamIrcBot
         }
 
 
-        void OnWrenchBroadcast( ClientGCMsgProtobuf<CMsgTFGoldenWrenchBroadcast> msg )
+        void OnWrenchBroadcast( ClientGCMsgProtobuf<CMsgTFGoldenWrenchBroadcast> msg, uint gcAppId )
         {
             if ( msg.Body.deleted )
             {
@@ -60,7 +60,7 @@ namespace SteamIrcBot
         }
 
 
-        void OnNotification( ClientGCMsgProtobuf<CMsgGCTFSpecificItemBroadcast> msg )
+        void OnNotification( ClientGCMsgProtobuf<CMsgGCTFSpecificItemBroadcast> msg, uint gcAppId )
         {
             string itemName = GetItemName( msg.Body.item_def_index );
 
@@ -99,7 +99,7 @@ namespace SteamIrcBot
         public GCClientNotificationHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<CMsgGCClientDisplayNotification>( ClientNotification, OnNotification, manager );
+            new GCCallback<SteamKit2.GC.TF2.Internal.CMsgGCClientDisplayNotification>( ClientNotification, OnNotification, manager );
 
             tfEnglish = KeyValue.LoadAsText( Path.Combine( Application.StartupPath, "tf_english.txt" ) );
 
@@ -110,7 +110,7 @@ namespace SteamIrcBot
         }
 
 
-        void OnNotification( ClientGCMsgProtobuf<CMsgGCClientDisplayNotification> msg )
+        void OnNotification( ClientGCMsgProtobuf<SteamKit2.GC.TF2.Internal.CMsgGCClientDisplayNotification> msg, uint gcAppId )
         {
             if ( tfEnglish == null )
             {
