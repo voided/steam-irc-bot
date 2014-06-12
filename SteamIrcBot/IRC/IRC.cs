@@ -214,7 +214,7 @@ namespace SteamIrcBot
                 return;
             }
 
-            if ( e.Data.Nick == client.Nickname && string.Equals( e.Channel, mainChan.Channel, StringComparison.OrdinalIgnoreCase ) )
+            if ( client.IsMe( e.Data.Nick ) && string.Equals( e.Channel, mainChan.Channel, StringComparison.OrdinalIgnoreCase ) )
             {
                 if ( !Steam.Instance.Connected )
                     Steam.Instance.Connect();
