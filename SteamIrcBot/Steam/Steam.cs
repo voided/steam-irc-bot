@@ -49,6 +49,8 @@ namespace SteamIrcBot
         bool loggedOn;
         public bool Connected { get { return Client.ConnectedUniverse != EUniverse.Invalid && loggedOn; } }
 
+        bool shuttingDown = false;
+
         DateTime nextConnect = DateTime.MaxValue;
 
 
@@ -108,6 +110,8 @@ namespace SteamIrcBot
         public void Disconnect()
         {
             Log.WriteInfo( "Steam", "Disconnecting..." );
+
+            shuttingDown = true;
 
             Client.Disconnect();
 
@@ -193,6 +197,12 @@ namespace SteamIrcBot
         void OnDisconnected( SteamClient.DisconnectedCallback callback )
         {
             loggedOn = false;
+
+            if ( shuttingDown )
+            {
+                Log.WriteInfo( "Steam", "Disconnected due to service shutdown" );
+                return;
+            }
 
             Log.WriteInfo( "Steam", "Disconnected from Steam" );
 
