@@ -36,7 +36,7 @@ namespace SteamIrcBot
 
                     try
                     {
-                        results = steamApps.UpToDateCheck( appid: app, version: lastVersion );
+                        results = steamApps.UpToDateCheck( appid: app.AppID, version: lastVersion );
                     }
                     catch ( WebException ex )
                     {
