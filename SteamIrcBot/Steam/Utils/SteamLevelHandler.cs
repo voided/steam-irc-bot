@@ -28,8 +28,10 @@ namespace SteamIrcBot
             public ReadOnlyCollection<Friend> Friends { get; private set; }
 
 
-            internal SteamLevelsCallback( CMsgClientFSGetFriendsSteamLevelsResponse resp )
+            internal SteamLevelsCallback( JobID jobID, CMsgClientFSGetFriendsSteamLevelsResponse resp )
             {
+                this.JobID = jobID;
+
                 Friends = new ReadOnlyCollection<Friend>( resp.friends.Select( f => new Friend( f ) ).ToList() );
             }
         }
@@ -61,10 +63,9 @@ namespace SteamIrcBot
         {
             var clientMsg = new ClientMsgProtobuf<CMsgClientFSGetFriendsSteamLevelsResponse>( msg );
 
-            var innerCallback = new SteamLevelsCallback( clientMsg.Body );
-            var jobCallback = new SteamClient.JobCallback<SteamLevelsCallback>( clientMsg.TargetJobID, innerCallback );
+            var callback = new SteamLevelsCallback( clientMsg.TargetJobID, clientMsg.Body );
 
-            Client.PostCallback( jobCallback );
+            Client.PostCallback( callback );
         }
     }
 }

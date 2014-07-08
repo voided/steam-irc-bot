@@ -18,7 +18,7 @@ namespace SteamIrcBot
 
         public NumPlayersCommand()
         {
-            new JobCallback<SteamUserStats.NumberOfPlayersCallback>( OnNumPlayers, Steam.Instance.CallbackManager );
+            new Callback<SteamUserStats.NumberOfPlayersCallback>( OnNumPlayers, Steam.Instance.CallbackManager );
 
             Triggers.Add( "!numplayers" );
             HelpText = "!numplayers <gameid> - Requests the current number of players playing the given GameID, according to Steam";
@@ -64,9 +64,9 @@ namespace SteamIrcBot
         }
 
 
-        void OnNumPlayers( SteamUserStats.NumberOfPlayersCallback callback, JobID jobId )
+        void OnNumPlayers( SteamUserStats.NumberOfPlayersCallback callback )
         {
-            var req = GetRequest( r => r.JobID == jobId );
+            var req = GetRequest( r => r.JobID == callback.JobID );
 
             if ( req == null )
                 return;

@@ -15,17 +15,16 @@ namespace SteamIrcBot
 
         public TaskManager( CallbackManager manager )
         {
-            new Callback<SteamClient.BaseJobCallback>( OnJobCallback, manager );
+            new Callback<CallbackMsg>( OnJobCallback, manager );
         }
 
 
-        public async Task<T> WaitForJob<T>( JobID jobId, TimeSpan? timeout = null )
-            where T : CallbackMsg
+        public async Task<CallbackMsg> WaitForJob<T>( JobID jobId, TimeSpan? timeout = null )
         {
             if ( timeout == null )
                 timeout = TimeSpan.FromSeconds( 10 );
 
-            var jobTask = new JobTask<T>();
+            var jobTask = new JobTask();
             taskMap.TryAdd( jobId, jobTask );
 
             Task completedTask = await Task.WhenAny( jobTask.Task, Task.Delay( timeout.Value ) );
@@ -42,7 +41,7 @@ namespace SteamIrcBot
         }
 
 
-        void OnJobCallback( SteamClient.BaseJobCallback callback )
+        void OnJobCallback( CallbackMsg callback )
         {
             BaseTask task;
 

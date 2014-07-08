@@ -20,7 +20,7 @@ namespace SteamIrcBot
             Triggers.Add( "!numservers" );
             HelpText = "!numservers <filter> - Request a server list from the GMS";
 
-            new JobCallback<SteamMasterServer.QueryCallback>( OnQuery, Steam.Instance.CallbackManager );
+            new Callback<SteamMasterServer.QueryCallback>( OnQuery, Steam.Instance.CallbackManager );
         }
 
 
@@ -50,9 +50,9 @@ namespace SteamIrcBot
         }
 
 
-        void OnQuery( SteamMasterServer.QueryCallback callback, JobID jobId )
+        void OnQuery( SteamMasterServer.QueryCallback callback )
         {
-            var req = GetRequest( r => r.JobID == jobId );
+            var req = GetRequest( r => r.JobID == callback.JobID );
 
             if ( req == null )
                 return;

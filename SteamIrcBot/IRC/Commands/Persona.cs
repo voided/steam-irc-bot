@@ -94,7 +94,7 @@ namespace SteamIrcBot
 
         public ProfileCommand()
         {
-            new JobCallback<SteamFriends.ProfileInfoCallback>( OnProfileInfo, Steam.Instance.CallbackManager );
+            new Callback<SteamFriends.ProfileInfoCallback>( OnProfileInfo, Steam.Instance.CallbackManager );
 
             Triggers.Add( "!profile" );
             Triggers.Add( "!steamprofile" );
@@ -136,9 +136,9 @@ namespace SteamIrcBot
             }
         }
 
-        void OnProfileInfo( SteamFriends.ProfileInfoCallback callback, JobID jobId )
+        void OnProfileInfo( SteamFriends.ProfileInfoCallback callback )
         {
-            var req = GetRequest( r => r.JobID == jobId );
+            var req = GetRequest( r => r.JobID == callback.JobID );
 
             if ( req == null )
                 return;

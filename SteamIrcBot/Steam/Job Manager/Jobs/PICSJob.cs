@@ -15,7 +15,7 @@ namespace SteamIrcBot
         {
             Period = TimeSpan.FromSeconds( 5 );
 
-            new JobCallback<SteamApps.PICSChangesCallback>( OnPICSChanges, manager );
+            new Callback<SteamApps.PICSChangesCallback>( OnPICSChanges, manager );
         }
 
 
@@ -28,7 +28,7 @@ namespace SteamIrcBot
         }
 
 
-        void OnPICSChanges( SteamApps.PICSChangesCallback callback, JobID jobId )
+        void OnPICSChanges( SteamApps.PICSChangesCallback callback )
         {
             // group apps and package changes by changelist, this will seperate into individual changelists
             var appGrouping = callback.AppChanges

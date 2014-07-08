@@ -22,7 +22,7 @@ namespace SteamIrcBot
             Triggers.Add( "!packageid" );
             HelpText = "!pid <packageid> - Requests package name for a given PackageID";
 
-            new JobCallback<SteamApps.PackageInfoCallback>( OnPackageInfo, Steam.Instance.CallbackManager );
+            new Callback<SteamApps.PackageInfoCallback>( OnPackageInfo, Steam.Instance.CallbackManager );
         }
 
         protected override void OnRun( CommandDetails details )
@@ -54,9 +54,9 @@ namespace SteamIrcBot
         }
 
 
-        void OnPackageInfo( SteamApps.PackageInfoCallback callback, JobID jobId )
+        void OnPackageInfo( SteamApps.PackageInfoCallback callback )
         {
-            var req = GetRequest( r => r.JobID == jobId );
+            var req = GetRequest( r => r.JobID == callback.JobID );
 
             if ( req == null )
                 return;
@@ -97,7 +97,7 @@ namespace SteamIrcBot
             Triggers.Add( "!packageinfo" );
             HelpText = "!packageinfo <packageid> - Requests package info for a given PackageID, and serves it";
 
-            new JobCallback<SteamApps.PICSProductInfoCallback>( OnProductInfo, Steam.Instance.CallbackManager );
+            new Callback<SteamApps.PICSProductInfoCallback>( OnProductInfo, Steam.Instance.CallbackManager );
         }
 
         protected override void OnRun( CommandDetails details )
@@ -131,12 +131,12 @@ namespace SteamIrcBot
             AddRequest( details, new Request { JobID = jobId, PackageID = packageId } );
         }
 
-        void OnProductInfo( SteamApps.PICSProductInfoCallback callback, JobID jobId )
+        void OnProductInfo( SteamApps.PICSProductInfoCallback callback )
         {
             if ( callback.ResponsePending )
                 return;
 
-            var req = GetRequest( r => r.JobID == jobId );
+            var req = GetRequest( r => r.JobID == callback.JobID );
 
             if ( req == null )
                 return;

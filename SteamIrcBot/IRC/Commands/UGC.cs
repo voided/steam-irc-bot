@@ -23,7 +23,7 @@ namespace SteamIrcBot
             Triggers.Add( "!ugcid" );
             HelpText = "!ugc <ugcid> - Requests UGC details for the given UGC ID";
 
-            new JobCallback<SteamCloud.UGCDetailsCallback>( OnUGCInfo, Steam.Instance.CallbackManager );
+            new Callback<SteamCloud.UGCDetailsCallback>( OnUGCInfo, Steam.Instance.CallbackManager );
         }
 
 
@@ -53,9 +53,9 @@ namespace SteamIrcBot
         }
 
 
-        void OnUGCInfo( SteamCloud.UGCDetailsCallback callback, JobID jobId )
+        void OnUGCInfo( SteamCloud.UGCDetailsCallback callback )
         {
-            var req = GetRequest( r => r.JobID == jobId );
+            var req = GetRequest( r => r.JobID == callback.JobID );
 
             if ( req == null )
                 return;
@@ -94,7 +94,7 @@ namespace SteamIrcBot
             Triggers.Add( "!publishedfile" );
             HelpText = "!pubfile <pubfileid> - Requests published file details for the given published file ID";
 
-            new JobCallback<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod, Steam.Instance.CallbackManager );
+            new Callback<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod, Steam.Instance.CallbackManager );
         }
 
 
@@ -132,9 +132,9 @@ namespace SteamIrcBot
             AddRequest( details, new Request { JobID = jobId, PubFileID = pubFileId } );
         }
 
-        void OnServiceMethod( SteamUnifiedMessages.ServiceMethodResponse callback, JobID jobId )
+        void OnServiceMethod( SteamUnifiedMessages.ServiceMethodResponse callback )
         {
-            var req = GetRequest( r => r.JobID == jobId );
+            var req = GetRequest( r => r.JobID == callback.JobID );
 
             if ( req == null )
                 return;

@@ -18,7 +18,7 @@ namespace SteamIrcBot
             Triggers.Add( "!findacc" );
             HelpText = "!findacc <query> <type> - Requests a list of accounts by input";
 
-            new JobCallback<SteamAccount.ResponseCallback>( OnAccountInfo, Steam.Instance.CallbackManager );
+            new Callback<SteamAccount.ResponseCallback>( OnAccountInfo, Steam.Instance.CallbackManager );
         }
 
         protected override void OnRun( CommandDetails details )
@@ -51,9 +51,9 @@ namespace SteamIrcBot
         }
 
 
-        void OnAccountInfo( SteamAccount.ResponseCallback callback, JobID jobId )
+        void OnAccountInfo( SteamAccount.ResponseCallback callback )
         {
-            var req = GetRequest( r => r.JobID == jobId );
+            var req = GetRequest( r => r.JobID == callback.JobID );
 
             if ( req == null )
                 return;

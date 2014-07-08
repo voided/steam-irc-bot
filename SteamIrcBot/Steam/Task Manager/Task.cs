@@ -9,23 +9,20 @@ namespace SteamIrcBot
 {
     abstract class BaseTask
     {
-        public abstract void Handle( object callback );
+        public abstract void Handle( CallbackMsg callback );
     }
 
-    class JobTask<T> : BaseTask
-        where T : CallbackMsg
+    class JobTask : BaseTask
     {
-        public Task<T> Task { get { return completionSource.Task; } }
+        public Task<CallbackMsg> Task { get { return completionSource.Task; } }
 
 
-        TaskCompletionSource<T> completionSource = new TaskCompletionSource<T>();
+        TaskCompletionSource<CallbackMsg> completionSource = new TaskCompletionSource<CallbackMsg>();
 
 
-        public override void Handle( object callback )
+        public override void Handle( CallbackMsg callback )
         {
-            SteamClient.JobCallback<T> jobCallback = callback as SteamClient.JobCallback<T>;
-
-            completionSource.SetResult( jobCallback.Callback );
+            completionSource.SetResult( callback );
         }
     }
 }

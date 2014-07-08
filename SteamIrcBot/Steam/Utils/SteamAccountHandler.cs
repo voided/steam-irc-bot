@@ -19,8 +19,10 @@ namespace SteamIrcBot
             public string AccountName { get; private set; }
 
 
-            internal ResponseCallback( CMsgClientRequestAccountDataResponse msg )
+            internal ResponseCallback( JobID jobID, CMsgClientRequestAccountDataResponse msg )
             {
+                this.JobID = jobID;
+
                 Result = ( EResult )msg.eresult;
                 Action = ( ERequestAccountData )msg.action;
 
@@ -66,8 +68,7 @@ namespace SteamIrcBot
         {
             var msg = new ClientMsgProtobuf<CMsgClientRequestAccountDataResponse>( packetMsg );
 
-            var innerCallback = new ResponseCallback(msg.Body );
-            var callback = new SteamClient.JobCallback<ResponseCallback>( msg.TargetJobID, innerCallback );
+            var callback = new ResponseCallback( msg.TargetJobID, msg.Body );
 
             Client.PostCallback( callback );
         }

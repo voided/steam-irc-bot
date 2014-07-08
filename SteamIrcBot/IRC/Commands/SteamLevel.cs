@@ -23,7 +23,7 @@ namespace SteamIrcBot
             Triggers.Add( "!steamlevel" );
             HelpText = "!level <steamid> - Displays the Steam level of a given SteamID";
 
-            new JobCallback<SteamLevels.SteamLevelsCallback>( OnLevels, Steam.Instance.CallbackManager );
+            new Callback<SteamLevels.SteamLevelsCallback>( OnLevels, Steam.Instance.CallbackManager );
         }
 
         protected override void OnRun( CommandDetails details )
@@ -54,9 +54,9 @@ namespace SteamIrcBot
         }
 
 
-        void OnLevels( SteamLevels.SteamLevelsCallback callback, JobID jobId )
+        void OnLevels( SteamLevels.SteamLevelsCallback callback )
         {
-            var req = GetRequest( r => r.Job == jobId );
+            var req = GetRequest( r => r.Job == callback.JobID );
 
             if ( req == null )
                 return;
