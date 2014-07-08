@@ -156,6 +156,8 @@ namespace SteamIrcBot
 
         public string IRCServer;
         public int IRCPort;
+        [ConfigHidden]
+        public string IRCPassword;
 
         public string IRCNick;
 

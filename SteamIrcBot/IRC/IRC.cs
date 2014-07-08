@@ -167,7 +167,15 @@ namespace SteamIrcBot
                 client.Connect( Settings.Current.IRCServer, Settings.Current.IRCPort );
 
                 var nickList = new string[] { Settings.Current.IRCNick, Settings.Current.IRCNick + "_" };
-                client.Login( nickList, Settings.Current.IRCNick, 4, "steamircbot" );
+
+                if ( !string.IsNullOrEmpty( Settings.Current.IRCPassword ) )
+                {
+                    client.Login( nickList, Settings.Current.IRCNick, 4, "steamircbot", Settings.Current.IRCPassword );
+                }
+                else
+                {
+                    client.Login( nickList, Settings.Current.IRCNick, 4, "steamircbot" );
+                }
 
             }
 
