@@ -108,8 +108,6 @@
     <Compile Include="Steam\Job Manager\Jobs\UpToDateJob.cs" />
     <Compile Include="Steam\Steam Manager\Handlers\GroupHandler.cs" />
     <Compile Include="Steam\Steam Manager\SteamManager.cs" />
-    <Compile Include="Steam\Task Manager\Task.cs" />
-    <Compile Include="Steam\Task Manager\TaskManager.cs" />
     <Compile Include="Steam\Utils\SteamAccountHandler.cs" />
     <Compile Include="Steam\Utils\SteamAppInfoHandler.cs" />
     <Compile Include="Utils\DisplayDictionary.cs" />

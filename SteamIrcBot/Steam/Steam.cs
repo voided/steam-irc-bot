@@ -22,8 +22,6 @@ namespace SteamIrcBot
 
         public CallbackManager CallbackManager { get; private set; }
 
-        public TaskManager TaskManager { get; private set; }
-
         public GCManager GCManager { get; private set; }
         public SteamManager SteamManager { get; private set; }
 
@@ -80,8 +78,6 @@ namespace SteamIrcBot
             Client.AddHandler( Games );
             Client.AddHandler( AppInfo );
             Client.AddHandler( Account );
-
-            TaskManager = new TaskManager( CallbackManager );
 
             GCManager = new GCManager( CallbackManager );
             SteamManager = new SteamManager( CallbackManager );
