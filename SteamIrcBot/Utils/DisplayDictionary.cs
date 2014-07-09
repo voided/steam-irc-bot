@@ -10,7 +10,7 @@ namespace SteamIrcBot
         int maxValueLen;
 
 
-        public DisplayDictionary( int maxLen = 100 )
+        public DisplayDictionary( int maxLen = 150 )
         {
             maxValueLen = maxLen;
         }

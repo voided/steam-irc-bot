@@ -50,6 +50,11 @@ namespace SteamIrcBot
             return value;
         }
 
+        public static string ToActualString( this IEnumerable<char> value )
+        {
+            return new string( value.ToArray() );
+        }
+
         // adapted from http://stackoverflow.com/a/13503860/139147
         public static IEnumerable<TResult> FullOuterJoin<TLeft, TRight, TKey, TResult>(
             this IEnumerable<TLeft> left,

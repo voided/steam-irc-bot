@@ -88,6 +88,7 @@ namespace SteamIrcBot
 
             shuttingDown = true;
 
+            SendToTag( "main", "Shutting down!" );
             client.WriteLine( "QUIT :fork it all", Priority.Critical );
         }
 
@@ -107,7 +108,7 @@ namespace SteamIrcBot
 
             string targetString = string.Join( ",", chans.Select( c => c.Channel ) );
 
-            client.SendMessage( SendType.Message, targetString, string.Format( format, args ) );
+            InternalSendMessage( SendType.Message, targetString, string.Format( format, args ) );
         }
         public void SendEmoteToTag( string tag, string format, params object[] args )
         {
@@ -124,7 +125,7 @@ namespace SteamIrcBot
 
             string targetString = string.Join( ",", chans.Select( c => c.Channel ) );
 
-            client.SendMessage( SendType.Action, targetString, string.Format( format, args ) );
+            InternalSendMessage( SendType.Action, targetString, string.Format( format, args ) );
         }
 
         public void Send( string channel, string format, params object[] args )
@@ -132,14 +133,29 @@ namespace SteamIrcBot
             if ( !Connected )
                 return;
 
-            client.SendMessage( SendType.Message, channel, string.Format( format, args ) );
+            InternalSendMessage( SendType.Message, channel, string.Format( format, args ) );
         }
         public void SendEmote( string channel, string format, params object[] args )
         {
             if ( !Connected )
                 return;
 
-            client.SendMessage( SendType.Action, channel, string.Format( format, args ) );
+            InternalSendMessage( SendType.Action, channel, string.Format( format, args ) );
+        }
+
+        void InternalSendMessage( SendType sendType, string target, string message )
+        {
+            // maximum amount of text we want to allow in a message until we split it into chunks
+            const int MAX_LINE = 400;
+
+            do
+            {
+                var messageChunk = message.Take( MAX_LINE ).ToActualString();
+                message = message.Skip( MAX_LINE ).ToActualString();
+
+                client.SendMessage( sendType, target, messageChunk );
+            }
+            while ( message.Length > 0 );
         }
 
         public void Join( string[] channels )

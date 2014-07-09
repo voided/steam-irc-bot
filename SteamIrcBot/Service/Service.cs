@@ -61,7 +61,6 @@ namespace SteamIrcBot
             RSS.Instance.Stop();
 
             ServiceDispatcher.Instance.Stop();
-
         }
     }
 }
