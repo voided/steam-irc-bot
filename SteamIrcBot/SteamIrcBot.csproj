@@ -78,6 +78,7 @@
     <Compile Include="IRC\Commands\Buttcoin.cs" />
     <Compile Include="IRC\Commands\Config.cs" />
     <Compile Include="IRC\Commands\Doge.cs" />
+    <Compile Include="IRC\Commands\EMsg.cs" />
     <Compile Include="IRC\Commands\Fennec.cs" />
     <Compile Include="IRC\Commands\NumServers.cs" />
     <Compile Include="IRC\Commands\TI3.cs" />
