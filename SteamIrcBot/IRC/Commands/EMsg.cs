@@ -23,11 +23,11 @@ namespace SteamIrcBot
             }
 
             string inputEMsg = details.Args[ 0 ];
-            int eMsg;
+            EMsg eMsg;
 
-            if ( int.TryParse( inputEMsg, out eMsg ) )
+            if ( Enum.TryParse( inputEMsg, out eMsg ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, ( EMsg )eMsg );
+                IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, eMsg );
             }
             else
             {
