@@ -25,13 +25,39 @@ namespace SteamIrcBot
             string inputEMsg = details.Args[ 0 ];
             int eMsg;
 
-            if ( !int.TryParse( inputEMsg, out eMsg ) )
+            if ( int.TryParse( inputEMsg, out eMsg ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: Invalid EMsg value", details.Sender.Nickname );
-                return;
+                IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, ( EMsg )eMsg );
             }
+            else
+            {
+                bool includeDeprecated = false;
+                if ( details.Args.Length > 1 && details.Args[ 1 ].Equals( "deprecated", StringComparison.InvariantCultureIgnoreCase ) )
+                {
+                    includeDeprecated = true;
+                }
 
-            IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, ( EMsg )eMsg );
+                var emsgs = Enum.GetValues( typeof( EMsg ) ).Cast<EMsg>();
+                if ( !includeDeprecated )
+                {
+                    emsgs = emsgs.Except( emsgs.Where( x => typeof( EMsg ).GetMember( x.ToString() )[ 0 ].GetCustomAttributes( typeof( ObsoleteAttribute ), inherit: false ).Any() ) );
+                }
+
+                var emsgsWithMatchingName = emsgs.Where( x => x.ToString().IndexOf( inputEMsg, StringComparison.InvariantCultureIgnoreCase ) >= 0 );
+                if ( emsgsWithMatchingName.Count() == 0 )
+                {
+                    IRC.Instance.Send( details.Channel, "{0}: No matches found.", details.Sender.Nickname );
+                }
+                else if ( emsgsWithMatchingName.Count() > 10 )
+                {
+                    IRC.Instance.Send( details.Channel, "{0}: More than 10 results found.", details.Sender.Nickname );
+                }
+                else
+                {
+                    var formatted = string.Join( ", ", emsgsWithMatchingName.Select( emsg => string.Format( "{0} ({1})", emsg.ToString(), ( int )emsg ) ) );
+                    IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, formatted );
+                }
+            }
         }
     }
 }
