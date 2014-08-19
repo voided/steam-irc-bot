@@ -77,7 +77,7 @@ namespace SteamIrcBot
                 }
                 else
                 {
-                    var formatted = string.Join( ", ", enumValuesWithMatchingName.Select( @enum => string.Format( "{0} ({1})", @enum.ToString(), ( int )( object )@enum ) ) );
+                    var formatted = string.Join( ", ", enumValuesWithMatchingName.Select( @enum => string.Format( "{0} ({1})", @enum.ToString(), Enum.Format( typeof( TEnum ), @enum, "D" ) ) ) );
                     IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, formatted );
                 }
             }
