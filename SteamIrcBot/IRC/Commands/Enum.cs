@@ -20,7 +20,7 @@ namespace SteamIrcBot
         {
             if ( details.Args.Length < 2 )
             {
-                IRC.Instance.Send( details.Channel, "{0}: EMsg argument required", details.Sender.Nickname );
+                IRC.Instance.Send( details.Channel, "{0}: enum and value or filter arguments required", details.Sender.Nickname );
                 return;
             }
 
