@@ -105,6 +105,11 @@ namespace SteamIrcBot
                 Requests.Remove( req );
             }
         }
+
+        protected void ShowHelp( CommandDetails details )
+        {
+            IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, HelpText );
+        }
     }
 
     class CommandDetails
