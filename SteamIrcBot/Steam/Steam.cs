@@ -105,6 +105,13 @@ namespace SteamIrcBot
 
         public void Disconnect()
         {
+            if ( Client == null )
+            {
+                // disconnecting before we've even initialized
+                // such as when settings validation fails
+                return;
+            }
+
             Log.WriteInfo( "Steam", "Disconnecting..." );
 
             shuttingDown = true;
