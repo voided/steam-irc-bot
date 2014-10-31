@@ -82,6 +82,7 @@
     <Compile Include="IRC\Commands\Enum.cs" />
     <Compile Include="IRC\Commands\Fennec.cs" />
     <Compile Include="IRC\Commands\NumServers.cs" />
+    <Compile Include="IRC\Commands\TF2WarStats.cs" />
     <Compile Include="IRC\Commands\TI.cs" />
     <Compile Include="IRC\Commands\FindAccounts.cs" />
     <Compile Include="IRC\Commands\GID.cs" />
