@@ -54,7 +54,8 @@ namespace SteamIrcBot
         public GCSessionHandler( GCManager manager )
             : base( manager )
         {
-            new GCCallback<CMsgClientWelcome>( (uint)EGCBaseClientMsg.k_EMsgGCClientWelcome, OnWelcome, manager );
+            new GCCallback<CMsgClientWelcome>( (uint)EGCBaseClientMsg.k_EMsgGCClientWelcome, OnClientWelcome, manager );
+            new GCCallback<CMsgServerWelcome>( (uint)EGCBaseClientMsg.k_EMsgGCServerWelcome, OnServerWelcome, manager );
 
             // these two callbacks exist to cover the gc message differences between dota and tf2
             // in TF2, it still uses k_EMsgGCClientGoodbye, whereas dota is using k_EMsgGCClientConnectionStatus
@@ -86,7 +87,7 @@ namespace SteamIrcBot
         }
 
 
-        void OnWelcome( ClientGCMsgProtobuf<CMsgClientWelcome> msg, uint gcAppId )
+        void OnClientWelcome( ClientGCMsgProtobuf<CMsgClientWelcome> msg, uint gcAppId )
         {
             SessionInfo info = GetSessionInfo( gcAppId );
 
@@ -94,14 +95,33 @@ namespace SteamIrcBot
 
             if ( msg.Body.version != info.Version && info.Version != 0 )
             {
-                IRC.Instance.SendToTag( ircTag, "New {0} GC session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version, info.Version );
+                IRC.Instance.SendToTag( ircTag, "New {0} GC client session (version: {1}, previous version: {2})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version, info.Version );
             }
             else
             {
-                IRC.Instance.SendToTag( ircTag, "New {0} GC session (version: {1})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version );
+                IRC.Instance.SendToTag( ircTag, "New {0} GC client session (version: {1})", Steam.Instance.GetAppName( gcAppId ), msg.Body.version );
             }
 
             info.Version = msg.Body.version;
+            info.Status = GCConnectionStatus.GCConnectionStatus_HAVE_SESSION;
+        }
+
+        void OnServerWelcome( ClientGCMsgProtobuf<CMsgServerWelcome> msg, uint gcAppId )
+        {
+            SessionInfo info = GetSessionInfo( gcAppId );
+
+            string ircTag = string.Format( "gc-{0}", Settings.Current.GetTagForGCApp( gcAppId ) );
+
+            if ( msg.Body.active_version != info.Version && info.Version != 0 )
+            {
+                IRC.Instance.SendToTag( ircTag, "New {0} GC server session (active version: {1}, previous version: {2}, min allowed: {3})", Steam.Instance.GetAppName( gcAppId ), msg.Body.active_version, info.Version, msg.Body.min_allowed_version );
+            }
+            else
+            {
+                IRC.Instance.SendToTag( ircTag, "New {0} GC server session (active version: {1}, min allowed: {2})", Steam.Instance.GetAppName( gcAppId ), msg.Body.active_version, msg.Body.min_allowed_version );
+            }
+
+            info.Version = msg.Body.active_version;
             info.Status = GCConnectionStatus.GCConnectionStatus_HAVE_SESSION;
         }
 
