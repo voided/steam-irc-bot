@@ -145,6 +145,11 @@ namespace SteamIrcBot
 
         void InternalSendMessage( SendType sendType, string target, string message )
         {
+            // remove all possible newline characters
+            message = message
+                .Replace( "\n", "" )
+                .Replace( "\r", "" );
+
             // maximum amount of text we want to allow in a message until we split it into chunks
             const int MAX_LINE = 400;
 

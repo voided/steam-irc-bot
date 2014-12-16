@@ -28,7 +28,7 @@ namespace SteamIrcBot
                 var req = new Request();
                 AddRequest( details, req );
 
-                var uri = new Uri( string.Format( "https://areweponyyet.com/?chatty=1&pony={0}", pony ) );
+                var uri = new Uri( string.Format( "https://areweponyyet.com/?chatty=1&pony={0}", Uri.EscapeDataString( pony ) ) );
 
                 webClient.DownloadStringCompleted += OnDownloadCompleted;
                 webClient.DownloadStringAsync( uri, req );
