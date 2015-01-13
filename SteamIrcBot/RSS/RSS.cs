@@ -175,6 +175,13 @@ namespace SteamIrcBot
 
                 return null;
             }
+            catch ( XmlException ex )
+            {
+                // handle poorly formatted xml
+                Log.WriteWarn( "RSS", "Unable to load RSS feed {0}: {1}", feedSettings.URL, ex.Message );
+
+                return null;
+            }
         }
 
         SyndicationFeed LoadRSS10( string url )
