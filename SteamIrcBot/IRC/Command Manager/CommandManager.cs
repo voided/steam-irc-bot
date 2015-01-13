@@ -13,11 +13,11 @@ namespace SteamIrcBot
         object commandLock = new object();
 
 
-        public CommandManager( IrcClient client )
+        public CommandManager( IIrcClient client )
         {
             RegisteredCommands = new List<Command>();
 
-            client.OnChannelMessage += MessageParser_ChannelMessage;
+            client.OnMessage += MessageParser_ChannelMessage;
         }
 
         public void Init()
@@ -59,9 +59,9 @@ namespace SteamIrcBot
             }
         }
 
-        void MessageParser_ChannelMessage( object sender, IrcEventArgs e )
+        void MessageParser_ChannelMessage( object sender, IrcMessageEventArgs e )
         {
-            string msg = e.Data.Message;
+            string msg = e.Message;
 
             if ( string.IsNullOrEmpty( msg ) )
                 return;
@@ -74,12 +74,7 @@ namespace SteamIrcBot
             string command = splits[ 0 ];
             string[] args = splits.Skip( 1 ).ToArray();
 
-            var from = new SenderDetails
-            {
-                Nickname = e.Data.Nick,
-                Ident = e.Data.Ident,
-                Hostname = e.Data.Host,
-            };
+            var from = e.Sender;
 
             // dumb skype relay related hack
             if ( from.Ident == "~gib" && ( from.Hostname == "me.the.steamgames.co" || from.Hostname == "2001:470:1f0f:4eb::4:1" ) )
@@ -111,7 +106,7 @@ namespace SteamIrcBot
             if ( triggeredCommand == null )
                 return;
 
-            Log.WriteInfo( "CommandManager", "Handling command {0} from {1} in {2}", triggeredCommand.Triggers.First(), from, e.Data.Channel );
+            Log.WriteInfo( "CommandManager", "Handling command {0} from {1} in {2}", triggeredCommand.Triggers.First(), from, e.Source );
 
             triggeredCommand.DoRun( new CommandDetails
             {
@@ -119,7 +114,7 @@ namespace SteamIrcBot
                 Args = args,
 
                 Sender = from,
-                Channel = e.Data.Channel,
+                Channel = e.Source,
             } );
         }
     }

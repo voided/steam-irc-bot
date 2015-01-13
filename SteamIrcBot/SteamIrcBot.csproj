@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IRC\Clients\SmartIrc4NetClient.cs" />
     <Compile Include="IRC\Command Manager\Command.cs" />
     <Compile Include="IRC\Command Manager\CommandManager.cs" />
     <Compile Include="IRC\Commands\AppInfo.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="IRC\Commands\SteamLevel.cs" />
     <Compile Include="IRC\Commands\UGC.cs" />
     <Compile Include="IRC\IRC.cs" />
+    <Compile Include="IRC\IrcClient.cs" />
     <Compile Include="RSS\DateXmlReader.cs" />
     <Compile Include="RSS\RSS.cs" />
     <Compile Include="Service\ProjectInstaller.cs">

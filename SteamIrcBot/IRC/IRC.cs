@@ -4,22 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-using Meebey.SmartIrc4net;
-
 namespace SteamIrcBot
 {
-    class SenderDetails
-    {
-        public string Nickname { get; set; }
-        public string Ident { get; set; }
-        public string Hostname { get; set; }
-
-        public override string ToString()
-        {
-            return string.Format( "{0}!{1}@{2}", Nickname, Ident, Hostname );
-        }
-    }
-
     class IRC
     {
         static IRC _instance = new IRC();
@@ -29,7 +15,7 @@ namespace SteamIrcBot
         public CommandManager CommandManager { get; private set; }
 
 
-        IrcClient client = new IrcClient();
+        IIrcClient client;
         bool shuttingDown = false;
 
         DateTime nextConnect;
@@ -51,15 +37,9 @@ namespace SteamIrcBot
 
         IRC()
         {
-            nextConnect = DateTime.MaxValue;
+            client = new SmartIrc4NetClient();
 
-            client.SendDelay = 0;
-            client.Encoding = Encoding.UTF8;
-            client.AutoRetry = true;
-            client.AutoRejoin = true;
-            client.AutoRelogin = true;
-            client.AutoRejoinOnKick = true;
-            client.ActiveChannelSyncing = true;
+            nextConnect = DateTime.MaxValue;
 
             CommandManager = new CommandManager( client );
 
@@ -89,7 +69,7 @@ namespace SteamIrcBot
             shuttingDown = true;
 
             SendToTag( "main", "Shutting down!" );
-            client.WriteLine( "QUIT :fork it all", Priority.Critical );
+            client.SendRaw( "QUIT :fork it all", SendPriority.Critical );
         }
 
 
@@ -158,20 +138,28 @@ namespace SteamIrcBot
                 var messageChunk = message.Take( MAX_LINE ).ToActualString();
                 message = message.Skip( MAX_LINE ).ToActualString();
 
-                client.SendMessage( sendType, target, messageChunk );
+                switch ( sendType )
+                {
+                    case SendType.Message:
+                        client.SendMessage( target, messageChunk );
+                        break;
+
+                    case SendType.Emote:
+                        client.SendEmote( target, messageChunk );
+                        break;
+                }
             }
             while ( message.Length > 0 );
         }
 
         public void Join( string[] channels )
         {
-            client.RfcJoin( channels );
+            client.Join( channels );
         }
 
         public bool IsUserOnChannel( string channel, string user )
         {
-            ChannelUser userObj = client.GetChannelUser( channel, user );
-            return userObj != null;
+            return client.IsUserOnChannel( user, channel );
         }
 
 
@@ -192,16 +180,16 @@ namespace SteamIrcBot
 
                 if ( !string.IsNullOrEmpty( Settings.Current.IRCPassword ) )
                 {
-                    client.Login( nickList, Settings.Current.IRCNick, 4, "steamircbot", Settings.Current.IRCPassword );
+                    client.Login( "steamircbot", Settings.Current.IRCNick, Settings.Current.IRCNick, Settings.Current.IRCPassword );
                 }
                 else
                 {
-                    client.Login( nickList, Settings.Current.IRCNick, 4, "steamircbot" );
+                    client.Login( "steamircbot", Settings.Current.IRCNick, Settings.Current.IRCNick );
                 }
 
             }
 
-            client.ListenOnce( false );
+            client.Tick();
 
             CommandManager.Tick();
         }
@@ -217,7 +205,7 @@ namespace SteamIrcBot
         {
             Log.WriteInfo( "IRC", "Connected!" );
 
-            client.RfcJoin( Settings.Current.IRCChannels.Select( chan => chan.Channel ).ToArray() );
+            client.Join( Settings.Current.IRCChannels.Select( chan => chan.Channel ).ToArray() );
         }
 
         void OnDisconnected( object sender, EventArgs e )
@@ -233,7 +221,7 @@ namespace SteamIrcBot
             Reconnect( TimeSpan.FromSeconds( 30 ) );
         }
 
-        void OnJoin( object sender, JoinEventArgs e )
+        void OnJoin( object sender, IrcJoinEventArgs e )
         {
             var mainChan = Settings.Current.GetChannelsForTag( "main" )
                 .FirstOrDefault();
@@ -244,7 +232,8 @@ namespace SteamIrcBot
                 return;
             }
 
-            if ( client.IsMe( e.Data.Nick ) && string.Equals( e.Channel, mainChan.Channel, StringComparison.OrdinalIgnoreCase ) )
+            // todo: implement this
+            if ( client.IsMe( e.Who.Nickname ) && string.Equals( e.Channel, mainChan.Channel, StringComparison.OrdinalIgnoreCase ) )
             {
                 if ( !Steam.Instance.Connected )
                     Steam.Instance.Connect();
