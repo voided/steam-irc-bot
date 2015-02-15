@@ -73,6 +73,7 @@
     <Compile Include="IRC\Command Manager\Command.cs" />
     <Compile Include="IRC\Command Manager\CommandManager.cs" />
     <Compile Include="IRC\Commands\AppInfo.cs" />
+    <Compile Include="IRC\Commands\Beast.cs" />
     <Compile Include="IRC\Commands\Bruno.cs" />
     <Compile Include="IRC\Commands\Bug.cs" />
     <Compile Include="IRC\Commands\Buttcoin.cs" />
