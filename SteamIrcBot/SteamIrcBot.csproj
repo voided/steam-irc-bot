@@ -105,6 +105,7 @@
     <Compile Include="Service\ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Steam\GC Manager\GC Handlers\DotaGCHandlers.cs" />
     <Compile Include="Steam\GC Manager\GC Handlers\TF2GCHandlers.cs" />
     <Compile Include="Steam\Job Manager\Jobs\GameSessionJob.cs" />
     <Compile Include="Steam\Job Manager\Jobs\PICSJob.cs" />
