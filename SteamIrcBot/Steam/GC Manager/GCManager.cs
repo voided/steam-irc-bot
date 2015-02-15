@@ -6,13 +6,65 @@ using System.Reflection;
 using SteamKit2;
 using SteamKit2.GC;
 using ProtoBuf;
+using System.IO;
+using SteamKit2.GC.Internal;
 
 namespace SteamIrcBot
 {
     class GCHandler
     {
+        protected GCManager Manager { get; set; }
+
         public GCHandler( GCManager manager )
         {
+            this.Manager = manager;
+        }
+    }
+
+    class InjectedGCMsg : IPacketGCMsg
+    {
+        uint eMsg;
+        byte[] data;
+
+
+        public InjectedGCMsg( uint eMsg, byte[] data )
+        {
+            this.eMsg = eMsg;
+            this.data = data;
+        }
+
+
+        public bool IsProto { get { return true; } }
+
+        public uint MsgType { get { return eMsg; } }
+
+        public JobID TargetJobID { get { return JobID.Invalid; } }
+        public JobID SourceJobID { get { return JobID.Invalid; } }
+
+        public byte[] GetData()
+        {
+            // in order for this to work, we need to craft a whole fake gc message, including the header
+
+            using ( var ms = new MemoryStream() )
+            using ( var bw = new BinaryWriter( ms ) )
+            {
+                byte[] header;
+
+                using ( var headerStream = new MemoryStream() )
+                {
+                    Serializer.Serialize( headerStream, new CMsgProtoBufHeader() );
+                    header = headerStream.ToArray();
+                }
+
+                bw.Write( eMsg );
+                bw.Write( (uint)header.Length );
+                bw.Write( header );
+
+                // now finally write the body
+                bw.Write( data );
+
+                return ms.ToArray();
+            }
         }
     }
 
@@ -46,6 +98,20 @@ namespace SteamIrcBot
         internal void Register( GCCallback callback )
         {
             callbacks.Add( callback );
+        }
+
+        public void InjectExtraMessage( uint eMsg, byte[] message, uint gcAppId )
+        {
+            Log.WriteDebug( "GCManager", "Got {0} injected GC message {1}", gcAppId, GetEMsgName( eMsg ) );
+
+            var matchingCallbacks = callbacks
+                .Where( call => call.EMsg == eMsg );
+
+            foreach ( var call in matchingCallbacks )
+            {
+                // we craft fake gc messages since the gc is only giving us the body, without a header
+                call.Run( new InjectedGCMsg( eMsg, message ), gcAppId );
+            }
         }
 
 

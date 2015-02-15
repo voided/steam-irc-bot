@@ -5,11 +5,13 @@ using System.Text;
 using SteamKit2.GC;
 using SteamKit2.GC.Internal;
 using SteamKit2.GC.TF2.Internal;
+using SteamKit2.GC.Dota.Internal;
 using System.Net;
 using System.IO;
 using System.Windows.Forms;
 using System.Timers;
 using System.Collections.Concurrent;
+using ProtoBuf;
 
 using CMsgClientWelcome = SteamKit2.GC.Internal.CMsgClientWelcome;
 using CMsgClientHello = SteamKit2.GC.Internal.CMsgClientHello;
@@ -104,6 +106,8 @@ namespace SteamIrcBot
 
             info.Version = msg.Body.version;
             info.Status = GCConnectionStatus.GCConnectionStatus_HAVE_SESSION;
+
+            HandleGameData( msg.Body.game_data, gcAppId );
         }
 
         void OnServerWelcome( ClientGCMsgProtobuf<CMsgServerWelcome> msg, uint gcAppId )
@@ -151,6 +155,33 @@ namespace SteamIrcBot
             sessionMap[ gcAppId ] = info;
 
             return info;
+        }
+
+        void HandleGameData( byte[] gameData, uint gcAppId )
+        {
+            string ircTag = string.Format( "gc-{0}", Settings.Current.GetTagForGCApp( gcAppId ) );
+
+            if ( gcAppId != 570 )
+            {
+                // currently we're only handling dota's extra messages
+                return;
+            }
+
+            using ( var ms = new MemoryStream( gameData ) )
+            {
+                CMsgDOTAWelcome dotaWelcome = Serializer.Deserialize<CMsgDOTAWelcome>( ms );
+
+                IRC.Instance.SendToTag(
+                    ircTag, "{0} GC Active Events: {1}",
+                    Steam.Instance.GetAppName( gcAppId ), string.Join( ", ", dotaWelcome.active_events )
+                );
+
+                // inject the extra messages back into our gc message manager
+                foreach ( var extraMsg in dotaWelcome.extra_messages )
+                {
+                    Manager.InjectExtraMessage( extraMsg.id, extraMsg.contents, gcAppId );
+                }
+            }
         }
     }
 
