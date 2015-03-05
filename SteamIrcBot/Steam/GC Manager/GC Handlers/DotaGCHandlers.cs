@@ -41,7 +41,7 @@ namespace SteamIrcBot
             DateTime beastTime = Utils.DateTimeFromUnixTime( lastInfo.next_transition_time );
             TimeSpan timeDiff = beastTime - DateTime.UtcNow;
 
-            bool isTimeKnown = lastInfo.next_transition_time != 1451606400; // Jan 1, 2016
+            bool isTimeKnown = lastInfo.next_transition_time != 0;
 
             string changeString = "Unknown";
 
