@@ -27,7 +27,7 @@ namespace SteamIrcBot
         {
             lastInfo = msg.Body;
 
-            IRC.Instance.SendToTag( "gc-dota", "{0} {1}", Steam.Instance.GetAppName( gcAppId ), GetDisplay() );
+            IRC.Instance.SendToTag( "gc-dota-verbose", "{0} {1}", Steam.Instance.GetAppName( gcAppId ), GetDisplay() );
         }
 
         public string GetDisplay()

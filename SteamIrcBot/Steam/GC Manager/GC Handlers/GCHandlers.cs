@@ -159,7 +159,7 @@ namespace SteamIrcBot
 
         void HandleGameData( byte[] gameData, uint gcAppId )
         {
-            string ircTag = string.Format( "gc-{0}", Settings.Current.GetTagForGCApp( gcAppId ) );
+            string ircTag = string.Format( "gc-{0}-verbose", Settings.Current.GetTagForGCApp( gcAppId ) );
 
             if ( gcAppId != 570 )
             {
@@ -171,9 +171,16 @@ namespace SteamIrcBot
             {
                 CMsgDOTAWelcome dotaWelcome = Serializer.Deserialize<CMsgDOTAWelcome>( ms );
 
+                string activeEvents = "None";
+
+                if ( dotaWelcome.active_events.Count > 0 )
+                {
+                    activeEvents = string.Join( ", ", dotaWelcome.active_events );
+                }
+
                 IRC.Instance.SendToTag(
                     ircTag, "{0} GC Active Events: {1}",
-                    Steam.Instance.GetAppName( gcAppId ), string.Join( ", ", dotaWelcome.active_events )
+                    Steam.Instance.GetAppName( gcAppId ), activeEvents
                 );
 
                 // inject the extra messages back into our gc message manager
