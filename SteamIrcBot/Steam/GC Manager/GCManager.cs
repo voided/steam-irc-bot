@@ -105,7 +105,14 @@ namespace SteamIrcBot
             Log.WriteDebug( "GCManager", "Got {0} injected GC message {1}", gcAppId, GetEMsgName( eMsg ) );
 
             var matchingCallbacks = callbacks
-                .Where( call => call.EMsg == eMsg );
+                .Where( call => call.EMsg == eMsg )
+                .ToList();
+
+            if ( matchingCallbacks.Count == 0 )
+            {
+                Log.WriteWarn( "GCManager", "Got {0} injected GC message {1}, but was unhandled", gcAppId, GetEMsgName( eMsg ) );
+                return;
+            }
 
             foreach ( var call in matchingCallbacks )
             {
