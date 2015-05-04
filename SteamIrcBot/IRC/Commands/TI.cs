@@ -5,6 +5,27 @@ using System.Text;
 
 namespace SteamIrcBot
 {
+    class TI5Command : TICommand
+    {
+        // don't have any more information about the date yet
+        DateTime Event = new DateTime( 2015, 8 /*august*/, 3, 0, 0, 0, DateTimeKind.Utc );
+
+        public TI5Command()
+        {
+            Triggers.Add( "!ti5" );
+            HelpText = "!ti5 - Countdown to Doters";
+        }
+
+        protected override void OnRun( CommandDetails details )
+        {
+            TimeSpan timeToEvent = Event - DateTime.UtcNow;
+
+            IRC.Instance.Send( details.Channel, "{0}: TI5 Event: {1}",
+                details.Sender.Nickname, GetTime( timeToEvent )
+            );
+        }
+    }
+
     class TI4Command : TICommand
     {
         DateTime RegionalQualifiers = new DateTime( 2014, 5 /*april*/, 12, 0, 0, 0, DateTimeKind.Utc );
