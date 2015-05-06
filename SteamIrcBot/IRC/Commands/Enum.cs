@@ -29,7 +29,7 @@ namespace SteamIrcBot
 
             var matchingEnumType = typeof( CMClient ).Assembly.GetTypes()
                 .Where( x => x.IsEnum )
-                .Where( x => x.Namespace == "SteamKit2" )
+                .Where( x => x.Namespace.StartsWith( "SteamKit2" ) )
                 .Where( x => x.Name.Equals( enumType, StringComparison.InvariantCultureIgnoreCase ) )
                 .FirstOrDefault();
 
