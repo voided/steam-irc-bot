@@ -22,7 +22,7 @@ namespace SteamIrcBot
 
             Triggers.Add( "!numplayers" );
             Triggers.Add( "!players" );
-            HelpText = "!numplayers <gameid> - Requests the current number of players playing the given GameID, according to Steam";
+            HelpText = "!numplayers <gameid/name> - Requests the current number of players playing the given GameID or app name, according to Steam";
         }
 
 
@@ -37,10 +37,12 @@ namespace SteamIrcBot
             ulong gameId;
             if ( !ulong.TryParse( details.Args[ 0 ], out gameId ) )
             {
-                uint appId;
-
                 // lets search by name if we're not a gameid
-                if ( !Steam.Instance.AppInfo.FindApp( details.Args[ 0 ], out appId ) )
+
+                string appName = string.Join( " ", details.Args );
+
+                uint appId;
+                if ( !Steam.Instance.AppInfo.FindApp( appName, out appId ) )
                 {
                     IRC.Instance.Send( details.Channel, "{0}: Invalid GameID or unknown app name", details.Sender.Nickname );
                     return;
