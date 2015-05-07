@@ -9,9 +9,24 @@ using SteamKit2.Internal;
 
 namespace SteamIrcBot
 {
+    class AppComparer : Comparer<string>
+    {
+        public override int Compare( string x, string y )
+        {
+            if ( x.IndexOf( y, StringComparison.OrdinalIgnoreCase ) != -1 )
+            {
+                return 0;
+            }
+
+            return string.Compare( x, y, true );
+        }
+    }
+
     class SteamAppInfo : ClientMsgHandler
     {
         uint lastChangelist = 0;
+
+        SortedList<string, uint> appNameCache = new SortedList<string, uint>();
 
 
         public SteamAppInfo()
@@ -32,6 +47,17 @@ namespace SteamIrcBot
         {
             appInfo = KeyValue.LoadAsText( GetAppCachePath( appId ) );
 
+            // cache off the name
+            if ( appInfo != null )
+            {
+                string name = appInfo[ "common" ][ "name" ].AsString();
+
+                if ( name != null )
+                {
+                    appNameCache[ name ] = appId;
+                }
+            }
+
             return appInfo != null;
         }
 
@@ -46,6 +72,24 @@ namespace SteamIrcBot
             name = appInfo[ "common" ][ "name" ].AsString();
 
             return name != null;
+        }
+
+        public bool FindApp( string search, out uint appId )
+        {
+            appId = 0;
+
+            int index = appNameCache.Keys
+                .ToList() // todo: this is an ugly copy
+                .BinarySearch( search, new AppComparer() );
+
+            if ( index < 0 )
+            {
+                // couldn't find it
+                return false;
+            }
+
+            appId = appNameCache.Values[ index ];
+            return true;
         }
 
         public bool GetDepotManifest( uint depotId, uint appId, out ulong manifest, string branch = "public" )
@@ -158,7 +202,12 @@ namespace SteamIrcBot
                 catch ( IOException ex )
                 {
                     Log.WriteError( "SteamAppInfoHandler", "Unable to cache appinfo for appid {0}: {1}", app.appid, ex.Message );
+                    continue;
                 }
+
+                // force an app name cache
+                KeyValue ignored;
+                GetAppInfo( app.appid, out ignored );
             }
 
             foreach ( var package in productInfo.Body.packages )
