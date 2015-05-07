@@ -59,7 +59,7 @@ namespace SteamIrcBot
         {
             Log.WriteInfo( "JobManager", "Starting..." );
 
-            jobTimer.Change( TimeSpan.Zero, TimeSpan.FromSeconds( 1 ) );
+            jobTimer.Change( TimeSpan.FromSeconds( 1 ), TimeSpan.FromMilliseconds( -1 ) );
         }
 
         public void Stop()
@@ -85,6 +85,9 @@ namespace SteamIrcBot
         void OnTick( object state )
         {
             registeredJobs.ForEach( j => j.Run() );
+
+            // trigger another job timer update in one second
+            jobTimer.Change( TimeSpan.FromSeconds( 1 ), TimeSpan.FromMilliseconds( -1 ) );
         }
     }
 }
