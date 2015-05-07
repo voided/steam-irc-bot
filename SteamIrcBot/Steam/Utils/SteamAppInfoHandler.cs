@@ -92,6 +92,37 @@ namespace SteamIrcBot
             return true;
         }
 
+        public void CacheRandomApp()
+        {
+            // at random, select one of the appinfo caches from file and load the app name into our in-memory cache
+
+            string[] files = Directory.GetFiles( Path.Combine( "cache", "appinfo" ) );
+
+            var appIds = files
+                .Select( name => Path.GetFileNameWithoutExtension( name ) )
+                .Select( name =>
+                {
+                    uint id;
+                    return uint.TryParse( name, out id ) ? (uint?)id : null;
+                } )
+                .Where( i => i.HasValue )
+                .Select( i => i.Value )
+                .Except( appNameCache.Values ) // exclude any apps we've already cached
+                .ToList();
+
+            if ( appIds.Count == 0 )
+            {
+                // nothing left to load into memory
+                return;
+            }
+
+            int randomIndex = new Random().Next( appIds.Count );
+            uint appId = appIds[ randomIndex ];
+
+            KeyValue ignored;
+            GetAppInfo( appId, out ignored );
+        }
+
         public bool GetDepotManifest( uint depotId, uint appId, out ulong manifest, string branch = "public" )
         {
             manifest = default( ulong );
