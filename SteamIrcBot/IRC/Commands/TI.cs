@@ -8,7 +8,8 @@ namespace SteamIrcBot
     class TI5Command : TICommand
     {
         // don't have any more information about the date yet
-        DateTime Event = new DateTime( 2015, 8 /*august*/, 3, 0, 0, 0, DateTimeKind.Utc );
+        DateTime Qualifiers = new DateTime( 2015, 5 /*may*/, 25, 0, 0, 0, DateTimeKind.Utc );
+        DateTime MainEvent = new DateTime( 2015, 8 /*august*/, 3, 0, 0, 0, DateTimeKind.Utc );
 
         public TI5Command()
         {
@@ -18,10 +19,11 @@ namespace SteamIrcBot
 
         protected override void OnRun( CommandDetails details )
         {
-            TimeSpan timeToEvent = Event - DateTime.UtcNow;
+            TimeSpan timeToQualifiers = Qualifiers - DateTime.UtcNow;
+            TimeSpan timeToMainEvent = MainEvent - DateTime.UtcNow;
 
-            IRC.Instance.Send( details.Channel, "{0}: TI5 Event: {1}",
-                details.Sender.Nickname, GetTime( timeToEvent )
+            IRC.Instance.Send( details.Channel, "{0}: TI5 Qualifiers: {1} | Main Event: {2}",
+                details.Sender.Nickname, GetTime( timeToQualifiers ), GetTime( timeToMainEvent )
             );
         }
     }
