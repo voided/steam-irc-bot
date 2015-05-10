@@ -30,7 +30,11 @@ namespace SteamIrcBot
             var matchingEnumType = typeof( CMClient ).Assembly.GetTypes()
                 .Where( x => x.IsEnum )
                 .Where( x => x.Namespace.StartsWith( "SteamKit2" ) )
-                .Where( x => x.Name.Equals( enumType, StringComparison.InvariantCultureIgnoreCase ) )
+                // some inner namespaces have enums that have matching names, but we (most likely) want to match against the root enums
+                // so we order by having the root enums first
+                .OrderByDescending( x => x.Namespace == "SteamKit2" )
+                // we want to match against name matches, or partial fullname matches
+                .Where( x => x.Name.Equals( enumType, StringComparison.InvariantCultureIgnoreCase ) || x.GetDottedTypeName().IndexOf( enumType, StringComparison.OrdinalIgnoreCase ) != -1 )
                 .FirstOrDefault();
 
             if ( matchingEnumType == null )
@@ -47,10 +51,12 @@ namespace SteamIrcBot
         void RunForEnum<TEnum>(string inputValue, CommandDetails details)
             where TEnum : struct
         {
+            string enumName = typeof( TEnum ).GetDottedTypeName();
+
             TEnum enumValue;
             if ( Enum.TryParse<TEnum>( inputValue, out enumValue ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, enumValue );
+                IRC.Instance.Send( details.Channel, "{0}: {1} ({2}) = {3}", details.Sender.Nickname, enumName, inputValue, enumValue );
             }
             else
             {
@@ -78,7 +84,7 @@ namespace SteamIrcBot
                 else
                 {
                     var formatted = string.Join( ", ", enumValuesWithMatchingName.Select( @enum => string.Format( "{0} ({1})", @enum.ToString(), Enum.Format( typeof( TEnum ), @enum, "D" ) ) ) );
-                    IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, formatted );
+                    IRC.Instance.Send( details.Channel, "{0}: {1} = {2}", details.Sender.Nickname, enumName, formatted );
                 }
             }
         }

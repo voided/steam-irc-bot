@@ -22,6 +22,22 @@ namespace SteamIrcBot
             return attribs[ 0 ];
         }
 
+        public static string GetDottedTypeName( this Type type )
+        {
+            // naive implementation of programmer friendly type full names
+            // ideally we'd want something like http://stackoverflow.com/a/28943180/139147
+            // but bringing in codedom is probably like using a sledgehammer to open a sliding glass door
+
+            string fullName = type.FullName;
+
+            if ( fullName == null )
+                return fullName;
+
+            fullName = fullName.Replace( "+", "." );
+
+            return fullName;
+        }
+
         public static bool Implements( this Type type, Type interfaceType )
         {
             return type.GetInterfaces()
