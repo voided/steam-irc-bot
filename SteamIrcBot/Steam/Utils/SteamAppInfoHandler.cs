@@ -9,24 +9,11 @@ using SteamKit2.Internal;
 
 namespace SteamIrcBot
 {
-    class AppComparer : Comparer<string>
-    {
-        public override int Compare( string x, string y )
-        {
-            if ( x.IndexOf( y, StringComparison.OrdinalIgnoreCase ) != -1 )
-            {
-                return 0;
-            }
-
-            return string.Compare( x, y, true );
-        }
-    }
-
     class SteamAppInfo : ClientMsgHandler
     {
         uint lastChangelist = 0;
 
-        SortedList<string, uint> appNameCache = new SortedList<string, uint>();
+        Dictionary<string, uint> appNameCache = new Dictionary<string, uint>();
 
 
         public SteamAppInfo()
@@ -78,17 +65,20 @@ namespace SteamIrcBot
         {
             appId = 0;
 
-            int index = appNameCache.Keys
-                .ToList() // todo: this is an ugly copy
-                .BinarySearch( search, new AppComparer() );
+            var appMatches = appNameCache
+                .Where( kvp => kvp.Key.IndexOf( search, StringComparison.OrdinalIgnoreCase ) != -1 )
+                .ToList();
 
-            if ( index < 0 )
+            if ( appMatches.Count == 0 )
             {
-                // couldn't find it
                 return false;
             }
 
-            appId = appNameCache.Values[ index ];
+            // todo: improve this with a more intelligent selection method
+            appId = appMatches
+                .Select( kvp => kvp.Value )
+                .FirstOrDefault();
+
             return true;
         }
 
