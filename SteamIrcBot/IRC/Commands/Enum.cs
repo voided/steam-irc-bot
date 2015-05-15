@@ -53,9 +53,17 @@ namespace SteamIrcBot
             string enumName = typeof( TEnum ).GetDottedTypeName();
 
             TEnum enumValue;
-            if ( Enum.TryParse<TEnum>( inputValue, out enumValue ) )
+            if ( Enum.TryParse( inputValue, out enumValue ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: {1} ({2}) = {3}", details.Sender.Nickname, enumName, inputValue, enumValue );
+                var enumFieldName = Enum.GetName( typeof ( TEnum ), enumValue );
+                if (string.IsNullOrEmpty( enumFieldName ))
+                    enumFieldName = "<unknown>";
+
+                var resultFormatted = enumFieldName.Equals( inputValue, StringComparison.InvariantCultureIgnoreCase )
+                    ? string.Format( "{0:D}", enumValue as Enum )
+                    : enumFieldName;
+
+                IRC.Instance.Send( details.Channel, "{0}: {1} ({2}) = {3}", details.Sender.Nickname, enumName, inputValue, resultFormatted );
             }
             else
             {
