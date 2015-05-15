@@ -29,13 +29,12 @@ namespace SteamIrcBot
 
             var matchingEnumType = typeof( CMClient ).Assembly.GetTypes()
                 .Where( x => x.IsEnum )
-                .Where( x => x.Namespace.StartsWith( "SteamKit2" ) )
+                // we want to match against name matches, or partial fullname matches
+                .Where( x => x.Namespace != null && x.Namespace.StartsWith( "SteamKit2" ) )
                 // some inner namespaces have enums that have matching names, but we (most likely) want to match against the root enums
                 // so we order by having the root enums first
                 .OrderByDescending( x => x.Namespace == "SteamKit2" )
-                // we want to match against name matches, or partial fullname matches
-                .Where( x => x.Name.Equals( enumType, StringComparison.InvariantCultureIgnoreCase ) || x.GetDottedTypeName().IndexOf( enumType, StringComparison.OrdinalIgnoreCase ) != -1 )
-                .FirstOrDefault();
+                .FirstOrDefault( x => x.Name.Equals( enumType, StringComparison.InvariantCultureIgnoreCase ) || x.GetDottedTypeName().IndexOf( enumType, StringComparison.OrdinalIgnoreCase ) != -1);
 
             if ( matchingEnumType == null )
             {
