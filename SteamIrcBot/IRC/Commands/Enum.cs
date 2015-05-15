@@ -29,13 +29,12 @@ namespace SteamIrcBot
 
             var matchingEnumType = typeof( CMClient ).Assembly.GetTypes()
                 .Where( x => x.IsEnum )
-                .Where( x => x.Namespace.StartsWith( "SteamKit2" ) )
+                // we want to match against name matches, or partial fullname matches
+                .Where( x => x.Namespace != null && x.Namespace.StartsWith( "SteamKit2" ) )
                 // some inner namespaces have enums that have matching names, but we (most likely) want to match against the root enums
                 // so we order by having the root enums first
                 .OrderByDescending( x => x.Namespace == "SteamKit2" )
-                // we want to match against name matches, or partial fullname matches
-                .Where( x => x.Name.Equals( enumType, StringComparison.InvariantCultureIgnoreCase ) || x.GetDottedTypeName().IndexOf( enumType, StringComparison.OrdinalIgnoreCase ) != -1 )
-                .FirstOrDefault();
+                .FirstOrDefault( x => x.Name.Equals( enumType, StringComparison.InvariantCultureIgnoreCase ) || x.GetDottedTypeName().IndexOf( enumType, StringComparison.OrdinalIgnoreCase ) != -1);
 
             if ( matchingEnumType == null )
             {
@@ -54,17 +53,22 @@ namespace SteamIrcBot
             string enumName = typeof( TEnum ).GetDottedTypeName();
 
             TEnum enumValue;
-            if ( Enum.TryParse<TEnum>( inputValue, out enumValue ) )
+            if ( Enum.TryParse( inputValue, out enumValue ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: {1} ({2}) = {3}", details.Sender.Nickname, enumName, inputValue, enumValue );
+                var enumFieldName = Enum.GetName( typeof ( TEnum ), enumValue );
+                if (string.IsNullOrEmpty( enumFieldName ))
+                    enumFieldName = "<unknown>";
+
+                var resultFormatted = enumFieldName.Equals( inputValue, StringComparison.InvariantCultureIgnoreCase )
+                    ? string.Format( "{0:D}", enumValue as Enum )
+                    : enumFieldName;
+
+                IRC.Instance.Send( details.Channel, "{0}: {1} ({2}) = {3}", details.Sender.Nickname, enumName, inputValue, resultFormatted );
             }
             else
             {
-                bool includeDeprecated = false;
-                if ( details.Args.Length > 2 && details.Args[ 2 ].Equals( "deprecated", StringComparison.InvariantCultureIgnoreCase ) )
-                {
-                    includeDeprecated = true;
-                }
+                bool includeDeprecated = details.Args.Length > 2
+                    && details.Args[ 2 ].Equals( "deprecated", StringComparison.InvariantCultureIgnoreCase );
 
                 var enumValues = Enum.GetValues( typeof( TEnum ) ).Cast<TEnum>();
                 if ( !includeDeprecated )
@@ -73,7 +77,7 @@ namespace SteamIrcBot
                 }
 
                 var enumValuesWithMatchingName = enumValues.Where( x => x.ToString().IndexOf( inputValue, StringComparison.InvariantCultureIgnoreCase ) >= 0 );
-                if ( enumValuesWithMatchingName.Count() == 0 )
+                if ( !enumValuesWithMatchingName.Any() )
                 {
                     IRC.Instance.Send( details.Channel, "{0}: No matches found.", details.Sender.Nickname );
                 }
