@@ -13,19 +13,19 @@ namespace SteamIrcBot
         public EnumCommand()
         {
             Triggers.Add( "!enum" );
-            HelpText = "!enum <enumname> <value or substring> [deprecated] - Returns the enum string for a given value, or enum matches for a substring";
+            HelpText = "!enum <enumname> [value or substring] [deprecated] - Returns the enum string for a given value, or enum matches for a substring";
         }
 
         protected override void OnRun( CommandDetails details )
         {
-            if ( details.Args.Length < 2 )
+            if ( details.Args.Length < 1 )
             {
-                IRC.Instance.Send( details.Channel, "{0}: enum and value or filter arguments required", details.Sender.Nickname );
+                IRC.Instance.Send( details.Channel, "{0}: enum name argument required", details.Sender.Nickname );
                 return;
             }
 
             string enumType = details.Args[ 0 ];
-            string inputEnum = details.Args[ 1 ];
+            string inputEnum = details.Args.Length > 1 ? details.Args[ 1 ] : null;
 
             var matchingEnumType = typeof( CMClient ).Assembly.GetTypes()
                 .Where( x => x.IsEnum )
@@ -51,12 +51,14 @@ namespace SteamIrcBot
         void RunForEnum<TEnum>(string inputValue, CommandDetails details)
             where TEnum : struct
         {
-            string enumName = typeof( TEnum ).GetDottedTypeName();
+            string enumName = typeof( TEnum )
+                .GetDottedTypeName()
+                .Replace( "SteamKit2.", "" ); // chop off the root namespace
 
             TEnum enumValue;
             if ( Enum.TryParse<TEnum>( inputValue, out enumValue ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: {1} ({2}) = {3}", details.Sender.Nickname, enumName, inputValue, enumValue );
+                IRC.Instance.Send( details.Channel, "{0}: {1} ({2:D}) = {3}", details.Sender.Nickname, enumName, enumValue, enumValue );
             }
             else
             {
@@ -72,20 +74,33 @@ namespace SteamIrcBot
                     enumValues = enumValues.Except( enumValues.Where( x => typeof( TEnum ).GetMember( x.ToString() )[ 0 ].GetCustomAttributes( typeof( ObsoleteAttribute ), inherit: false ).Any() ) );
                 }
 
-                var enumValuesWithMatchingName = enumValues.Where( x => x.ToString().IndexOf( inputValue, StringComparison.InvariantCultureIgnoreCase ) >= 0 );
-                if ( enumValuesWithMatchingName.Count() == 0 )
+                if ( !string.IsNullOrEmpty( inputValue ) )
+                {
+                    enumValues = enumValues.Where( x => x.ToString().IndexOf( inputValue, StringComparison.InvariantCultureIgnoreCase ) >= 0 );
+                }
+
+                int matchingCount = enumValues.Count();
+                bool truncated = false;
+
+                if ( matchingCount == 0 )
                 {
                     IRC.Instance.Send( details.Channel, "{0}: No matches found.", details.Sender.Nickname );
+                    return;
                 }
-                else if ( enumValuesWithMatchingName.Count() > 10 )
+                else if ( matchingCount > 10 )
                 {
-                    IRC.Instance.Send( details.Channel, "{0}: More than 10 results found.", details.Sender.Nickname );
+                    truncated = true;
+                    enumValues = enumValues.Take( 10 );
                 }
-                else
+
+                var formatted = string.Join( ", ", enumValues.Select( @enum => string.Format( "{0} ({1})", @enum.ToString(), Enum.Format( typeof( TEnum ), @enum, "D" ) ) ) );
+
+                if ( truncated )
                 {
-                    var formatted = string.Join( ", ", enumValuesWithMatchingName.Select( @enum => string.Format( "{0} ({1})", @enum.ToString(), Enum.Format( typeof( TEnum ), @enum, "D" ) ) ) );
-                    IRC.Instance.Send( details.Channel, "{0}: {1} = {2}", details.Sender.Nickname, enumName, formatted );
+                    formatted = string.Format( "{0}, and {1} more...", formatted, matchingCount - 10 );
                 }
+
+                IRC.Instance.Send( details.Channel, "{0}: {1} = {2}", details.Sender.Nickname, enumName, formatted );
             }
         }
     }
