@@ -67,11 +67,8 @@ namespace SteamIrcBot
             }
             else
             {
-                bool includeDeprecated = false;
-                if ( details.Args.Length > 2 && details.Args[ 2 ].Equals( "deprecated", StringComparison.InvariantCultureIgnoreCase ) )
-                {
-                    includeDeprecated = true;
-                }
+                bool includeDeprecated = details.Args.Length > 2
+                    && details.Args[ 2 ].Equals( "deprecated", StringComparison.InvariantCultureIgnoreCase );
 
                 var enumValues = Enum.GetValues( typeof( TEnum ) ).Cast<TEnum>();
                 if ( !includeDeprecated )
@@ -80,7 +77,7 @@ namespace SteamIrcBot
                 }
 
                 var enumValuesWithMatchingName = enumValues.Where( x => x.ToString().IndexOf( inputValue, StringComparison.InvariantCultureIgnoreCase ) >= 0 );
-                if ( enumValuesWithMatchingName.Count() == 0 )
+                if ( !enumValuesWithMatchingName.Any() )
                 {
                     IRC.Instance.Send( details.Channel, "{0}: No matches found.", details.Sender.Nickname );
                 }
