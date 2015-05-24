@@ -11,9 +11,15 @@ namespace SteamIrcBot
 {
     class SteamAppInfo : ClientMsgHandler
     {
+        class AppCacheEntry
+        {
+            public uint AppID { get; set; }
+            public bool IsGame { get; set; }
+        }
+
         uint lastChangelist = 0;
 
-        Dictionary<string, uint> appNameCache = new Dictionary<string, uint>();
+        Dictionary<string, AppCacheEntry> appNameCache = new Dictionary<string, AppCacheEntry>();
 
 
         public SteamAppInfo()
@@ -38,10 +44,13 @@ namespace SteamIrcBot
             if ( appInfo != null )
             {
                 string name = appInfo[ "common" ][ "name" ].AsString();
+                string type = appInfo[ "common" ][ "type" ].AsString();
+
+                bool isGame = string.Equals( type, "game", StringComparison.OrdinalIgnoreCase );
 
                 if ( name != null )
                 {
-                    appNameCache[ name ] = appId;
+                    appNameCache[ name ] = new AppCacheEntry { AppID = appId, IsGame = isGame };
                 }
             }
 
@@ -61,7 +70,7 @@ namespace SteamIrcBot
             return name != null;
         }
 
-        public bool FindApp( string search, out uint appId )
+        public bool FindApp( string search, out uint appId, bool gamesOnly )
         {
             appId = 0;
 
@@ -74,12 +83,23 @@ namespace SteamIrcBot
                 return false;
             }
 
-            // todo: improve this with a more intelligent selection method
-            appId = appMatches
-                .Select( kvp => kvp.Value )
-                .FirstOrDefault();
+            var appList = appMatches.Select( kvp => kvp.Value );
 
-            return true;
+            if ( gamesOnly )
+            {
+                // todo: appease azuisleet with something better than searching for only games
+                appList = appList.Where( app => app.IsGame );
+            }
+
+            AppCacheEntry searchResult = appList.FirstOrDefault();
+
+            if ( searchResult != null )
+            {
+                appId = searchResult.AppID;
+                return true;
+            }
+
+            return false;
         }
 
         public void CacheRandomApp()
@@ -97,7 +117,7 @@ namespace SteamIrcBot
                 } )
                 .Where( i => i.HasValue )
                 .Select( i => i.Value )
-                .Except( appNameCache.Values ) // exclude any apps we've already cached
+                .Except( appNameCache.Values.Select( app => app.AppID ) ) // exclude any apps we've already cached
                 .ToList();
 
             if ( appIds.Count == 0 )

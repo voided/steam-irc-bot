@@ -42,7 +42,7 @@ namespace SteamIrcBot
                 string appName = string.Join( " ", details.Args );
 
                 uint appId;
-                if ( !Steam.Instance.AppInfo.FindApp( appName, out appId ) )
+                if ( !Steam.Instance.AppInfo.FindApp( appName, out appId, gamesOnly: true ) )
                 {
                     IRC.Instance.Send( details.Channel, "{0}: Invalid GameID or unknown app name", details.Sender.Nickname );
                     return;
