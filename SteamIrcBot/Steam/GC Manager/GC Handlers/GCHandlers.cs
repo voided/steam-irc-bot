@@ -142,6 +142,12 @@ namespace SteamIrcBot
 
             IRC.Instance.SendToTag( ircTag, "{0} GC status: {1}", Steam.Instance.GetAppName( gcAppId ), msg.Body.status );
 
+            if ( msg.Body.status == GCConnectionStatus.GCConnectionStatus_NO_SESSION_IN_LOGON_QUEUE )
+            {
+                IRC.Instance.SendToTag( ircTag, "{0} GC logon queue: {1}/{2}, waited {3} of an estimated {4} seconds",
+                    Steam.Instance.GetAppName( gcAppId ), msg.Body.queue_position, msg.Body.queue_size, msg.Body.wait_seconds, msg.Body.estimated_wait_seconds_remaining );
+            }
+
             SessionInfo info = GetSessionInfo( gcAppId );
 
             info.Status = msg.Body.status;
