@@ -21,6 +21,7 @@ namespace SteamIrcBot
             Instance = this;
 
             new GCCallback<CMsgGCToClientNewBloomTimingUpdated>( (uint)EDOTAGCMsg.k_EMsgGCToClientNewBloomTimingUpdated, OnNewBloomUpdate, manager );
+            new GCCallback<CMsgGCToClientTopCustomGamesList>( (uint)EDOTAGCMsg.k_EMsgGCToClientTopCustomGamesList, OnTopCustomGames, manager );
         }
 
         void OnNewBloomUpdate( ClientGCMsgProtobuf<CMsgGCToClientNewBloomTimingUpdated> msg, uint gcAppId )
@@ -28,6 +29,28 @@ namespace SteamIrcBot
             lastInfo = msg.Body;
 
             IRC.Instance.SendToTag( "gc-dota-verbose", "{0} {1}", Steam.Instance.GetAppName( gcAppId ), GetDisplay() );
+        }
+
+        void OnTopCustomGames( ClientGCMsgProtobuf<CMsgGCToClientTopCustomGamesList> msg, uint gcAppId )
+        {
+            int numGames = msg.Body.top_custom_games.Count;
+
+            if ( numGames == 0 )
+            {
+                // nothing useful to display
+                return;
+            }
+
+            if ( numGames <= 20 )
+            {
+                IRC.Instance.SendToTag( "gc-dota-verbose", "{0} Top custom games: {1}", Steam.Instance.GetAppName( gcAppId ), string.Join( ", ", msg.Body.top_custom_games ) );
+            }
+            else
+            {
+                var games = msg.Body.top_custom_games.Take( 20 );
+
+                IRC.Instance.SendToTag( "gc-dota-verbose", "{0} Top custom games: {1}, and {2} more...", Steam.Instance.GetAppName( gcAppId ), string.Join( ", ", games ), numGames - 20 );
+            }
         }
 
         public string GetDisplay()
