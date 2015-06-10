@@ -83,6 +83,13 @@ namespace SteamIrcBot
                 if ( !info.HasSession )
                 {
                     var hello = new ClientGCMsgProtobuf<CMsgClientHello>( (uint)EGCBaseClientMsg.k_EMsgGCClientHello );
+
+                    if ( gcApp.AppID == 570 )
+                    {
+                        // todo: this is dirty, we should probably have separate session handlers per-game
+                        hello.Body.engine = ESourceEngine.k_ESE_Source2;
+                    }
+
                     Steam.Instance.GameCoordinator.Send( hello, gcApp.AppID );
                 }
             }
