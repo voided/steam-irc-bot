@@ -78,6 +78,7 @@
     <Compile Include="IRC\Commands\Bug.cs" />
     <Compile Include="IRC\Commands\Buttcoin.cs" />
     <Compile Include="IRC\Commands\Config.cs" />
+    <Compile Include="IRC\Commands\DotaStats.cs" />
     <Compile Include="IRC\Commands\FindServer.cs" />
     <Compile Include="IRC\Commands\Doge.cs" />
     <Compile Include="IRC\Commands\Enum.cs" />
