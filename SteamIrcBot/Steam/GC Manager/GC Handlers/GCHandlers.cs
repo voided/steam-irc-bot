@@ -144,8 +144,14 @@ namespace SteamIrcBot
 
             if ( msg.Body.status == GCConnectionStatus.GCConnectionStatus_NO_SESSION_IN_LOGON_QUEUE )
             {
-                IRC.Instance.SendToTag( ircTag, "{0} GC logon queue: {1}/{2}, waited {3} of an estimated {4} seconds",
-                    Steam.Instance.GetAppName( gcAppId ), msg.Body.queue_position, msg.Body.queue_size, msg.Body.wait_seconds, msg.Body.estimated_wait_seconds_remaining );
+                if ( msg.Body.queue_size > 0 )
+                {
+                    // this message is somewhat useless if the logon queue is empty, so don't display in that case
+
+                    IRC.Instance.SendToTag( ircTag + "-verbose", "{0} GC logon queue: {1}/{2}, waited {3} of an estimated {4} seconds",
+                        Steam.Instance.GetAppName( gcAppId ), msg.Body.queue_position, msg.Body.queue_size, msg.Body.wait_seconds, msg.Body.estimated_wait_seconds_remaining
+                    );
+                }
             }
 
             SessionInfo info = GetSessionInfo( gcAppId );
