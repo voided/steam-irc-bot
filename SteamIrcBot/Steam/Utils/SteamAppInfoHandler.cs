@@ -31,7 +31,7 @@ namespace SteamIrcBot
             }
             catch ( IOException ex )
             {
-                Log.WriteError( "Unable to create appinfo/packageinfo cache directory: {0}", ex.Message );
+                Log.WriteError( "SteamAppInfo", "Unable to create appinfo/packageinfo cache directory: {0}", ex.Message );
             }
         }
 
