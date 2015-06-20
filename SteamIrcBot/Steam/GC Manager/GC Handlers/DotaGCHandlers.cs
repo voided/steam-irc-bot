@@ -14,6 +14,8 @@ namespace SteamIrcBot
 
         CMsgGCToClientNewBloomTimingUpdated lastInfo;
 
+        UGCHandler ugcHandler;
+
 
         public GCNewBloomHandler( GCManager manager )
             : base( manager )
@@ -22,6 +24,8 @@ namespace SteamIrcBot
 
             new GCCallback<CMsgGCToClientNewBloomTimingUpdated>( (uint)EDOTAGCMsg.k_EMsgGCToClientNewBloomTimingUpdated, OnNewBloomUpdate, manager );
             new GCCallback<CMsgGCToClientTopCustomGamesList>( (uint)EDOTAGCMsg.k_EMsgGCToClientTopCustomGamesList, OnTopCustomGames, manager );
+
+            ugcHandler = Steam.Instance.SteamManager.GetHandler<UGCHandler>();
         }
 
         void OnNewBloomUpdate( ClientGCMsgProtobuf<CMsgGCToClientNewBloomTimingUpdated> msg, uint gcAppId )
@@ -41,16 +45,23 @@ namespace SteamIrcBot
                 return;
             }
 
-            if ( numGames <= 20 )
-            {
-                IRC.Instance.SendToTag( "gc-dota-verbose", "{0} Top custom games: {1}", Steam.Instance.GetAppName( gcAppId ), string.Join( ", ", msg.Body.top_custom_games ) );
-            }
-            else
-            {
-                var games = msg.Body.top_custom_games.Take( 20 );
+            var games = msg.Body.top_custom_games.Take( 20 );
 
-                IRC.Instance.SendToTag( "gc-dota-verbose", "{0} Top custom games: {1}, and {2} more...", Steam.Instance.GetAppName( gcAppId ), string.Join( ", ", games ), numGames - 20 );
-            }
+            // convert our pubfile ids into user friendly names
+            var gameInfos = games.Select( pubFile =>
+            {
+                string name;
+
+                if ( !ugcHandler.LookupUGCName( pubFile, out name ) )
+                {
+                    // couldn't look up a name, resort to displaying the pub file
+                    return pubFile.ToString();
+                }
+
+                return name;
+            } );
+
+            IRC.Instance.SendToTag( "gc-dota-verbose", "{0} Top customs: {1}", Steam.Instance.GetAppName( gcAppId ), string.Join( ", ", gameInfos ) );
         }
 
         public string GetDisplay()
