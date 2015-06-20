@@ -197,6 +197,16 @@ namespace SteamIrcBot
                 displayDict.Add( "Score", string.Format( "{0:N4}", details.vote_data.score ) );
             }
 
+            if ( details.for_sale_data != null )
+            {
+                if ( details.for_sale_data.is_for_sale )
+                {
+                    displayDict.Add( "For Sale", "True" );
+                }
+
+                displayDict.Add( "Sale Status", details.for_sale_data.estatus );
+            }
+
             if ( details.kvtags.Count > 0 )
             {
                 string kvTagsString = string.Join( ", ", details.kvtags.Select( kv => string.Format( "{0}={1}", kv.key, kv.value ) ) );
