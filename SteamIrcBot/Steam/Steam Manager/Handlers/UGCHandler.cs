@@ -58,6 +58,8 @@ namespace SteamIrcBot
 
         Dictionary<JobID, UGCJob> ugcJobs = new Dictionary<JobID, UGCJob>();
 
+        Dictionary<ulong, string> ugcCache = new Dictionary<ulong, string>();
+
 
         public UGCHandler( CallbackManager manager )
             : base( manager )
@@ -101,18 +103,28 @@ namespace SteamIrcBot
         public bool LookupUGCName( ulong pubFile, out string name )
         {
             name = null;
+
+            if ( ugcCache.TryGetValue( pubFile, out name ) )
+            {
+                // we had the name cached in memory, no need to touch disk
+                return true;
+            }
+
+            // otherwise, need to see if we have it on disk
+
             PublishedFileDetails fileDetails = GetDetailsFromCache( pubFile );
 
             if ( fileDetails == null )
             {
                 // couldn't load details from disk cache, lets try requesting info from steam
-                // we also don't care about the result
                 RequestUGC( pubFile, res => { } );
 
                 return false;
             }
 
             name = fileDetails.title;
+            ugcCache[ pubFile ] = name;
+
             return true;
         }
 
