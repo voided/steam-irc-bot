@@ -100,11 +100,15 @@ namespace SteamIrcBot
 
         public bool LookupUGCName( ulong pubFile, out string name )
         {
+            name = null;
             PublishedFileDetails fileDetails = GetDetailsFromCache( pubFile );
 
             if ( fileDetails == null )
             {
-                name = null;
+                // couldn't load details from disk cache, lets try requesting info from steam
+                // we also don't care about the result
+                RequestUGC( pubFile, res => { } );
+
                 return false;
             }
 
