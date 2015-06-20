@@ -14,10 +14,33 @@ namespace SteamIrcBot
         {
             Triggers.Add( "!enum" );
             HelpText = "!enum <enumname> [value or substring] [deprecated] - Returns the enum string for a given value, or enum matches for a substring";
+
+            // add some common triggers for some enums
+            Triggers.Add( "!emsg" );
+            Triggers.Add( "!eresult" );
         }
 
         protected override void OnRun( CommandDetails details )
         {
+            if ( details.Trigger != "!enum" )
+            {
+                // if the user didn't use !enum, then it was one of the shortcut commands
+                // so we'll rerun the trigger with the enum as the first argument
+
+                string enumName = details.Trigger.Substring( 1 );
+                string[] oldArgs = details.Args;
+
+                details.Trigger = "!enum";
+                details.Args = new string[ oldArgs.Length + 1 ];
+
+                // new args = enumName + old args
+                details.Args[ 0 ] = enumName;
+                Array.Copy( oldArgs, 0, details.Args, 1, oldArgs.Length );
+
+                OnRun( details );
+                return;
+            }
+
             if ( details.Args.Length < 1 )
             {
                 IRC.Instance.Send( details.Channel, "{0}: enum name argument required", details.Sender.Nickname );
