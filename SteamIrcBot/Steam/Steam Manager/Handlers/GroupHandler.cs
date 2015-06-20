@@ -15,6 +15,8 @@ namespace SteamIrcBot
         }
 
 
+        public override void Tick() { }
+
         void OnClanState( SteamFriends.ClanStateCallback callback )
         {
             string clanName = callback.ClanName;

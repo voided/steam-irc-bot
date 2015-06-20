@@ -79,8 +79,8 @@ namespace SteamIrcBot
             Client.AddHandler( AppInfo );
             Client.AddHandler( Account );
 
-            GCManager = new GCManager( CallbackManager );
             SteamManager = new SteamManager( CallbackManager );
+            GCManager = new GCManager( CallbackManager );
 
             JobManager = new JobManager( CallbackManager );
 
@@ -156,6 +156,8 @@ namespace SteamIrcBot
         public void Tick()
         {
             CallbackManager.RunWaitCallbacks( TimeSpan.FromMilliseconds( 200 ) );
+
+            SteamManager.Tick();
 
             if ( DateTime.Now >= nextConnect )
             {

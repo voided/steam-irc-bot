@@ -87,6 +87,8 @@ namespace SteamIrcBot
             public PublishedFileID PubFileID { get; set; }
         }
 
+        UGCHandler ugcHandler;
+
 
         public PubFileCommand()
         {
@@ -94,7 +96,7 @@ namespace SteamIrcBot
             Triggers.Add( "!publishedfile" );
             HelpText = "!pubfile <pubfileid> - Requests published file details for the given published file ID";
 
-            new Callback<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod, Steam.Instance.CallbackManager );
+            ugcHandler = Steam.Instance.SteamManager.GetHandler<UGCHandler>();
         }
 
 
@@ -119,48 +121,30 @@ namespace SteamIrcBot
                 return;
             }
 
-            var pubFileRequest = new CPublishedFile_GetDetails_Request
-            {
-                includetags = true,
-                includekvtags = true,
-                includevotes = true,
-            };
-
-            pubFileRequest.publishedfileids.Add( pubFileId );
-
-            var jobId = Steam.Instance.PublishedFiles.SendMessage( api => api.GetDetails( pubFileRequest ) );
+            var jobId = ugcHandler.RequestUGC( pubFileId, OnUGC );
             AddRequest( details, new Request { JobID = jobId, PubFileID = pubFileId } );
         }
 
-        void OnServiceMethod( SteamUnifiedMessages.ServiceMethodResponse callback )
+        void OnUGC( UGCHandler.UGCJobResult result )
         {
-            var req = GetRequest( r => r.JobID == callback.JobID );
+            var req = GetRequest( r => r.JobID == result.ID );
 
             if ( req == null )
                 return;
 
-            if ( callback.Result != EResult.OK )
+            if ( result.TimedOut )
             {
-                IRC.Instance.Send( req.Channel, "{0}: Unable to make service request for published file info: {1}", req.Requester.Nickname, callback.Result );
+                IRC.Instance.Send( req.Channel, "{0}: Unable to request published file info: request timed out", req.Requester.Nickname );
                 return;
             }
 
-            var response = callback.GetDeserializedResponse<CPublishedFile_GetDetails_Response>();
-            var details = response.publishedfiledetails.FirstOrDefault();
-
-            if ( details == null )
+            if ( result.Result != EResult.OK )
             {
-                IRC.Instance.Send( req.Channel, "{0}: Unable to request published file info: the server returned no info!", req.Requester.Nickname );
+                IRC.Instance.Send( req.Channel, "{0}: Unable to request published file info: {1}", req.Requester.Nickname, result.Result );
                 return;
             }
 
-            EResult result = ( EResult )details.result;
-
-            if ( result != EResult.OK )
-            {
-                IRC.Instance.Send( req.Channel, "{0}: Unable to get published file info: {1}", req.Requester.Nickname, result );
-                return;
-            }
+            PublishedFileDetails details = result.Details;
 
             var displayDict = new DisplayDictionary();
 

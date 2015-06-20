@@ -7,11 +7,13 @@ using SteamKit2;
 
 namespace SteamIrcBot
 {
-    class SteamHandler
+    abstract class SteamHandler
     {
         public SteamHandler( CallbackManager manager )
         {
         }
+
+        public abstract void Tick();
     }
 
     class SteamManager
@@ -33,6 +35,29 @@ namespace SteamIrcBot
 
                 handlers.Add( handler );
             }
+        }
+
+
+        public void Tick()
+        {
+            foreach ( var handlr in handlers )
+            {
+                handlr.Tick();
+            }
+        }
+
+
+        public T GetHandler<T>() where T : SteamHandler
+        {
+            foreach ( var hndlr in handlers )
+            {
+                if ( hndlr.GetType() == typeof( T ) )
+                {
+                    return hndlr as T;
+                }
+            }
+
+            return null;
         }
     }
 }
