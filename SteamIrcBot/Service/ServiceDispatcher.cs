@@ -52,14 +52,7 @@ namespace SteamIrcBot
 
         public void Wait()
         {
-            try
-            {
-                dispatcher.Wait();
-            }
-            catch ( AggregateException )
-            {
-                // we'll ignore any cancelled/failed tasks
-            }
+            dispatcher.Wait();
         }
 
     }
