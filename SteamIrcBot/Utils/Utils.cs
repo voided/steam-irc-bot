@@ -11,7 +11,7 @@ namespace SteamIrcBot
 {
     static class ExtensionUtils
     {
-        public static T GetAttribute<T>( this Type type, bool inherit )
+        public static T GetAttribute<T>( this Type type, bool inherit = false )
             where T : Attribute
         {
             T[] attribs = type.GetCustomAttributes( typeof( T ), inherit ) as T[];

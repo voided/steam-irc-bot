@@ -81,7 +81,7 @@ namespace SteamIrcBot
             TEnum enumValue;
             if ( Enum.TryParse<TEnum>( inputValue, out enumValue ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: {1} ({2:D}) = {3}", details.Sender.Nickname, enumName, enumValue, enumValue );
+                IRC.Instance.Send( details.Channel, "{0}: {1} ({2:D}) = {3}", details.Sender.Nickname, enumName, enumValue, ExpandEnumFlags( enumValue ) );
             }
             else
             {
@@ -125,6 +125,52 @@ namespace SteamIrcBot
 
                 IRC.Instance.Send( details.Channel, "{0}: {1} = {2}", details.Sender.Nickname, enumName, formatted );
             }
+        }
+
+        public static string ExpandEnumFlags<TEnum>( TEnum enumValue )
+        {
+            Type enumType = typeof( TEnum );
+            Type underlyingType = enumType.GetEnumUnderlyingType();
+
+            if ( enumType.GetAttribute<FlagsAttribute>() == null )
+            {
+                // if this isn't a flag enum, extracting individual bits doesn't make much sense
+                return enumValue.ToString();
+            }
+
+            ulong flagValue = Convert.ToUInt64( enumValue );
+            int bitsRequired = (int)Math.Log( flagValue, 2 ) + 1;
+
+            var flagStrings = new List<string>();
+
+            for ( int bit = 0 ; bit < bitsRequired ; ++bit )
+            {
+                ulong testFlag = (1UL << bit);
+
+                if ( (flagValue & testFlag) == 0 )
+                {
+                    // this bit isn't set, skip
+                    continue;
+                }
+
+                if ( Enum.IsDefined( enumType, Convert.ChangeType( testFlag, underlyingType ) ) )
+                {
+                    // if the enum defines this value, use the name
+                    flagStrings.Add( Enum.GetName( enumType, testFlag ) );
+                }
+                else
+                {
+                    // otherwise we can only know what bit was set
+                    flagStrings.Add( string.Format( "(1<<{0})", bit ) );
+                }
+            }
+
+            if ( flagStrings.Count > 0 )
+            {
+                return string.Join( ", ", flagStrings );
+            }
+
+            return enumValue.ToString(); 
         }
     }
 }
