@@ -16,7 +16,7 @@ namespace SteamIrcBot
 
         public UpToDateJob( CallbackManager manager )
         {
-            Period = TimeSpan.FromMinutes( 1 );
+            Period = TimeSpan.FromMinutes( 2 );
 
             versionMap = new ConcurrentDictionary<uint, uint>();
         }
