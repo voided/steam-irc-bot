@@ -23,7 +23,7 @@ namespace SteamIrcBot
             Instance = this;
 
             new GCCallback<CMsgGCToClientNewBloomTimingUpdated>( (uint)EDOTAGCMsg.k_EMsgGCToClientNewBloomTimingUpdated, OnNewBloomUpdate, manager );
-            new GCCallback<CMsgGCToClientTopCustomGamesList>( (uint)EDOTAGCMsg.k_EMsgGCToClientTopCustomGamesList, OnTopCustomGames, manager );
+            new GCCallback<CMsgGCTopCustomGamesList>( (uint)EDOTAGCMsg.k_EMsgGCTopCustomGamesList, OnTopCustomGames, manager );
 
             ugcHandler = Steam.Instance.SteamManager.GetHandler<UGCHandler>();
         }
@@ -35,7 +35,7 @@ namespace SteamIrcBot
             IRC.Instance.SendToTag( "gc-dota-verbose", "{0} {1}", Steam.Instance.GetAppName( gcAppId ), GetDisplay() );
         }
 
-        void OnTopCustomGames( ClientGCMsgProtobuf<CMsgGCToClientTopCustomGamesList> msg, uint gcAppId )
+        void OnTopCustomGames( ClientGCMsgProtobuf<CMsgGCTopCustomGamesList> msg, uint gcAppId )
         {
             int numGames = msg.Body.top_custom_games.Count;
 
