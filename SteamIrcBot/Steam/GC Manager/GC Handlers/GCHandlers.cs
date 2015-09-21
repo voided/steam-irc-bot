@@ -190,17 +190,16 @@ namespace SteamIrcBot
             {
                 CMsgDOTAWelcome dotaWelcome = Serializer.Deserialize<CMsgDOTAWelcome>( ms );
 
-                string activeEvents = "None";
 
                 if ( dotaWelcome.active_events.Count > 0 )
                 {
-                    activeEvents = string.Join( ", ", dotaWelcome.active_events );
-                }
+                    string activeEvents = string.Join( ", ", dotaWelcome.active_events );
 
-                IRC.Instance.SendToTag(
-                    ircTag, "{0} GC Active Events: {1}",
-                    Steam.Instance.GetAppName( gcAppId ), activeEvents
-                );
+                    IRC.Instance.SendToTag(
+                        ircTag, "{0} GC Active Events: {1}",
+                        Steam.Instance.GetAppName( gcAppId ), activeEvents
+                    );
+                }
 
                 // inject the extra messages back into our gc message manager
                 foreach ( var extraMsg in dotaWelcome.extra_messages )
