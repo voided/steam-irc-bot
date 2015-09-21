@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SteamKit2;
 
 namespace SteamIrcBot
 {
@@ -110,6 +111,17 @@ namespace SteamIrcBot
         {
             IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, HelpText );
         }
+    }
+
+    abstract class DotaCommand<TReq> : Command<TReq>
+        where TReq : DotaCommand<TReq>.DotaBaseRequest
+    {
+        public abstract class DotaBaseRequest : BaseRequest
+        {
+            public JobID Job { get; set; }
+        }
+
+        public const int APPID = 570;
     }
 
     class CommandDetails

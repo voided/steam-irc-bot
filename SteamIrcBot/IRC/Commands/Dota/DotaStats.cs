@@ -9,7 +9,7 @@ using SteamKit2.GC.Dota.Internal;
 
 namespace SteamIrcBot
 {
-    class DotaStats : Command<DotaStats.Request>
+    class DotaStats : DotaCommand<DotaStats.Request>
     {
         // from scripts/regions.txt in the VPKs
         enum DotaRegion
@@ -33,7 +33,7 @@ namespace SteamIrcBot
             India = 16,
         }
 
-        public class Request : BaseRequest
+        public class Request : DotaBaseRequest
         {
         }
 
@@ -54,8 +54,9 @@ namespace SteamIrcBot
             }
 
             var request = new ClientGCMsgProtobuf<CMsgDOTAMatchmakingStatsRequest>( (uint)EDOTAGCMsg.k_EMsgGCMatchmakingStatsRequest );
-            Steam.Instance.GameCoordinator.Send( request, 570 );
+            Steam.Instance.GameCoordinator.Send( request, APPID );
 
+            // the GC doesn't consider this a job, so we have no source jobid
             AddRequest( details, new Request() );
         }
 
