@@ -66,12 +66,10 @@ namespace SteamIrcBot
 
             if ( req == null )
                 return;
-
-            var s1Players = response.Body.searching_players_by_group.Select( BuildRegion );
+            
             var s2Players = response.Body.searching_players_by_group_source2.Select( BuildRegion );
-
-            IRC.Instance.Send( req.Channel, "Dota S1 MM Players: {0}", string.Join( ", ", s1Players ) );
-            IRC.Instance.Send( req.Channel, "Dota S2 MM Players: {0}", string.Join( ", ", s2Players ) );
+            
+            IRC.Instance.Send( req.Channel, "Dota Matchmaking Players: {0}", string.Join( ", ", s2Players ) );
         }
 
         string BuildRegion( uint numPlayers, int index )
