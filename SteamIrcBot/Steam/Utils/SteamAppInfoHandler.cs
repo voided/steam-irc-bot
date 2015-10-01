@@ -157,15 +157,7 @@ namespace SteamIrcBot
 
         public bool GetPackageInfo( uint packageId, out KeyValue packageInfo )
         {
-            packageInfo = KeyValue.LoadAsBinary( GetPackageCachePath( packageId ) );
-
-            if ( packageInfo == null )
-                return false;
-
-            packageInfo = packageInfo.Children
-                .FirstOrDefault();
-
-            return packageInfo != null;
+            return KeyValue.TryLoadAsBinary( GetPackageCachePath( packageId ), out packageInfo );
         }
 
         public bool GetPackageName( uint packageId, out string name )
