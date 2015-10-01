@@ -33,13 +33,13 @@ namespace SteamIrcBot
             {
                 Log.WriteError( "BotService", "Unable to load settings: {0}", ex );
 
-                Stop();
+                Environment.Exit( 1 );
                 return;
             }
 
             if ( !Settings.Validate() )
             {
-                Stop();
+                Environment.Exit( 1 );
                 return;
             }
 
