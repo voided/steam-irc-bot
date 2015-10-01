@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using SteamKit2;
 using SteamKit2.Internal;
+using System.Diagnostics;
 
 namespace SteamIrcBot
 {
@@ -33,6 +34,8 @@ namespace SteamIrcBot
             {
                 Log.WriteError( "SteamAppInfo", "Unable to create appinfo/packageinfo cache directory: {0}", ex.Message );
             }
+
+            CacheApps();
         }
 
 
@@ -102,35 +105,28 @@ namespace SteamIrcBot
             return false;
         }
 
-        public void CacheRandomApp()
+        public void CacheApps()
         {
-            // at random, select one of the appinfo caches from file and load the app name into our in-memory cache
+            // cache all the app names we know about
 
-            string[] files = Directory.GetFiles( Path.Combine( "cache", "appinfo" ) );
+            Stopwatch stopWatch = Stopwatch.StartNew();
 
-            var appIds = files
-                .Select( name => Path.GetFileNameWithoutExtension( name ) )
-                .Select( name =>
-                {
-                    uint id;
-                    return uint.TryParse( name, out id ) ? (uint?)id : null;
-                } )
-                .Where( i => i.HasValue )
-                .Select( i => i.Value )
-                .Except( appNameCache.Values.Select( app => app.AppID ) ) // exclude any apps we've already cached
-                .ToList();
-
-            if ( appIds.Count == 0 )
+            foreach ( string file in Directory.EnumerateFiles( Path.Combine( "cache", "appinfo" ) ) )
             {
-                // nothing left to load into memory
-                return;
+                string fileAppId = Path.GetFileNameWithoutExtension( file );
+
+                uint appId;
+
+                if ( !uint.TryParse( fileAppId, out appId ) )
+                    return;
+
+                KeyValue ignored;
+                GetAppInfo( appId, out ignored );
             }
 
-            int randomIndex = new Random().Next( appIds.Count );
-            uint appId = appIds[ randomIndex ];
+            stopWatch.Stop();
 
-            KeyValue ignored;
-            GetAppInfo( appId, out ignored );
+            Log.WriteInfo( "SteamAppInfo", "Loaded app name cache in {0}", stopWatch.Elapsed );
         }
 
         public bool GetDepotManifest( uint depotId, uint appId, out ulong manifest, string branch = "public" )

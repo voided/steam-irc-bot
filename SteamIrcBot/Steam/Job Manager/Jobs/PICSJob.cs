@@ -21,8 +21,6 @@ namespace SteamIrcBot
 
         protected override void OnRun()
         {
-            Steam.Instance.AppInfo.CacheRandomApp();
-
             if ( !Steam.Instance.Connected )
                 return;
 
