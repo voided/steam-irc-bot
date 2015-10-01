@@ -73,7 +73,7 @@ namespace SteamIrcBot
                 Log.WriteError( "UGCHandler", "Unable to create ugc cache directory: {0}", ex.Message );
             }
 
-            new Callback<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod, manager );
+            manager.Subscribe<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod );
         }
 
 

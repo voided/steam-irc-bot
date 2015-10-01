@@ -23,7 +23,7 @@ namespace SteamIrcBot
             Triggers.Add( "!steamlevel" );
             HelpText = "!level <steamid> - Displays the Steam level of a given SteamID";
 
-            new Callback<SteamLevels.SteamLevelsCallback>( OnLevels, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamLevels.SteamLevelsCallback>( OnLevels );
         }
 
         protected override void OnRun( CommandDetails details )

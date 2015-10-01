@@ -11,7 +11,7 @@ namespace SteamIrcBot
         public GroupHandler( CallbackManager manager )
             : base( manager )
         {
-            new Callback<SteamFriends.ClanStateCallback>( OnClanState, manager );
+            manager.Subscribe<SteamFriends.ClanStateCallback>( OnClanState );
         }
 
 

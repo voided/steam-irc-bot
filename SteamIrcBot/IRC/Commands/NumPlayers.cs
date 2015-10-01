@@ -18,7 +18,7 @@ namespace SteamIrcBot
 
         public NumPlayersCommand()
         {
-            new Callback<SteamUserStats.NumberOfPlayersCallback>( OnNumPlayers, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamUserStats.NumberOfPlayersCallback>( OnNumPlayers );
 
             Triggers.Add( "!numplayers" );
             Triggers.Add( "!players" );

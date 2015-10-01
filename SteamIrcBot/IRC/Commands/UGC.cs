@@ -23,7 +23,7 @@ namespace SteamIrcBot
             Triggers.Add( "!ugcid" );
             HelpText = "!ugc <ugcid> - Requests UGC details for the given UGC ID";
 
-            new Callback<SteamCloud.UGCDetailsCallback>( OnUGCInfo, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamCloud.UGCDetailsCallback>( OnUGCInfo );
         }
 
 

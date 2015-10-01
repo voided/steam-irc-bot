@@ -23,7 +23,7 @@ namespace SteamIrcBot
             Triggers.Add( "!appname" );
             HelpText = "!appid <appid> - Requests app name for given AppID";
 
-            new Callback<SteamApps.AppInfoCallback>( OnAppInfo, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamApps.AppInfoCallback>( OnAppInfo );
         }
 
 
@@ -134,7 +134,7 @@ namespace SteamIrcBot
             Triggers.Add( "!appinfo" );
             HelpText = "!appinfo <appid> - Requests app info for a given app, and provides it";
 
-            new Callback<SteamApps.PICSProductInfoCallback>( OnProductInfo, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamApps.PICSProductInfoCallback>( OnProductInfo );
         }
 
         protected override void OnRun( CommandDetails details )

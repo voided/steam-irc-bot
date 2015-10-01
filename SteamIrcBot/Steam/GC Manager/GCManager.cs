@@ -79,7 +79,7 @@ namespace SteamIrcBot
             callbacks = new List<GCCallback>();
             handlers = new List<GCHandler>();
 
-            new Callback<SteamGameCoordinator.MessageCallback>( OnGCMessage, manager );
+            manager.Subscribe<SteamGameCoordinator.MessageCallback>( OnGCMessage );
 
             var handlerTypes = Assembly.GetExecutingAssembly().GetTypes()
                 .Where( t => t.IsSubclassOf( typeof( GCHandler ) ) );

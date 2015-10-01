@@ -18,7 +18,7 @@ namespace SteamIrcBot
             Triggers.Add( "!findacc" );
             HelpText = "!findacc <query> <type> - Requests a list of accounts by input";
 
-            new Callback<SteamAccount.ResponseCallback>( OnAccountInfo, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamAccount.ResponseCallback>( OnAccountInfo );
         }
 
         protected override void OnRun( CommandDetails details )

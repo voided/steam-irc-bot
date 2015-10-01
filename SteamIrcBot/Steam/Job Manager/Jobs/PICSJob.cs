@@ -15,7 +15,7 @@ namespace SteamIrcBot
         {
             Period = TimeSpan.FromSeconds( 5 );
 
-            new Callback<SteamApps.PICSChangesCallback>( OnPICSChanges, manager );
+            manager.Subscribe<SteamApps.PICSChangesCallback>( OnPICSChanges );
         }
 
 

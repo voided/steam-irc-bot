@@ -23,7 +23,7 @@ namespace SteamIrcBot
             Triggers.Add( "!findserver" );
             HelpText = "!findserver <ip> <geoip|\"none\"> <region> <filter> - Determines what position a server is in the GMS's server list";
 
-            new Callback<SteamMasterServer.QueryCallback>( OnQuery, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamMasterServer.QueryCallback>( OnQuery );
         }
 
 

@@ -84,13 +84,13 @@ namespace SteamIrcBot
 
             JobManager = new JobManager( CallbackManager );
 
-            new Callback<SteamClient.ConnectedCallback>( OnConnected, CallbackManager );
-            new Callback<SteamClient.DisconnectedCallback>( OnDisconnected, CallbackManager );
+            CallbackManager.Subscribe<SteamClient.ConnectedCallback>( OnConnected );
+            CallbackManager.Subscribe<SteamClient.DisconnectedCallback>( OnDisconnected );
 
-            new Callback<SteamUser.LoggedOnCallback>( OnLoggedOn, CallbackManager );
-            new Callback<SteamUser.LoggedOffCallback>( OnLoggedOff, CallbackManager );
+            CallbackManager.Subscribe<SteamUser.LoggedOnCallback>( OnLoggedOn );
+            CallbackManager.Subscribe<SteamUser.LoggedOffCallback>( OnLoggedOff );
 
-            new Callback<SteamUser.AccountInfoCallback>( OnAccountInfo, CallbackManager );
+            CallbackManager.Subscribe<SteamUser.AccountInfoCallback>( OnAccountInfo );
         }
 
 

@@ -16,7 +16,7 @@ namespace SteamIrcBot
 
         public SIDCommand()
         {
-            new Callback<SteamFriends.PersonaStateCallback>( OnPersonaState, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>( OnPersonaState );
 
             Triggers.Add( "!sid" );
             Triggers.Add( "!steamid" );
@@ -94,7 +94,7 @@ namespace SteamIrcBot
 
         public ProfileCommand()
         {
-            new Callback<SteamFriends.ProfileInfoCallback>( OnProfileInfo, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamFriends.ProfileInfoCallback>( OnProfileInfo );
 
             Triggers.Add( "!profile" );
             Triggers.Add( "!steamprofile" );

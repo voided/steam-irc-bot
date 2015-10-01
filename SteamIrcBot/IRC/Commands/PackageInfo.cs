@@ -22,7 +22,7 @@ namespace SteamIrcBot
             Triggers.Add( "!packageid" );
             HelpText = "!pid <packageid> - Requests package name for a given PackageID";
 
-            new Callback<SteamApps.PackageInfoCallback>( OnPackageInfo, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamApps.PackageInfoCallback>( OnPackageInfo );
         }
 
         protected override void OnRun( CommandDetails details )
@@ -97,7 +97,7 @@ namespace SteamIrcBot
             Triggers.Add( "!packageinfo" );
             HelpText = "!packageinfo <packageid> - Requests package info for a given PackageID, and serves it";
 
-            new Callback<SteamApps.PICSProductInfoCallback>( OnProductInfo, Steam.Instance.CallbackManager );
+            Steam.Instance.CallbackManager.Subscribe<SteamApps.PICSProductInfoCallback>( OnProductInfo );
         }
 
         protected override void OnRun( CommandDetails details )
