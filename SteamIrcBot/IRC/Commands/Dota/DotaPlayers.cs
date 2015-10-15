@@ -73,18 +73,36 @@ namespace SteamIrcBot
 
             ulong gameId = response.Body.custom_game_id;
 
-            string gameName;
+            UGCHandler.UGCCacheEntry ugcEntry;
+            string gameName = gameId.ToString();
 
-            if ( !ugcHandler.LookupUGCName( gameId, out gameName ) )
+            bool hasUgc = ugcHandler.LookupUGC( gameId, out ugcEntry );
+
+            if ( hasUgc )
             {
-                // no name cached, just use the pubfile id for now
-                gameName = gameId.ToString();
-            } 
+                if ( !string.IsNullOrEmpty( ugcEntry.Name ) )
+                {
+                    gameName = ugcEntry.Name;
+                }
+
+                if ( ugcEntry.AppID != APPID )
+                {
+                    IRC.Instance.Send( req.Channel, "{0}: {1} is not a Dota Game ID!", req.Requester.Nickname, gameName );
+                    return;
+                }
+            }
 
             ulong players = response.Body.player_count;
             ulong spectators = response.Body.spectator_count;
 
-            IRC.Instance.Send( req.Channel, "{0}: {1} has {2} players and {3} spectators", req.Requester.Nickname, gameName, players, spectators );
+            string dedicatedServerEnabled = "";
+
+            if ( hasUgc && ugcEntry.Tags.Any( t => t.tag == "CGDedicatedServerEnabled" ) )
+            {
+                dedicatedServerEnabled = "and is enabled for dedicated servers";
+            }
+
+            IRC.Instance.Send( req.Channel, "{0}: {1} has {2} players and {3} spectators {4}", req.Requester.Nickname, gameName, players, spectators, dedicatedServerEnabled );
         }
     }
 }

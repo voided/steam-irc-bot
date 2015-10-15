@@ -12,7 +12,7 @@ namespace SteamIrcBot
 {
     class UGCHandler : SteamHandler
     {
-        public class UGCJob
+        class UGCJob
         {
             public DateTime StartTime { get; set; }
 
@@ -56,11 +56,15 @@ namespace SteamIrcBot
             }
         }
 
-        class UGCCacheEntry
+        public class UGCCacheEntry
         {
             public ulong PubFileID { get; set; }
 
+            public uint AppID { get; set; }
+
             public string Name { get; set; }
+
+            public List<PublishedFileDetails.Tag> Tags { get; set; }
         }
 
 
@@ -138,9 +142,32 @@ namespace SteamIrcBot
             }
 
             name = fileDetails.title;
-            ugcCache[pubFile] = new UGCCacheEntry { PubFileID = pubFile, Name = name };
+
+            ugcCache[pubFile] = new UGCCacheEntry
+            {
+                PubFileID = pubFile,
+                AppID = fileDetails.consumer_appid,
+
+                Name = name,
+                Tags = fileDetails.tags
+            };
 
             return true;
+        }
+
+        public bool LookupUGC( ulong pubFile, out UGCCacheEntry entry )
+        {
+            entry = null;
+
+            if ( ugcCache.TryGetValue( pubFile, out entry ) )
+            {
+                return true;
+            }
+
+            // nothing in our cache, ask steam
+            RequestUGC( pubFile, res => { } );
+
+            return false;
         }
 
         public bool FindUGC( string search, out ulong pubFileId )
@@ -304,7 +331,10 @@ namespace SteamIrcBot
             ugcCache[details.publishedfileid] = new UGCCacheEntry
             {
                 PubFileID = details.publishedfileid,
+                AppID = details.consumer_appid,
+
                 Name = details.title,
+                Tags = details.tags
             };
 
             using ( var ms = new MemoryStream() )
