@@ -105,7 +105,7 @@ namespace SteamIrcBot
             return false;
         }
 
-        public void CacheApps()
+        void CacheApps()
         {
             // cache all the app names we know about
 

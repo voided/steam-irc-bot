@@ -20,7 +20,7 @@ namespace SteamIrcBot
         public DotaPlayers()
         {
             Triggers.Add( "!dotaplayers" );
-            HelpText = "!dotaplayers - Requests player count information for a dota custom game";
+            HelpText = "!dotaplayers <pubfile/ugc name> - Requests player count information for a dota custom game";
 
             new GCCallback<CMsgGCToClientCustomGamePlayerCountResponse>( (uint)EDOTAGCMsg.k_EMsgGCToClientCustomGamePlayerCountResponse, OnPlayers, Steam.Instance.GCManager );
 
@@ -42,10 +42,16 @@ namespace SteamIrcBot
             }
 
             ulong gameId;
+
             if ( !ulong.TryParse( details.Args[ 0 ], out gameId ) )
             {
-                IRC.Instance.Send( details.Channel, "{0}: Invalid Game ID", details.Sender.Nickname );
-                return;
+                string pubFileName = string.Join( " ", details.Args );
+
+                if ( !ugcHandler.FindUGC( pubFileName, out gameId ) )
+                {
+                    IRC.Instance.Send( details.Channel, "{0}: Invalid Game ID or unknown UGC name", details.Sender.Nickname );
+                    return;
+                }
             }
 
             var request = new ClientGCMsgProtobuf<CMsgClientToGCCustomGamePlayerCountRequest>( (uint)EDOTAGCMsg.k_EMsgClientToGCCustomGamePlayerCountRequest );

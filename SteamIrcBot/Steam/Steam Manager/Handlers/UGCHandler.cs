@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -55,10 +56,17 @@ namespace SteamIrcBot
             }
         }
 
+        class UGCCacheEntry
+        {
+            public ulong PubFileID { get; set; }
+
+            public string Name { get; set; }
+        }
+
 
         Dictionary<JobID, UGCJob> ugcJobs = new Dictionary<JobID, UGCJob>();
 
-        Dictionary<ulong, string> ugcCache = new Dictionary<ulong, string>();
+        Dictionary<ulong, UGCCacheEntry> ugcCache = new Dictionary<ulong, UGCCacheEntry>();
 
 
         public UGCHandler( CallbackManager manager )
@@ -72,6 +80,8 @@ namespace SteamIrcBot
             {
                 Log.WriteError( "UGCHandler", "Unable to create ugc cache directory: {0}", ex.Message );
             }
+
+            CacheUGC();
 
             manager.Subscribe<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod );
         }
@@ -104,15 +114,19 @@ namespace SteamIrcBot
         {
             name = null;
 
-            if ( ugcCache.TryGetValue( pubFile, out name ) )
+            UGCCacheEntry cacheEntry;
+
+            if ( ugcCache.TryGetValue( pubFile, out cacheEntry ) )
             {
+                name = cacheEntry.Name;
+
                 // we had the name cached in memory, no need to touch disk
                 return true;
             }
 
             // otherwise, need to see if we have it on disk
 
-            PublishedFileDetails fileDetails = GetDetailsFromCache( pubFile );
+            PublishedFileDetails fileDetails = GetDetailsFromDisk( pubFile );
 
             if ( fileDetails == null )
             {
@@ -123,9 +137,35 @@ namespace SteamIrcBot
             }
 
             name = fileDetails.title;
-            ugcCache[ pubFile ] = name;
+            ugcCache[pubFile] = new UGCCacheEntry { PubFileID = pubFile, Name = name };
 
             return true;
+        }
+
+        public bool FindUGC( string search, out ulong pubFileId )
+        {
+            pubFileId = 0;
+            
+            var ugcMatches = ugcCache
+                .Where( kvp => kvp.Value.Name.IndexOf( search, StringComparison.OrdinalIgnoreCase ) != -1 )
+                .ToList();
+
+            if ( ugcMatches.Count == 0 )
+            {
+                return false;
+            }
+
+            var ugcList = ugcMatches.Select( kvp => kvp.Value );
+
+            UGCCacheEntry searchResult = ugcList.FirstOrDefault();
+
+            if ( searchResult != null )
+            {
+                pubFileId = searchResult.PubFileID;
+                return true;
+            }
+
+            return false;
         }
 
 
@@ -155,7 +195,7 @@ namespace SteamIrcBot
             }
         }
 
-        PublishedFileDetails GetDetailsFromCache( ulong pubFile )
+        PublishedFileDetails GetDetailsFromDisk( ulong pubFile )
         {
             string fileName = GetCachePath( pubFile );
 
@@ -163,6 +203,8 @@ namespace SteamIrcBot
             {
                 return null;
             }
+
+            // todo: if cached data on disk is stale (>1 day, maybe), request ugc details again
 
             byte[] fileData = null;
 
@@ -180,6 +222,28 @@ namespace SteamIrcBot
             {
                 return Serializer.Deserialize<PublishedFileDetails>( ms );
             }
+        }
+
+        void CacheUGC()
+        {
+            Stopwatch stopWatch = Stopwatch.StartNew();
+
+            foreach ( string file in Directory.EnumerateFiles( Path.Combine( "cache", "ugc" ) ) )
+            {
+                string filePubFileId = Path.GetFileNameWithoutExtension( file );
+
+                ulong pubFileId;
+
+                if ( !ulong.TryParse( filePubFileId, out pubFileId ) )
+                    return;
+
+                string ignored;
+                LookupUGCName( pubFileId, out ignored );
+            }
+
+            stopWatch.Stop();
+
+            Log.WriteInfo( "UGCHandler", "Loaded ugc cache in {0}", stopWatch.Elapsed );
         }
 
         void OnServiceMethod( SteamUnifiedMessages.ServiceMethodResponse callback )
