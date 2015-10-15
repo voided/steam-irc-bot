@@ -67,6 +67,7 @@ namespace SteamIrcBot
         Dictionary<JobID, UGCJob> ugcJobs = new Dictionary<JobID, UGCJob>();
 
         Dictionary<ulong, UGCCacheEntry> ugcCache = new Dictionary<ulong, UGCCacheEntry>();
+        bool loadedCache = false;
 
 
         public UGCHandler( CallbackManager manager )
@@ -81,9 +82,9 @@ namespace SteamIrcBot
                 Log.WriteError( "UGCHandler", "Unable to create ugc cache directory: {0}", ex.Message );
             }
 
-            CacheUGC();
-
             manager.Subscribe<SteamUnifiedMessages.ServiceMethodResponse>( OnServiceMethod );
+
+            Steam.Instance.CallbackManager.Subscribe<SteamUser.LoggedOnCallback>( OnLoggedOn );
         }
 
 
@@ -204,7 +205,15 @@ namespace SteamIrcBot
                 return null;
             }
 
-            // todo: if cached data on disk is stale (>1 day, maybe), request ugc details again
+            DateTime creationTime = File.GetLastWriteTimeUtc( fileName );
+
+            if ( creationTime + TimeSpan.FromDays( 1 ) < DateTime.UtcNow )
+            {
+                // stale data, purge it and lets request new data
+                File.Delete( fileName );
+
+                return null;
+            }
 
             byte[] fileData = null;
 
@@ -246,6 +255,21 @@ namespace SteamIrcBot
             Log.WriteInfo( "UGCHandler", "Loaded ugc cache in {0}", stopWatch.Elapsed );
         }
 
+        void OnLoggedOn( SteamUser.LoggedOnCallback callback )
+        {
+            if ( loadedCache )
+                return;
+
+            if ( callback.Result == EResult.OK )
+            {
+                // we've logged on, now we can cache our ugc so that we can request new ugc details for stale files
+
+                loadedCache = true;
+
+                CacheUGC();
+            }
+        }
+
         void OnServiceMethod( SteamUnifiedMessages.ServiceMethodResponse callback )
         {
             UGCJob ugcJob;
@@ -275,7 +299,13 @@ namespace SteamIrcBot
                 return;
             }
 
-            // cache out this ugc to file
+            // cache out this ugc to file and memory
+
+            ugcCache[details.publishedfileid] = new UGCCacheEntry
+            {
+                PubFileID = details.publishedfileid,
+                Name = details.title,
+            };
 
             using ( var ms = new MemoryStream() )
             {
