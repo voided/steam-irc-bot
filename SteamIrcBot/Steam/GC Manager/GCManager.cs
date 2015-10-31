@@ -9,6 +9,17 @@ using ProtoBuf;
 using System.IO;
 using SteamKit2.GC.Internal;
 
+using CMsgClientWelcome = SteamKit2.GC.Dota.Internal.CMsgClientWelcome;
+using CMsgClientHello = SteamKit2.GC.Dota.Internal.CMsgClientHello;
+using CMsgSystemBroadcast = SteamKit2.GC.Dota.Internal.CMsgSystemBroadcast;
+using CMsgUpdateItemSchema = SteamKit2.GC.Dota.Internal.CMsgUpdateItemSchema;
+using CMsgConnectionStatus = SteamKit2.GC.Dota.Internal.CMsgConnectionStatus;
+
+using GCConnectionStatus = SteamKit2.GC.Dota.Internal.GCConnectionStatus;
+using EGCBaseMsg = SteamKit2.GC.Dota.Internal.EGCBaseMsg;
+using EGCBaseClientMsg = SteamKit2.GC.Dota.Internal.EGCBaseClientMsg;
+using EGCItemMsg = SteamKit2.GC.Dota.Internal.EGCItemMsg;
+
 namespace SteamIrcBot
 {
     class GCHandler
@@ -140,12 +151,12 @@ namespace SteamIrcBot
             // first lets try the enum'd emsgs
             Type[] eMsgEnums =
             {
-                typeof( SteamKit2.GC.Internal.EGCBaseMsg ),
-                typeof( SteamKit2.GC.Internal.EGCBaseClientMsg ),
-                typeof( SteamKit2.GC.Internal.ESOMsg ),
-                typeof( SteamKit2.GC.Internal.EGCSystemMsg ),
-                typeof( SteamKit2.GC.Internal.EGCItemMsg ),
-                typeof( SteamKit2.GC.Internal.EGCToGCMsg ),
+                typeof( SteamKit2.GC.Dota.Internal.EGCBaseMsg ),
+                typeof( SteamKit2.GC.Dota.Internal.EGCBaseClientMsg ),
+                typeof( SteamKit2.GC.Dota.Internal.ESOMsg ),
+                typeof( SteamKit2.GC.Dota.Internal.EGCSystemMsg ),
+                typeof( SteamKit2.GC.Dota.Internal.EGCItemMsg ),
+                typeof( SteamKit2.GC.Dota.Internal.EGCToGCMsg ),
                 typeof( SteamKit2.GC.Dota.Internal.EDOTAGCMsg ),
                 typeof( SteamKit2.GC.TF2.Internal.EGCBaseMsg ),
                 typeof( SteamKit2.GC.TF2.Internal.ETFGCMsg ),
@@ -155,15 +166,6 @@ namespace SteamIrcBot
             {
                 if ( Enum.IsDefined( enumType, ( int )eMsg ) )
                     return Enum.GetName( enumType, ( int )eMsg );
-            }
-
-            // try the tf2 emsgs
-            foreach ( var field in typeof( SteamKit2.GC.TF2.EGCMsg ).GetFields( BindingFlags.Public | BindingFlags.Static ) )
-            {
-                uint value = ( uint )field.GetValue( null );
-
-                if ( value == eMsg )
-                    return field.Name;
             }
 
             // no dice, we can only use the uint

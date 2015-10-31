@@ -13,11 +13,17 @@ using System.Timers;
 using System.Collections.Concurrent;
 using ProtoBuf;
 
-using CMsgClientWelcome = SteamKit2.GC.Internal.CMsgClientWelcome;
-using CMsgClientHello = SteamKit2.GC.Internal.CMsgClientHello;
-using CMsgSystemBroadcast = SteamKit2.GC.Internal.CMsgSystemBroadcast;
-using CMsgUpdateItemSchema = SteamKit2.GC.Internal.CMsgUpdateItemSchema;
-using EGCBaseMsg = SteamKit2.GC.Internal.EGCBaseMsg;
+using CMsgClientWelcome = SteamKit2.GC.Dota.Internal.CMsgClientWelcome;
+using CMsgClientHello = SteamKit2.GC.Dota.Internal.CMsgClientHello;
+using CMsgSystemBroadcast = SteamKit2.GC.Dota.Internal.CMsgSystemBroadcast;
+using CMsgUpdateItemSchema = SteamKit2.GC.Dota.Internal.CMsgUpdateItemSchema;
+using CMsgConnectionStatus = SteamKit2.GC.Dota.Internal.CMsgConnectionStatus;
+
+using GCConnectionStatus = SteamKit2.GC.Dota.Internal.GCConnectionStatus;
+using EGCBaseMsg = SteamKit2.GC.Dota.Internal.EGCBaseMsg;
+using EGCBaseClientMsg = SteamKit2.GC.Dota.Internal.EGCBaseClientMsg;
+using EGCItemMsg = SteamKit2.GC.Dota.Internal.EGCItemMsg;
+
 using Timer = System.Timers.Timer;
 
 namespace SteamIrcBot
