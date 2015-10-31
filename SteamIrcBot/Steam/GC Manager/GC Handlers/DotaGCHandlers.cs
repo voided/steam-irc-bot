@@ -93,6 +93,11 @@ namespace SteamIrcBot
 
         public string GetDisplay()
         {
+            return $"{GetGotDDisplay()} | {GetCustomsDisplay()}";
+        }
+
+        public string GetCustomsDisplay()
+        {
             if ( cachedGames == null )
             {
                 // nothing cached yet
@@ -124,6 +129,28 @@ namespace SteamIrcBot
             } );
 
             return string.Format( "Top customs: {0}", string.Join( ", ", gameInfos ) );
+        }
+
+        public string GetGotDDisplay()
+        {
+            if ( cachedGames == null )
+            {
+                return "Game of the Day: unknown";
+            }
+
+            if ( cachedGames.game_of_the_day == 0 )
+            {
+                return "Game of the Day: none";
+            }
+
+            string gameName;
+
+            if ( !ugcHandler.LookupUGCName( cachedGames.game_of_the_day, out gameName ) )
+            {
+                gameName = cachedGames.game_of_the_day.ToString();
+            }
+
+            return $"Game of the Day: {gameName}";
         }
     }
 }
