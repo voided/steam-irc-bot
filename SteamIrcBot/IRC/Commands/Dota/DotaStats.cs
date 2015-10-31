@@ -26,11 +26,14 @@ namespace SteamIrcBot
             Austria = 9,
             Brazil = 10,
             SouthAfrica = 11,
-            PWTelecom = 12,
+            PWTelecomShanghai = 12,
             PWUnicom = 13,
             Chile = 14,
             Peru = 15,
             India = 16,
+            PWTelecomGuangzhou = 17,
+            PWTelecomZhejiang = 18,
+            Japan = 19,
         }
 
         public class Request : DotaBaseRequest
