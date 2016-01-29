@@ -47,7 +47,7 @@ namespace SteamIrcBot
             {
                 string pubFileName = string.Join( " ", details.Args );
 
-                if ( !ugcHandler.FindUGC( pubFileName, out gameId ) )
+                if ( !ugcHandler.FindUGC( pubFileName, out gameId, appId: APPID ) )
                 {
                     IRC.Instance.Send( details.Channel, "{0}: Invalid Game ID or unknown UGC name", details.Sender.Nickname );
                     return;

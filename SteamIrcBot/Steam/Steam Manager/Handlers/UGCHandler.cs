@@ -170,20 +170,28 @@ namespace SteamIrcBot
             return false;
         }
 
-        public bool FindUGC( string search, out ulong pubFileId )
+        public bool FindUGC( string search, out ulong pubFileId, uint? appId = null )
         {
             pubFileId = 0;
-            
+
             var ugcMatches = ugcCache
-                .Where( kvp => kvp.Value.Name.IndexOf( search, StringComparison.OrdinalIgnoreCase ) != -1 )
+                .Where( kvp => kvp.Value.Name.IndexOf( search, StringComparison.OrdinalIgnoreCase ) != -1 );
+
+            if ( appId != null )
+            {
+                // filter to only the appid we're interested in, if provided
+                ugcMatches = ugcMatches
+                    .Where( kvp => kvp.Value.AppID == appId.Value );
+            }
+
+            var ugcList = ugcMatches
+                .Select( kvp => kvp.Value )
                 .ToList();
 
-            if ( ugcMatches.Count == 0 )
+            if ( ugcList.Count == 0 )
             {
                 return false;
             }
-
-            var ugcList = ugcMatches.Select( kvp => kvp.Value );
 
             UGCCacheEntry searchResult = ugcList.FirstOrDefault();
 
