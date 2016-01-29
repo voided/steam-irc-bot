@@ -34,6 +34,7 @@ namespace SteamIrcBot
             PWTelecomGuangzhou = 17,
             PWTelecomZhejiang = 18,
             Japan = 19,
+            PWTelecomWuhan = 20,
         }
 
         public class Request : DotaBaseRequest
