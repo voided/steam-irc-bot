@@ -82,11 +82,5 @@ namespace SteamIrcBot
             DotaRegion region = (DotaRegion)index;
             return string.Format( "{0}: {1}", region, numPlayers );
         }
-
-        string BuildServers( CMsgSockAddrList addrList, int index )
-        {
-            DotaRegion region = (DotaRegion)index;
-            return string.Format( "{0}: {1}", region, addrList.ip.Count );
-        }
     }
 }
