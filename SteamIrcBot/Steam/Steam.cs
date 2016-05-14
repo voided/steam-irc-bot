@@ -100,9 +100,20 @@ namespace SteamIrcBot
         {
             JobManager.Start();
 
-            Log.WriteInfo( "Steam", "Connecting..." );
+            Log.WriteInfo( "Steam", "Retrieving servers..." );
 
-            nextConnect = DateTime.Now;
+            // zzz
+            SteamDirectory.Initialize().ContinueWith( t =>
+            {
+                if (t.IsFaulted)
+                {
+                    Log.WriteInfo( "Steam", "Unable to retrieve servers: {0}", t.Exception );
+                }
+
+                Log.WriteInfo( "Steam", "Connecting..." );
+
+                nextConnect = DateTime.Now;
+            } );
         }
 
         public void Disconnect()
