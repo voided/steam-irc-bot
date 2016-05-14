@@ -117,6 +117,7 @@
     <Compile Include="Steam\Steam Manager\Handlers\UGCHandler.cs" />
     <Compile Include="Steam\Steam Manager\Handlers\GroupHandler.cs" />
     <Compile Include="Steam\Steam Manager\SteamManager.cs" />
+    <Compile Include="Steam\Utils\CommunityService.cs" />
     <Compile Include="Steam\Utils\SteamAccountHandler.cs" />
     <Compile Include="Steam\Utils\SteamAppInfoHandler.cs" />
     <Compile Include="Utils\DisplayDictionary.cs" />
@@ -153,6 +154,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Steam\Utils\CommunityService.proto" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Service\ProjectInstaller.resx">

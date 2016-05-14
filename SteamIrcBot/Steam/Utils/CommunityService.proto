@@ -1,0 +1,23 @@
+import "steammessages_unified_base.steamclient.proto";
+
+option cc_generic_services = true;
+
+message CCommunity_GetPlayerCount_Request {
+	repeated uint32 appids = 1;
+}
+ 
+message CCommunity_GetPlayerCount_Response {
+	message AppPlayed {
+		optional uint32 appid = 1;
+		optional uint32 players = 2;
+	}
+ 
+	repeated .CCommunity_GetPlayerCount_Response.AppPlayed apps_played = 1;
+}
+
+service Community {
+	option (service_description) = "A service for Steam Community operations.";
+	rpc GetPlayerCount (.CCommunity_GetPlayerCount_Request) returns (.CCommunity_GetPlayerCount_Response) {
+		option (method_description) = "Returns player counts for a given set of appids.";
+	}
+}
