@@ -15,9 +15,13 @@ namespace SteamIrcBot
             public uint AppID { get; set; }
         }
 
+        PlayerCountHandler playerCountHandler;
+
 
         public NumPlayersCommand()
         {
+            playerCountHandler = Steam.Instance.SteamManager.GetHandler<PlayerCountHandler>();
+
             Steam.Instance.CallbackManager.Subscribe<SteamUserStats.NumberOfPlayersCallback>( OnNumPlayers );
 
             Triggers.Add( "!numplayers" );
@@ -26,7 +30,7 @@ namespace SteamIrcBot
         }
 
 
-        protected override void OnRun( CommandDetails details )
+        protected async override void OnRun( CommandDetails details )
         {
             if ( details.Args.Length == 0 )
             {
@@ -57,16 +61,30 @@ namespace SteamIrcBot
             if ( appId == 0 )
             {
                 // send this request as a package info request
-                Steam.Instance.Apps.PICSGetProductInfo( null, appId, false, false );
+                var _ = Steam.Instance.Apps.PICSGetProductInfo( null, appId, false, false );
             }
             else
             {
                 // send off a product request as well so we get something to cache for later
-                Steam.Instance.Apps.PICSGetProductInfo( appId, null, false, false );
+                var _ = Steam.Instance.Apps.PICSGetProductInfo( appId, null, false, false );
             }
 
-            var jobId = Steam.Instance.UserStats.GetNumberOfCurrentPlayers( appId );
-            AddRequest( details, new Request { JobID = jobId, AppID = appId } );
+            var result = await playerCountHandler.RequestPlayerCountWeb( appId );
+
+            // var result = await playerCountHandler.RequestPlayerCount( appId );
+
+            OnNumPlayers( result, new Request { AppID = appId, Channel = details.Channel, Requester = details.Sender } );
+        }
+
+        void OnNumPlayers( PlayerCountHandler.PlayerCountDetails details, Request req )
+        {
+            if ( details.Result != EResult.OK )
+            {
+                IRC.Instance.Send( req.Channel, "{0}: Unable to request player counts for {1}: {2}", req.Requester.Nickname, GetAppName( req.AppID ), details.Result );
+                return;
+            }
+
+            IRC.Instance.Send( req.Channel, "{0}: {1} players: {2}", req.Requester.Nickname, GetAppName( req.AppID ), details.Count );
         }
 
 
@@ -77,13 +95,8 @@ namespace SteamIrcBot
             if ( req == null )
                 return;
 
-            if ( callback.Result != EResult.OK )
-            {
-                IRC.Instance.Send( req.Channel, "{0}: Unable to request player counts for {1}: {2}", req.Requester.Nickname, GetAppName( req.AppID ), callback.Result );
-                return;
-            }
+            OnNumPlayers( new PlayerCountHandler.PlayerCountDetails { AppID = req.AppID, Result = callback.Result, Count = callback.NumPlayers }, req );
 
-            IRC.Instance.Send( req.Channel, "{0}: {1} players: {2}", req.Requester.Nickname, GetAppName( req.AppID ), callback.NumPlayers );
         }
 
 

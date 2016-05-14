@@ -114,6 +114,7 @@
     <Compile Include="Steam\Job Manager\Jobs\GameSessionJob.cs" />
     <Compile Include="Steam\Job Manager\Jobs\PICSJob.cs" />
     <Compile Include="Steam\Job Manager\Jobs\UpToDateJob.cs" />
+    <Compile Include="Steam\Steam Manager\Handlers\PlayerCountHandler.cs" />
     <Compile Include="Steam\Steam Manager\Handlers\UGCHandler.cs" />
     <Compile Include="Steam\Steam Manager\Handlers\GroupHandler.cs" />
     <Compile Include="Steam\Steam Manager\SteamManager.cs" />
@@ -139,9 +140,7 @@
     <Compile Include="Steam\Utils\SteamGamesHandler.cs" />
     <Compile Include="Steam\Utils\SteamLevelHandler.cs" />
     <Compile Include="Utils\Settings.cs" />
-    <Compile Include="Utils\Utils.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Utils\Utils.cs" />
     <Compile Include="RSS\XmlSanitizingStream.cs" />
     <Compile Include="Utils\XmlSerializable.cs" />
   </ItemGroup>
