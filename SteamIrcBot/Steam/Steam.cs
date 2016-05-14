@@ -42,6 +42,7 @@ namespace SteamIrcBot
         public SteamAccount Account { get; private set; }
 
         public SteamUnifiedMessages.UnifiedService<IPublishedFile> PublishedFiles { get; private set; }
+        public SteamUnifiedMessages.UnifiedService<ICommunity> Community { get; private set; }
 
 
         bool loggedOn;
@@ -73,6 +74,7 @@ namespace SteamIrcBot
             Account = new SteamAccount();
 
             PublishedFiles = Unified.CreateService<IPublishedFile>();
+            Community = Unified.CreateService<ICommunity>();
 
             Client.AddHandler( Levels );
             Client.AddHandler( Games );
