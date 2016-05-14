@@ -72,7 +72,7 @@ namespace SteamIrcBot
             if ( req == null )
                 return;
             
-            var s2Players = response.Body.searching_players_by_group_source2.Select( BuildRegion );
+            var s2Players = response.Body.legacy_searching_players_by_group_source2.Select( BuildRegion );
             
             IRC.Instance.Send( req.Channel, "Dota Matchmaking Players: {0}", string.Join( ", ", s2Players ) );
         }
