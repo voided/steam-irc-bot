@@ -21,9 +21,7 @@ namespace SteamIrcBot
 
         protected override void OnRun( CommandDetails details )
         {
-            string displayString = DotaGCNewBloomHandler.Instance.GetDisplay();
-
-            IRC.Instance.Send( details.Channel, "{0}: {1}", details.Sender.Nickname, displayString );
+            IRC.Instance.Send( details.Channel, "{0}: It's dead bro" );
         }
     }
 }
