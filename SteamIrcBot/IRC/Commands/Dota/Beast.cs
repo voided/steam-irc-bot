@@ -21,7 +21,7 @@ namespace SteamIrcBot
 
         protected override void OnRun( CommandDetails details )
         {
-            IRC.Instance.Send( details.Channel, "{0}: It's dead bro" );
+            IRC.Instance.Send( details.Channel, "{0}: It's dead bro", details.Sender.Nickname );
         }
     }
 }
