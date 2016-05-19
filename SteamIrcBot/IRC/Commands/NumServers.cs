@@ -41,7 +41,7 @@ namespace SteamIrcBot
             var query = new SteamMasterServer.QueryDetails
             {
                 Region = ERegionCode.World,
-                MaxServers = uint.MaxValue, // yolo
+                MaxServers = 100000, // yolt
             };
 
             query.Filter = string.Join( " ", details.Args );
