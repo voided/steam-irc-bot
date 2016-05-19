@@ -41,6 +41,7 @@ namespace SteamIrcBot
             var query = new SteamMasterServer.QueryDetails
             {
                 Region = ERegionCode.World,
+                MaxServers = uint.MaxValue, // yolo
             };
 
             query.Filter = string.Join( " ", details.Args );
@@ -71,7 +72,7 @@ namespace SteamIrcBot
             }
             else
             {
-                const int MAX_SERVERS = 5000; // the maximum amount of servers te GMS will reply with
+                const int MAX_SERVERS = 20000; // the maximum amount of servers te GMS will reply with
 
                 string response = string.Format( callback.Servers.Count == MAX_SERVERS ? ">{0}" : "{0}", callback.Servers.Count );
 
