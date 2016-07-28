@@ -20,9 +20,11 @@ namespace SteamIrcBot
         protected override void OnRun( CommandDetails details )
         {
             TimeSpan timeToMainEvent = MainEvent - DateTime.UtcNow;
+            TimeSpan timeToWildCard = WildCard - DateTime.UtcNow;
+            TimeSpan timeToGroupStages = GroupStages - DateTime.UtcNow;
 
             IRC.Instance.Send( details.Channel, "{0}: TI6 Wild Card: {1} | Group Stages: {2} | Main Event: {3}",
-                details.Sender.Nickname, GetTime( timeToWildCard ), GetTime( timeToGroupStages ), GetTime( timeToMainEvent ) );
+                details.Sender.Nickname, GetTime( timeToWildCard ), GetTime( timeToGroupStages ), GetTime( timeToMainEvent )
             );
         }
     }
