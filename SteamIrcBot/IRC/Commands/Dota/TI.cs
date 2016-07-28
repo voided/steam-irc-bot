@@ -7,6 +7,8 @@ namespace SteamIrcBot
 {
     class TI6Command : TICommand
     {
+        DateTime WildCard = new DateTime( 2016, 8 /*august*/, 2, 0, 0, 0, DateTimeKind.Utc );
+        DateTime GroupStages = new DateTime( 2016, 8 /*august*/, 3, 0, 0, 0, DateTimeKind.Utc );
         DateTime MainEvent = new DateTime( 2016, 8 /*august*/, 8, 0, 0, 0, DateTimeKind.Utc );
 
         public TI6Command()
@@ -19,8 +21,8 @@ namespace SteamIrcBot
         {
             TimeSpan timeToMainEvent = MainEvent - DateTime.UtcNow;
 
-            IRC.Instance.Send( details.Channel, "{0}: TI6 Main Event: {1}",
-                details.Sender.Nickname, GetTime( timeToMainEvent )
+            IRC.Instance.Send( details.Channel, "{0}: TI6 Wild Card: {1} | Group Stages: {2} | Main Event: {3}",
+                details.Sender.Nickname, GetTime( timeToWildCard ), GetTime( timeToGroupStages ), GetTime( timeToMainEvent ) );
             );
         }
     }
