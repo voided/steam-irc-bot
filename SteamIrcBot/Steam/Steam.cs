@@ -51,6 +51,7 @@ namespace SteamIrcBot
         bool shuttingDown = false;
 
         DateTime nextConnect = DateTime.MaxValue;
+        bool nextConnectDelayed = false;
 
 
         public void Init()
@@ -187,6 +188,12 @@ namespace SteamIrcBot
         void Reconnect( TimeSpan when )
         {
             nextConnect = DateTime.Now + when;
+
+            if ( nextConnectDelayed )
+            {
+                nextConnect += TimeSpan.FromSeconds( 20 );
+                nextConnectDelayed = false;
+            }
         }
 
 
@@ -223,8 +230,8 @@ namespace SteamIrcBot
             }
 
             Log.WriteInfo( "Steam", "Disconnected from Steam" );
-
-            IRC.Instance.SendEmoteToTag( "steam-logon", "Disconnected from Steam! Reconnecting in 10..." );
+            
+            IRC.Instance.SendEmoteToTag( "steam-logon", $"Disconnected from Steam! Reconnecting in {(nextConnectDelayed ? "30" : "10")}..." );
 
             Reconnect( TimeSpan.FromSeconds( 10 ) );
         }
@@ -233,6 +240,12 @@ namespace SteamIrcBot
         {
             if ( callback.Result != EResult.OK )
             {
+                if ( callback.Result == EResult.RateLimitExceeded || callback.Result == EResult.TryAnotherCM )
+                {
+                    // fingers crossed
+                    nextConnectDelayed = true;
+                }
+
                 Log.WriteWarn( "Steam", "Unable to logon to Steam3: {0} / {1}", callback.Result, callback.ExtendedResult );
 
                 IRC.Instance.SendEmoteToTag( "steam-logon", "Unable to logon to Steam: {0} / {1}", callback.Result, callback.ExtendedResult );
@@ -240,6 +253,7 @@ namespace SteamIrcBot
             }
 
             loggedOn = true;
+            nextConnectDelayed = false;
 
             CellID = callback.CellID;
 
