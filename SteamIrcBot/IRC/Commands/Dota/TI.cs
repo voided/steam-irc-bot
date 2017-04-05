@@ -5,6 +5,26 @@ using System.Text;
 
 namespace SteamIrcBot
 {
+    class TI7Command : TICommand
+    {
+        DateTime MainEvent = new DateTime( 2017, 8 /*august*/, 7, 0, 0, 0, DateTimeKind.Utc );
+
+        public TI7Command()
+        {
+            Triggers.Add( "!ti7" );
+            HelpText = "!ti7 - Countdown to Doters";
+        }
+
+        protected override void OnRun( CommandDetails details )
+        {
+            TimeSpan timeToMainEvent = MainEvent - DateTime.UtcNow;
+
+            IRC.Instance.Send( details.Channel, "{0}: TI7 Main Event: {1}",
+                details.Sender.Nickname, GetTime( timeToMainEvent )
+            );
+        }
+    }
+    
     class TI6Command : TICommand
     {
         DateTime WildCard = new DateTime( 2016, 8 /*august*/, 2, 0, 0, 0, DateTimeKind.Utc );
