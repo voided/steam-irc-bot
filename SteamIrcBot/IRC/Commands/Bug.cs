@@ -87,7 +87,14 @@ namespace SteamIrcBot
                 return;
             }
 
+            // first attempt to retrieve the title from the old bugzilla markup
             var textNode = htmlDoc.DocumentNode.SelectSingleNode( "//span[@id='summary_alias_container']" );
+
+            if ( textNode == null )
+            {
+                // if it wasn't found, look for the new markup
+                textNode = htmlDoc.DocumentNode.SelectSingleNode( "//h1[@id='field-value-short_desc']" );
+            }
 
             if ( textNode == null || textNode.InnerText == null )
             {
