@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Windows.Forms;
 
 namespace SteamIrcBot
 {
@@ -25,7 +24,7 @@ namespace SteamIrcBot
         {
             try
             {
-                string logsDir = Path.Combine( Application.StartupPath, LOG_DIRECTORY );
+                string logsDir = Path.Combine( AppContext.BaseDirectory, LOG_DIRECTORY );
                 Directory.CreateDirectory( logsDir );
             }
             catch ( Exception ex )
@@ -95,7 +94,7 @@ namespace SteamIrcBot
 
             string logFile = string.Format( "{0}_{1}_{2}.log", month, day, year );
 
-            return Path.Combine( Application.StartupPath, LOG_DIRECTORY, logFile );
+            return Path.Combine( AppContext.BaseDirectory, LOG_DIRECTORY, logFile );
         }
     }
 }

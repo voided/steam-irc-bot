@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Windows.Forms;
 using SteamKit2;
 using SteamKit2.Internal;
 using System.Diagnostics;

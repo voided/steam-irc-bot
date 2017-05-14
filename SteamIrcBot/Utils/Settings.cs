@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using System.IO;
 using System.Xml.Serialization;
 using SteamKit2;
@@ -24,14 +23,14 @@ namespace SteamIrcBot
 
         public static void Load()
         {
-            string settingsPath = Path.Combine( Application.StartupPath, SETTINGS_FILE );
+            string settingsPath = Path.Combine( AppContext.BaseDirectory, SETTINGS_FILE );
 
             Current = SettingsXml.Load( settingsPath );
         }
 
         public static void Save()
         {
-            string settingsPath = Path.Combine( Application.StartupPath, SETTINGS_FILE );
+            string settingsPath = Path.Combine( AppContext.BaseDirectory, SETTINGS_FILE );
 
             Current.Save( settingsPath );
         }

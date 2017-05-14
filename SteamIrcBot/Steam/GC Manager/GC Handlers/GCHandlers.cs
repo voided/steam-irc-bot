@@ -8,7 +8,6 @@ using SteamKit2.GC.TF2.Internal;
 using SteamKit2.GC.Dota.Internal;
 using System.Net;
 using System.IO;
-using System.Windows.Forms;
 using System.Timers;
 using System.Collections.Concurrent;
 using ProtoBuf;
@@ -260,7 +259,7 @@ namespace SteamIrcBot
             {
                 string itemsGameFile = string.Format( "items_game_{0}.txt", gcAppId );
 
-                webClient.DownloadFileAsync( new Uri( msg.Body.items_game_url ), Path.Combine( Application.StartupPath, itemsGameFile ) );
+                webClient.DownloadFileAsync( new Uri( msg.Body.items_game_url ), Path.Combine( AppContext.BaseDirectory, itemsGameFile ) );
             }
         }
     }

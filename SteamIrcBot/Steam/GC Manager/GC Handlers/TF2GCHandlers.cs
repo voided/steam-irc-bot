@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Windows.Forms;
 using SteamKit2;
 using SteamKit2.GC;
 using SteamKit2.GC.Internal;
@@ -78,7 +77,7 @@ namespace SteamIrcBot
         {
             string itemsGameFile = string.Format( "items_game_{0}.txt", gcAppId );
 
-            KeyValue itemsGame = KeyValue.LoadAsText( Path.Combine( Application.StartupPath, itemsGameFile ) );
+            KeyValue itemsGame = KeyValue.LoadAsText( Path.Combine(AppContext.BaseDirectory, itemsGameFile ) );
 
             if ( itemsGame == null )
             {
@@ -103,7 +102,7 @@ namespace SteamIrcBot
         {
             new GCCallback<SteamKit2.GC.TF2.Internal.CMsgGCClientDisplayNotification>( ClientNotification, OnNotification, manager );
 
-            tfEnglish = KeyValue.LoadAsText( Path.Combine( Application.StartupPath, "tf_english.txt" ) );
+            tfEnglish = KeyValue.LoadAsText( Path.Combine( AppContext.BaseDirectory, "tf_english.txt" ) );
 
             if ( tfEnglish == null )
             {
