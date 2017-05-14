@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ServiceProcess;
 using System.Text;
 using System.Reflection;
 using System.IO;
@@ -26,12 +25,8 @@ namespace SteamIrcBot
 
             var service = new BotService();
 
-#if SERVICE_BUILD
-            ServiceBase.Run( service );
-#else 
             service.Start( args );
             ServiceDispatcher.Instance.Wait();
-#endif
         }
     }
 }

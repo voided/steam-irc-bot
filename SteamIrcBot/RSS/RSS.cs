@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Net;
+using SteamIrcBot.RSS.FeedParser;
 
 namespace SteamIrcBot
 {
-    class RSS
+    class RSSService
     {
-        public static RSS _instance = new RSS();
-        public static RSS Instance { get { return _instance; } }
+        public static RSSService _instance = new RSSService();
+        public static RSSService Instance { get { return _instance; } }
 
 
         ConcurrentDictionary<string, DateTime> lastUpdated = new ConcurrentDictionary<string, DateTime>();
@@ -21,7 +21,7 @@ namespace SteamIrcBot
         DateTime nextUpdate = DateTime.MaxValue;
 
 
-        RSS()
+        RSSService()
         {
             ServicePointManager.DefaultConnectionLimit = 100;
         }
@@ -33,7 +33,7 @@ namespace SteamIrcBot
 
             // seed our feed map with the last publish time for all our feeds
             // this will be used to determine if anything new is posted
-            Parallel.ForEach( Settings.Current.RssFeeds, feed =>
+            Parallel.ForEach(Settings.Current.RssFeeds, (Action<SettingsXml.RssFeedXml>)(feed =>
             {
                 var rssFeed = LoadRSS( feed );
 
@@ -44,12 +44,12 @@ namespace SteamIrcBot
 
                 if ( feedItem == null )
                 {
-                    Log.WriteWarn( "RSS", "Feed {0} has no items!", rssFeed.Title.Text );
+                    Log.WriteWarn( "RSS", "Feed {0} has no items!", rssFeed.Title );
                     return;
                 }
 
-                lastUpdated[ feed.URL ] = feedItem.PublishDate.DateTime;
-            } );
+                lastUpdated[ feed.URL ] = feedItem.PublishDate;
+            }) );
 
             Log.WriteInfo( "RSS", "Done! Beginning updates in 30 seconds." );
             nextUpdate = DateTime.Now + TimeSpan.FromSeconds( 30 );
@@ -84,11 +84,11 @@ namespace SteamIrcBot
 
                     if ( latestItem == null )
                     {
-                        Log.WriteWarn( "RSS", "Feed {0} still has no items!", rss.Title.Text );
+                        Log.WriteWarn( "RSS", "Feed {0} still has no items!", rss.Title );
                         return;
                     }
 
-                    lastUpdated[ feed.URL ] = latestItem.PublishDate.DateTime;
+                    lastUpdated[ feed.URL ] = latestItem.PublishDate;
 
                     // we don't actually know if any of the items are new
                     // so we can't do much else
@@ -96,18 +96,12 @@ namespace SteamIrcBot
                 }
 
                 var newItems = rss.Items
-                    .Where( item => item.PublishDate.DateTime > lastUpdated[ feed.URL ] ) // get any feed items newer than the last recorded time we have
-                    .OrderBy( item => item.PublishDate.DateTime ); // sort them oldest to newest
+                    .Where( item => item.PublishDate > lastUpdated[ feed.URL ] ) // get any feed items newer than the last recorded time we have
+                    .OrderBy( item => item.PublishDate ); // sort them oldest to newest
 
                 foreach ( var item in newItems )
                 {
-                    string newsUrl = "";
-
-                    var link = item.Links.FirstOrDefault();
-                    if ( link != null && link.Uri != null )
-                    {
-                        newsUrl = link.Uri.ToString();
-                    }
+                    string newsUrl = item.Link;
 
                     string tag = "rss-news";
 
@@ -126,16 +120,16 @@ namespace SteamIrcBot
 
                     string targetChans = string.Join( ",", rssChannels.Select( c => c.Channel ) );
 
-                    IRC.Instance.Send( targetChans, "{0} News: {1} - {2}", rss.Title.Text, item.Title.Text, newsUrl );
+                    IRC.Instance.Send( targetChans, "{0} News: {1} - {2}", rss.Title, item.Title, newsUrl );
 
                     // guaranteed to give us the most recent item at the last iteration because of our sort order
-                    lastUpdated[ feed.URL ] = item.PublishDate.DateTime;
+                    lastUpdated[ feed.URL ] = item.PublishDate;
                 }
             } );
         }
 
 
-        SyndicationFeed LoadRSS( SettingsXml.RssFeedXml feedSettings )
+        Feed LoadRSS( SettingsXml.RssFeedXml feedSettings )
         {
             if ( feedSettings.IsRss10 )
             {
@@ -156,15 +150,7 @@ namespace SteamIrcBot
 
             try
             {
-                HttpWebRequest webReq = WebRequest.Create( feedSettings.URL ) as HttpWebRequest;
-                webReq.Timeout = ( int )TimeSpan.FromSeconds( 5 ).TotalMilliseconds;
-                webReq.ReadWriteTimeout = (int)TimeSpan.FromSeconds( 5 ).TotalMilliseconds;
-
-                using ( var resp = webReq.GetResponse() )
-                using ( var reader = DateXmlReader.Create( resp.GetResponseStream() ) )
-                {
-                    return SyndicationFeed.Load( reader );
-                }
+                return FeedParser.Parse(feedSettings.URL, FeedType.RSS);
             }
             catch ( WebException ex )
             {
@@ -184,7 +170,7 @@ namespace SteamIrcBot
             }
         }
 
-        SyndicationFeed LoadRSS10( string url )
+        Feed LoadRSS10( string url )
         {
             HttpWebRequest webReq = WebRequest.Create( url ) as HttpWebRequest;
             webReq.Timeout = ( int )TimeSpan.FromSeconds( 5 ).TotalMilliseconds;
@@ -197,23 +183,25 @@ namespace SteamIrcBot
                 XmlDocument doc = new XmlDocument();
                 doc.Load( xmlReader );
 
-                List<SyndicationItem> feedItems = new List<SyndicationItem>();
-                SyndicationFeed feed = new SyndicationFeed();
-                feed.Items = feedItems;
+                List<Item> feedItems = new List<Item>();
+                Feed feed = new Feed
+                {
+                    Items = feedItems,
+                };
 
                 XmlNamespaceManager nsManager = new XmlNamespaceManager( doc.NameTable );
                 nsManager.AddNamespace( "rss", "http://purl.org/rss/1.0/" );
 
-                feed.Title = new TextSyndicationContent( doc.SelectSingleNode( "//rss:channel/rss:title/text()", nsManager ).Value );
+                feed.Title = doc.SelectSingleNode( "//rss:channel/rss:title/text()", nsManager ).Value;
 
                 foreach ( XmlNode node in doc.SelectNodes( "//rss:item", nsManager ) )
                 {
-                    var item = new SyndicationItem();
-
-                    item.Title = new TextSyndicationContent( node.SelectSingleNode( "./rss:title/text()", nsManager ).Value );
-                    item.PublishDate = DateTimeOffset.Parse( node.SelectSingleNode( "./rss:pubDate/text()", nsManager ).Value );
-
-                    item.Links.Add( new SyndicationLink( new Uri( node.SelectSingleNode( "./rss:link/text()", nsManager ).Value ) ) );
+                    var item = new Item
+                    {
+                        Title = node.SelectSingleNode( "./rss:title/text()", nsManager ).Value,
+                        PublishDate = DateTime.Parse( node.SelectSingleNode( "./rss:pubDate/text()", nsManager ).Value ),
+                        Link = node.SelectSingleNode( "./rss:link/text()", nsManager ).Value
+                    };
 
                     feedItems.Add( item );
                 }

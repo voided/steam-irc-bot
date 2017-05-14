@@ -4,26 +4,24 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.ServiceProcess;
 using System.Text;
 
 namespace SteamIrcBot
 {
-    public partial class BotService : ServiceBase
+    public class BotService
     {
-        public BotService()
-        {
-            InitializeComponent();
-        }
-
-
         public void Start( string[] args )
         {
             OnStart( args );
         }
 
+        public void Stop()
+        {
+            OnStop();
+        }
 
-        protected override void OnStart( string[] args )
+
+        protected void OnStart( string[] args )
         {
             try
             {
@@ -47,18 +45,18 @@ namespace SteamIrcBot
 
             ServiceDispatcher.Instance.Start();
 
-            RSS.Instance.Start();
+            RSSService.Instance.Start();
 
             IRC.Instance.Connect();
         }
 
-        protected override void OnStop()
+        protected void OnStop()
         {
             Steam.Instance.Disconnect();
 
             IRC.Instance.Disconnect();
 
-            RSS.Instance.Stop();
+            RSSService.Instance.Stop();
 
             ServiceDispatcher.Instance.Stop();
         }
