@@ -47,7 +47,9 @@ namespace SteamIrcBot
                 }
 
                 var spiderResult = result?.Tags?
-                    .FirstOrDefault(t =>
+                    // order the spider tag first
+                    .OrderByDescending( t => string.Equals( t.Name, "spider" ) )
+                    .FirstOrDefault( t =>
                     {
                         if ( string.Equals( t.Name, "spider" ) )
                             return t.Confidence > 0.40;
