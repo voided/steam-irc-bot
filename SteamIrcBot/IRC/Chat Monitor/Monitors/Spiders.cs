@@ -38,11 +38,11 @@ namespace SteamIrcBot
 
                 try
                 {
-                    result = await client.AnalyzeImageAsync(url, new[] { VisualFeature.Description, VisualFeature.Tags });
+                    result = await client.AnalyzeImageAsync( url, new[] { VisualFeature.Description, VisualFeature.Tags } );
                 }
                 catch ( Exception ex )
                 {
-                    Log.WriteError( "Spiders", "Error occurred while submitting imae for analysis: {0}", ex );
+                    Log.WriteError( "Spiders", "Error occurred while submitting image for analysis: {0}", ex );
                     return;
                 }
 
@@ -76,9 +76,9 @@ namespace SteamIrcBot
             }
         }
 
-        private IEnumerable<string> GetUrls(string message)
+        private IEnumerable<string> GetUrls( string message )
         {
-            return urlRegex.Matches(message)
+            return urlRegex.Matches( message )
                 .OfType<Match>()
                 .Select(m =>
                 {
