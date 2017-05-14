@@ -60,6 +60,11 @@ namespace SteamIrcBot
                 return false;
             }
 
+            if ( string.IsNullOrEmpty( Current.CognitiveVisionKey ) )
+            {
+                Log.WriteWarn( "Settings", "Missing Cognitive Vision Subscription Key, cognitive vision features will be unavailable" );
+            }
+
             if ( Current.GetChannelsForTag( "main" ).Count() == 0 )
             {
                 Log.WriteError( "Settings", "Missing IRC channel with main tag!" );
@@ -160,6 +165,10 @@ namespace SteamIrcBot
 
         public string IRCNick;
 
+        [ConfigHidden]
+        public string CognitiveVisionKey;
+        public string CognitiveVisionEndpoint;
+
         [XmlArrayItem( "Chan" )]
         public List<IrcChannel> IRCChannels;
 
@@ -225,6 +234,12 @@ namespace SteamIrcBot
                 return c.GetTags()
                     .Any( chanTag => string.Equals( tag, chanTag, StringComparison.OrdinalIgnoreCase ) );
             } );
+        }
+
+        internal bool DoesChannelHaveTag( string channel, string tag )
+        {
+            return GetChannelsForTag( tag )
+                .Any(c => string.Equals( c.Channel, channel, StringComparison.OrdinalIgnoreCase ) );
         }
 
         internal string GetTagForGCApp( uint gcAppId )

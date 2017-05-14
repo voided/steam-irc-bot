@@ -27,6 +27,7 @@ namespace SteamIrcBot
 
 
         public CommandManager CommandManager { get; private set; }
+        public ChatMonitor ChatMonitor { get; private set; }
 
 
         IrcClient client = new IrcClient();
@@ -62,6 +63,7 @@ namespace SteamIrcBot
             client.ActiveChannelSyncing = true;
 
             CommandManager = new CommandManager( client );
+            ChatMonitor = new ChatMonitor( client );
 
             client.OnRegistered += OnConnected;
             client.OnDisconnected += OnDisconnected;
@@ -72,6 +74,7 @@ namespace SteamIrcBot
         public void Connect()
         {
             CommandManager.Init();
+            ChatMonitor.Init();
 
             if ( client.IsConnected )
                 return;

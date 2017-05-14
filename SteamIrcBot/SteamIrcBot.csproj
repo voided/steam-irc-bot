@@ -7,8 +7,12 @@
     <Copyright>Copyright © Ryan Stecker 2017</Copyright>
     <Company>Ryan Stecker</Company>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;NET46;SERVICE_BUILD</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.4.9.5" />
+    <PackageReference Include="Microsoft.ProjectOxford.Vision" Version="1.0.393" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="protobuf-net" Version="2.1.0" />
     <PackageReference Include="SmartIrc4net" Version="1.1.0" />
