@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Net;
 using SteamKit2;
+using System.Runtime.ExceptionServices;
 
 namespace SteamIrcBot
 {
@@ -42,9 +43,15 @@ namespace SteamIrcBot
                     {
                         if ( ex.Status != WebExceptionStatus.Timeout )
                         {
+                            // log everything but timeouts
                             Log.WriteWarn( "UpToDateJob", "Unable to make UpToDateCheck request: {0}", ex.Message );
                         }
 
+                        return;
+                    }
+                    catch ( TimeoutException )
+                    {
+                        // no need to log timeouts
                         return;
                     }
 
