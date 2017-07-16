@@ -14,7 +14,9 @@ namespace SteamIrcBot
         {
         }
 
-        Regex slamRegex = new Regex( @"title:'(?<title>(?:\\'|[^'])*)'", RegexOptions.Compiled | RegexOptions.IgnoreCase );
+        Regex slamRegex1 = new Regex( @"title:(?<quote>')(?<title>(?:\\'|[^'])*)(?<-quote>')", RegexOptions.Compiled | RegexOptions.IgnoreCase );
+        // slam.js started using " quotes for strings, so match these titles as well
+        Regex slamRegex2 = new Regex( "title:(?<quote>\")(?<title>(?:\\'|[^\"])*)(?<-quote>\")", RegexOptions.Compiled | RegexOptions.IgnoreCase );
 
         public SlamCommand()
         {
@@ -49,7 +51,11 @@ namespace SteamIrcBot
                 return;
             }
 
-            MatchCollection matches = slamRegex.Matches( e.Result );
+            var matches = slamRegex1.Matches( e.Result )
+                .OfType<Match>()
+                .ToList();
+
+            matches.AddRange( slamRegex2.Matches( e.Result ).OfType<Match>() );
 
             if ( matches.Count == 0 )
             {
