@@ -51,6 +51,12 @@ namespace SteamIrcBot
 
             MatchCollection matches = slamRegex.Matches( e.Result );
 
+            if ( matches.Count == 0 )
+            {
+                IRC.Instance.Send( req.Channel, "{0}: Unable to get slam data", req.Requester.Nickname );
+                return;
+            }
+
             int randIndex = new Random().Next( 0, matches.Count );
             Match selected = matches[ randIndex ];
 
