@@ -40,9 +40,14 @@ namespace SteamIrcBot
                 {
                     result = await client.AnalyzeImageAsync( url, new[] { VisualFeature.Description, VisualFeature.Tags } );
                 }
+                catch (ClientException ex)
+                {
+                    Log.WriteWarn("Spiders", "Error ({0}) while submitting image (\"{1}\") for analysis: {2}", ex.Error?.Code, url, ex.Error?.Message);
+                    return;
+                }
                 catch ( Exception ex )
                 {
-                    Log.WriteError( "Spiders", "Error occurred while submitting image for analysis: {0}", ex );
+                    Log.WriteError( "Spiders", "Error occurred while submitting image (\"{0}\") for analysis: {1}", url, ex );
                     return;
                 }
 
