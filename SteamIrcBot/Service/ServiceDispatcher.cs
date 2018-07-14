@@ -14,15 +14,18 @@ namespace SteamIrcBot
 
 
         Task mainDispatcher;
-        Task ircDispatcher;
+        Timer ircDispatcher;
+
+        WaitHandle ircDisposeEvent = new ManualResetEvent(false);
         CancellationTokenSource cancelToken;
 
 
         ServiceDispatcher()
         {
             cancelToken = new CancellationTokenSource();
+
             mainDispatcher = new Task(MainTick, cancelToken.Token, TaskCreationOptions.LongRunning);
-            ircDispatcher = new Task(IrcTick, cancelToken.Token, TaskCreationOptions.LongRunning);
+            ircDispatcher = new Timer(IrcTick);
         }
 
 
@@ -38,15 +41,9 @@ namespace SteamIrcBot
             }
         }
 
-        void IrcTick()
+        void IrcTick(object state)
         {
-            while (true)
-            {
-                if (cancelToken.IsCancellationRequested)
-                    break;
-
-                IRC.Instance.Tick();
-            }
+            IRC.Instance.Tick();
         }
 
 
@@ -54,18 +51,21 @@ namespace SteamIrcBot
         public void Start()
         {
             mainDispatcher.Start();
-            ircDispatcher.Start();
+
+            ircDispatcher.Change(TimeSpan.Zero, TimeSpan.FromMilliseconds(10));
         }
 
         public void Stop()
         {
+            ircDispatcher.Dispose(ircDisposeEvent);
             cancelToken.Cancel();
         }
 
 
         public void Wait()
         {
-            Task.WaitAll(mainDispatcher, ircDispatcher);
+            ircDisposeEvent.WaitOne();
+            mainDispatcher.Wait();
         }
 
     }
