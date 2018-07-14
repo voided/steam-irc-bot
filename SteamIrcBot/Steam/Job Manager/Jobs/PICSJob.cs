@@ -24,6 +24,13 @@ namespace SteamIrcBot
             if ( !Steam.Instance.Connected )
                 return;
 
+            if (!IRC.Instance.Connected)
+            {
+                // if we're not connected to IRC, no reason to keep requesting changes
+                // we'll resume once we're connected
+                return;
+            }
+            
             Steam.Instance.Apps.PICSGetChangesSince( lastChangeNumber, true, true );
         }
 
