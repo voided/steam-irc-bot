@@ -8,6 +8,7 @@ namespace SteamIrcBot
     class TI8Command : TICommand
     {
         DateTime MainEvent = new DateTime( 2018, 8 /*august*/, 20, 0, 0, 0, DateTimeKind.Utc );
+        DateTime GroupStages = new DateTime( 2018, 8 /*august*/, 15, 0, 0, 0, DateTimeKind.Utc );
 
         public TI8Command()
         {
@@ -18,9 +19,10 @@ namespace SteamIrcBot
         protected override void OnRun( CommandDetails details )
         {
             TimeSpan timeToMainEvent = MainEvent - DateTime.UtcNow;
+            TimeSpan timeToGroupStages = GroupStages - DateTime.UtcNow;
 
-            IRC.Instance.Send( details.Channel, "{0}: TI8 Main Event: {1}",
-                details.Sender.Nickname, GetTime( timeToMainEvent )
+            IRC.Instance.Send( details.Channel, "{0}: TI8 Group Stages: {1} | Main Event: {2}",
+                details.Sender.Nickname, GetTime( timeToGroupStages ), GetTime( timeToMainEvent )
             );
         }
     }
