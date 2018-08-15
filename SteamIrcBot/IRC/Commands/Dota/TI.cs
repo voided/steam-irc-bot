@@ -5,6 +5,28 @@ using System.Text;
 
 namespace SteamIrcBot
 {
+    class TI8Command : TICommand
+    {
+        DateTime MainEvent = new DateTime( 2018, 8 /*august*/, 20, 0, 0, 0, DateTimeKind.Utc );
+        DateTime GroupStages = new DateTime( 2018, 8 /*august*/, 15, 0, 0, 0, DateTimeKind.Utc );
+
+        public TI8Command()
+        {
+            Triggers.Add( "!ti8" );
+            HelpText = "!ti8 - Countdown to Doters";
+        }
+
+        protected override void OnRun( CommandDetails details )
+        {
+            TimeSpan timeToMainEvent = MainEvent - DateTime.UtcNow;
+            TimeSpan timeToGroupStages = GroupStages - DateTime.UtcNow;
+
+            IRC.Instance.Send( details.Channel, "{0}: TI8 Group Stages: {1} | Main Event: {2}",
+                details.Sender.Nickname, GetTime( timeToGroupStages ), GetTime( timeToMainEvent )
+            );
+        }
+    }
+    
     class TI7Command : TICommand
     {
         DateTime MainEvent = new DateTime( 2017, 8 /*august*/, 7, 0, 0, 0, DateTimeKind.Utc );
