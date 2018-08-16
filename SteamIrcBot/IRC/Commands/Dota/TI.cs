@@ -7,8 +7,8 @@ namespace SteamIrcBot
 {
     class TI8Command : TICommand
     {
-        DateTime MainEvent = new DateTime( 2018, 8 /*august*/, 20, 0, 0, 0, DateTimeKind.Utc );
-        DateTime GroupStages = new DateTime( 2018, 8 /*august*/, 15, 0, 0, 0, DateTimeKind.Utc );
+        DateTime MainEvent = new DateTime( 2018, 8 /*august*/, 20, 17 /*10am pdt*/, 0, 0, DateTimeKind.Utc );
+        DateTime GroupStages = new DateTime( 2018, 8 /*august*/, 15, 16 /*9am pdt*/, 0, 0, DateTimeKind.Utc );
 
         public TI8Command()
         {
